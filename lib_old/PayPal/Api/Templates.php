@@ -3,10 +3,9 @@
 namespace PayPal\Api;
 
 use PayPal\Common\PayPalResourceModel;
+use PayPal\Rest\ApiContext;
 use PayPal\Transport\PayPalRestCall;
 use PayPal\Validation\ArgumentValidator;
-use PayPal\Api\Template;
-use PayPal\Rest\ApiContext;
 
 /**
  * Class Templates

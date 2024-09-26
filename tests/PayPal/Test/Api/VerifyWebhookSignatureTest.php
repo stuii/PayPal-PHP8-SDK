@@ -2,10 +2,6 @@
 
 namespace PayPal\Test\Api;
 
-use PayPal\Common\PayPalResourceModel;
-use PayPal\Validation\ArgumentValidator;
-use PayPal\Api\VerifyWebhookSignatureResponse;
-use PayPal\Rest\ApiContext;
 use PayPal\Api\VerifyWebhookSignature;
 use PHPUnit\Framework\TestCase;
 

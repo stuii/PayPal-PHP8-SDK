@@ -11,6 +11,7 @@
 // API used: POST '/v1/payments/payment/<payment-id>/execute'.
 
 require __DIR__ . '/../bootstrap.php';
+
 use PayPal\Api\Amount;
 use PayPal\Api\Details;
 use PayPal\Api\Payment;

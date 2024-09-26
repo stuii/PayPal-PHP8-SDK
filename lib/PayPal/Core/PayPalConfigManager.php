@@ -1,32 +1,13 @@
-<?php
+<?php /** @noinspection ALL */
 
 namespace PayPal\Core;
 
-/**
- * Class PayPalConfigManager
- *
- * PayPalConfigManager loads the SDK configuration file and
- * hands out appropriate config params to other classes
- *
- * @package PayPal\Core
- */
 class PayPalConfigManager
 {
 
-    /**
-     * Configuration Options
-     *
-     * @var array
-     */
-    private $configs = array(
-    );
+    private array $configs = [];
 
-    /**
-     * Singleton Object
-     *
-     * @var $this
-     */
-    private static $instance;
+    private static self $instance;
 
     /**
      * Private Constructor
@@ -36,20 +17,14 @@ class PayPalConfigManager
         if (defined('PP_CONFIG_PATH')) {
             $configFile = constant('PP_CONFIG_PATH') . '/sdk_config.ini';
         } else {
-            $configFile = implode(DIRECTORY_SEPARATOR,
-                array(dirname(__FILE__), "..", "config", "sdk_config.ini"));
+            $configFile = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'config', 'sdk_config.ini']);
         }
         if (file_exists($configFile)) {
             $this->addConfigFromIni($configFile);
         }
     }
 
-    /**
-     * Returns the singleton object
-     *
-     * @return $this
-     */
-    public static function getInstance()
+    public static function getInstance(): static
     {
         if (!isset(self::$instance)) {
             self::$instance = new self();
@@ -57,13 +32,7 @@ class PayPalConfigManager
         return self::$instance;
     }
 
-    /**
-     * Add Configuration from configuration.ini files
-     *
-     * @param string $fileName
-     * @return $this
-     */
-    public function addConfigFromIni($fileName)
+    public function addConfigFromIni(string $fileName): static
     {
         if ($configs = parse_ini_file($fileName)) {
             $this->addConfigs($configs);
@@ -71,87 +40,53 @@ class PayPalConfigManager
         return $this;
     }
 
-    /**
-     * If a configuration exists in both arrays,
-     * then the element from the first array will be used and
-     * the matching key's element from the second array will be ignored.
-     *
-     * @param array $configs
-     * @return $this
-     */
-    public function addConfigs($configs = array())
+    public function addConfigs($configs = []): static
     {
         $this->configs = $configs + $this->configs;
         return $this;
     }
 
-    /**
-     * Simple getter for configuration params
-     * If an exact match for key is not found,
-     * does a "contains" search on the key
-     *
-     * @param string $searchKey
-     * @return array
-     */
-    public function get($searchKey)
+    public function get(string $searchKey): array
     {
         if (array_key_exists($searchKey, $this->configs)) {
             return $this->configs[$searchKey];
-        } else {
-            $arr = array();
-            if ($searchKey !== '') {
-                foreach ($this->configs as $k => $v) {
-                    if (strstr($k, $searchKey)) {
-                        $arr[$k] = $v;
-                    }
+        }
+
+        $arr = [];
+        if ($searchKey !== '') {
+            foreach ($this->configs as $k => $v) {
+                if (str_contains($k, $searchKey)) {
+                    $arr[$k] = $v;
                 }
             }
-
-            return $arr;
         }
+
+        return $arr;
     }
 
-    /**
-     * Utility method for handling account configuration
-     * return config key corresponding to the API userId passed in
-     *
-     * If $userId is null, returns config keys corresponding to
-     * all configured accounts
-     *
-     * @param string|null $userId
-     * @return array|string
-     */
-    public function getIniPrefix($userId = null)
+    public function getIniPrefix(?string $userId = null): array|string
     {
-        if ($userId == null) {
-            $arr = array();
+        if ($userId === null) {
+            $arr = [];
             foreach ($this->configs as $key => $value) {
                 $pos = strpos($key, '.');
-                if (strstr($key, "acct")) {
+                if (str_contains($key, "acct")) {
                     $arr[] = substr($key, 0, $pos);
                 }
             }
             return array_unique($arr);
-        } else {
-            $iniPrefix = array_search($userId, $this->configs);
-            $pos = strpos($iniPrefix, '.');
-            $acct = substr($iniPrefix, 0, $pos);
-
-            return $acct;
         }
+
+        $iniPrefix = array_search($userId, $this->configs, true);
+        $pos = strpos($iniPrefix, '.');
+        return substr($iniPrefix, 0, $pos);
     }
 
-    /**
-     * returns the config file hashmap
-     */
-    public function getConfigHashmap()
+    public function getConfigHashmap(): array
     {
         return $this->configs;
     }
 
-    /**
-     * Disabling __clone call
-     */
     public function __clone()
     {
         trigger_error('Clone is not allowed.', E_USER_ERROR);

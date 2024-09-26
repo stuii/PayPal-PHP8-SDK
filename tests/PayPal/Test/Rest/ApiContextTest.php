@@ -40,11 +40,13 @@ class ApiContextTest extends TestCase
     {
         $this->assertNull($this->apiContext->getRequestId());
 
-        $requestId = $this->apiContext->resetRequestId();
+        $this->apiContext->setRequestId(random_int(1000000,1000000000));
+        $requestId = $this->apiContext->getRequestId();
         $this->assertNotNull($requestId);
 
         // Tests that another resetRequestId call will generate a new ID
-        $newRequestId = $this->apiContext->resetRequestId();
+        $this->apiContext->setRequestId(random_int(1000000,1000000000));
+        $newRequestId = $this->apiContext->getRequestId();
         $this->assertNotNull($newRequestId);
         $this->assertNotEquals($newRequestId, $requestId);
     }

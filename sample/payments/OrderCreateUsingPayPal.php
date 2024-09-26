@@ -5,6 +5,7 @@
 // API used: /v1/payments/payment
 
 require __DIR__ . '/../bootstrap.php';
+
 use PayPal\Api\Amount;
 use PayPal\Api\Details;
 use PayPal\Api\Item;

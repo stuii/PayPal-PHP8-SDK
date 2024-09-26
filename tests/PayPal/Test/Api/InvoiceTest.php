@@ -3,7 +3,6 @@
 namespace PayPal\Test\Api;
 
 use PayPal\Api\Invoice;
-use PayPal\Api\InvoiceNumber;
 use PHPUnit\Framework\TestCase;
 
 /**

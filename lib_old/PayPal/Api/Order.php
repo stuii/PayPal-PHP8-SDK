@@ -3,17 +3,18 @@
 namespace PayPal\Api;
 
 use PayPal\Common\PayPalResourceModel;
-use PayPal\Validation\ArgumentValidator;
 use PayPal\Rest\ApiContext;
+use PayPal\Validation\ArgumentValidator;
 
 /**
- * Class Authorization
+ * Class Order
  *
- * An authorization transaction.
+ * An order transaction.
  *
  * @package PayPal\Api
  *
  * @property string id
+ * @property string reference_id
  * @property \PayPal\Api\Amount amount
  * @property string payment_mode
  * @property string state
@@ -21,20 +22,16 @@ use PayPal\Rest\ApiContext;
  * @property string pending_reason
  * @property string protection_eligibility
  * @property string protection_eligibility_type
- * @property \PayPal\Api\FmfDetails fmf_details
  * @property string parent_payment
- * @property \PayPal\Api\ProcessorResponse processor_response
- * @property string valid_until
+ * @property \PayPal\Api\FmfDetails fmf_details
  * @property string create_time
  * @property string update_time
- * @property string reference_id
- * @property string receipt_id
  * @property \PayPal\Api\Links[] links
  */
-class Authorization extends PayPalResourceModel
+class Order extends PayPalResourceModel
 {
     /**
-     * ID of the authorization transaction.
+     * Identifier of the order transaction.
      *
      * @param string $id
      * 
@@ -47,7 +44,7 @@ class Authorization extends PayPalResourceModel
     }
 
     /**
-     * ID of the authorization transaction.
+     * Identifier of the order transaction.
      *
      * @return string
      */
@@ -57,7 +54,56 @@ class Authorization extends PayPalResourceModel
     }
 
     /**
-     * Amount being authorized.
+     * Identifier to the purchase unit associated with this object. Obsolete. Use one in cart_base.
+     *
+     * @deprecated Use #setReferenceId instead
+     *
+     * @param string $purchase_unit_reference_id
+     *
+     * @return $this
+     */
+    public function setPurchaseUnitReferenceId($purchase_unit_reference_id)
+    {
+        $this->purchase_unit_reference_id = $purchase_unit_reference_id;
+        return $this;
+    }
+
+    /**
+     * Identifier to the purchase unit associated with this object. Obsolete. Use one in cart_base.
+     * @deprecated Use #getReferenceId instead
+     *
+     * @return string
+     */
+    public function getPurchaseUnitReferenceId()
+    {
+        return $this->purchase_unit_reference_id;
+    }
+
+    /**
+     * Identifier to the purchase unit associated with this object. Obsolete. Use one in cart_base.
+     *
+     * @param string $reference_id
+     *
+     * @return $this
+     */
+    public function setReferenceId($reference_id)
+    {
+        $this->reference_id = $reference_id;
+        return $this;
+    }
+
+    /**
+     * Identifier to the purchase unit associated with this object. Obsolete. Use one in cart_base.
+     *
+     * @return string
+     */
+    public function getReferenceId()
+    {
+        return $this->reference_id;
+    }
+
+    /**
+     * Amount being collected.
      *
      * @param \PayPal\Api\Amount $amount
      * 
@@ -70,7 +116,7 @@ class Authorization extends PayPalResourceModel
     }
 
     /**
-     * Amount being authorized.
+     * Amount being collected.
      *
      * @return \PayPal\Api\Amount
      */
@@ -80,8 +126,8 @@ class Authorization extends PayPalResourceModel
     }
 
     /**
-     * Specifies the payment mode of the transaction.
-     * Valid Values: ["INSTANT_TRANSFER"]
+     * specifies payment mode of the transaction
+     * Valid Values: ["INSTANT_TRANSFER", "MANUAL_BANK_TRANSFER", "DELAYED_TRANSFER", "ECHECK"]
      *
      * @param string $payment_mode
      * 
@@ -94,7 +140,7 @@ class Authorization extends PayPalResourceModel
     }
 
     /**
-     * Specifies the payment mode of the transaction.
+     * specifies payment mode of the transaction
      *
      * @return string
      */
@@ -104,8 +150,8 @@ class Authorization extends PayPalResourceModel
     }
 
     /**
-     * State of the authorization.
-     * Valid Values: ["pending", "authorized", "partially_captured", "captured", "expired", "voided"]
+     * State of the order transaction.
+     * Valid Values: ["pending", "completed", "voided", "authorized", "captured"]
      *
      * @param string $state
      * 
@@ -118,7 +164,7 @@ class Authorization extends PayPalResourceModel
     }
 
     /**
-     * State of the authorization.
+     * State of the order transaction.
      *
      * @return string
      */
@@ -128,8 +174,8 @@ class Authorization extends PayPalResourceModel
     }
 
     /**
-     * Reason code, `AUTHORIZATION`, for a transaction state of `pending`.
-     * Valid Values: ["AUTHORIZATION"]
+     * Reason code for the transaction state being Pending or Reversed. This field will replace pending_reason field eventually. Only supported when the `payment_method` is set to `paypal`.
+     * Valid Values: ["PAYER_SHIPPING_UNCONFIRMED", "MULTI_CURRENCY", "RISK_REVIEW", "REGULATORY_REVIEW", "VERIFICATION_REQUIRED", "ORDER", "OTHER"]
      *
      * @param string $reason_code
      * 
@@ -142,7 +188,7 @@ class Authorization extends PayPalResourceModel
     }
 
     /**
-     * Reason code, `AUTHORIZATION`, for a transaction state of `pending`.
+     * Reason code for the transaction state being Pending or Reversed. This field will replace pending_reason field eventually. Only supported when the `payment_method` is set to `paypal`.
      *
      * @return string
      */
@@ -152,8 +198,8 @@ class Authorization extends PayPalResourceModel
     }
 
     /**
-     * [DEPRECATED] Reason code for the transaction state being Pending.Obsolete. use reason_code field instead.
-     * Valid Values: ["AUTHORIZATION"]
+     * [DEPRECATED] Reason code for the transaction state being Pending. Obsolete. Retained for backward compatability. Use reason_code field above instead. 
+     * Valid Values: ["payer_shipping_unconfirmed", "multi_currency", "risk_review", "regulatory_review", "verification_required", "order", "other"]
      *
      * @param string $pending_reason
      * 
@@ -166,7 +212,7 @@ class Authorization extends PayPalResourceModel
     }
 
     /**
-     * @deprecated  [DEPRECATED] Reason code for the transaction state being Pending.Obsolete. use reason_code field instead.
+     * @deprecated  [DEPRECATED] Reason code for the transaction state being Pending. Obsolete. Retained for backward compatability. Use reason_code field above instead. 
      *
      * @return string
      */
@@ -176,7 +222,7 @@ class Authorization extends PayPalResourceModel
     }
 
     /**
-     * The level of seller protection in force for the transaction. Only supported when the `payment_method` is set to `paypal`. Allowed values:<br>  `ELIGIBLE`- Merchant is protected by PayPal's Seller Protection Policy for Unauthorized Payments and Item Not Received.<br> `PARTIALLY_ELIGIBLE`- Merchant is protected by PayPal's Seller Protection Policy for Item Not Received or Unauthorized Payments. Refer to `protection_eligibility_type` for specifics. <br> `INELIGIBLE`- Merchant is not protected under the Seller Protection Policy.
+     * The level of seller protection in force for the transaction.
      * Valid Values: ["ELIGIBLE", "PARTIALLY_ELIGIBLE", "INELIGIBLE"]
      *
      * @param string $protection_eligibility
@@ -190,7 +236,7 @@ class Authorization extends PayPalResourceModel
     }
 
     /**
-     * The level of seller protection in force for the transaction. Only supported when the `payment_method` is set to `paypal`. Allowed values:<br>  `ELIGIBLE`- Merchant is protected by PayPal's Seller Protection Policy for Unauthorized Payments and Item Not Received.<br> `PARTIALLY_ELIGIBLE`- Merchant is protected by PayPal's Seller Protection Policy for Item Not Received or Unauthorized Payments. Refer to `protection_eligibility_type` for specifics. <br> `INELIGIBLE`- Merchant is not protected under the Seller Protection Policy.
+     * The level of seller protection in force for the transaction.
      *
      * @return string
      */
@@ -224,29 +270,6 @@ class Authorization extends PayPalResourceModel
     }
 
     /**
-     * Fraud Management Filter (FMF) details applied for the payment that could result in accept, deny, or pending action. Returned in a payment response only if the merchant has enabled FMF in the profile settings and one of the fraud filters was triggered based on those settings. See [Fraud Management Filters Summary](https://developer.paypal.com/docs/classic/fmf/integration-guide/FMFSummary/) for more information.
-     *
-     * @param \PayPal\Api\FmfDetails $fmf_details
-     * 
-     * @return $this
-     */
-    public function setFmfDetails($fmf_details)
-    {
-        $this->fmf_details = $fmf_details;
-        return $this;
-    }
-
-    /**
-     * Fraud Management Filter (FMF) details applied for the payment that could result in accept, deny, or pending action. Returned in a payment response only if the merchant has enabled FMF in the profile settings and one of the fraud filters was triggered based on those settings. See [Fraud Management Filters Summary](https://developer.paypal.com/docs/classic/fmf/integration-guide/FMFSummary/) for more information.
-     *
-     * @return \PayPal\Api\FmfDetails
-     */
-    public function getFmfDetails()
-    {
-        return $this->fmf_details;
-    }
-
-    /**
      * ID of the Payment resource that this transaction is based on.
      *
      * @param string $parent_payment
@@ -270,53 +293,30 @@ class Authorization extends PayPalResourceModel
     }
 
     /**
-     * Response codes returned by the processor concerning the submitted payment. Only supported when the `payment_method` is set to `credit_card`.
+     * Fraud Management Filter (FMF) details applied for the payment that could result in accept/deny/pending action.
      *
-     * @param \PayPal\Api\ProcessorResponse $processor_response
-     *
-     * @return $this
-     */
-    public function setProcessorResponse($processor_response)
-    {
-        $this->processor_response = $processor_response;
-        return $this;
-    }
-
-    /**
-     * Response codes returned by the processor concerning the submitted payment. Only supported when the `payment_method` is set to `credit_card`.
-     *
-     * @return \PayPal\Api\ProcessorResponse
-     */
-    public function getProcessorResponse()
-    {
-        return $this->processor_response;
-    }
-
-    /**
-     * Authorization expiration time and date as defined in [RFC 3339 Section 5.6](http://tools.ietf.org/html/rfc3339#section-5.6).
-     *
-     * @param string $valid_until
+     * @param \PayPal\Api\FmfDetails $fmf_details
      * 
      * @return $this
      */
-    public function setValidUntil($valid_until)
+    public function setFmfDetails($fmf_details)
     {
-        $this->valid_until = $valid_until;
+        $this->fmf_details = $fmf_details;
         return $this;
     }
 
     /**
-     * Authorization expiration time and date as defined in [RFC 3339 Section 5.6](http://tools.ietf.org/html/rfc3339#section-5.6).
+     * Fraud Management Filter (FMF) details applied for the payment that could result in accept/deny/pending action.
      *
-     * @return string
+     * @return \PayPal\Api\FmfDetails
      */
-    public function getValidUntil()
+    public function getFmfDetails()
     {
-        return $this->valid_until;
+        return $this->fmf_details;
     }
 
     /**
-     * Time of authorization as defined in [RFC 3339 Section 5.6](http://tools.ietf.org/html/rfc3339#section-5.6).
+     * Time the resource was created in UTC ISO8601 format.
      *
      * @param string $create_time
      * 
@@ -329,7 +329,7 @@ class Authorization extends PayPalResourceModel
     }
 
     /**
-     * Time of authorization as defined in [RFC 3339 Section 5.6](http://tools.ietf.org/html/rfc3339#section-5.6).
+     * Time the resource was created in UTC ISO8601 format.
      *
      * @return string
      */
@@ -339,7 +339,7 @@ class Authorization extends PayPalResourceModel
     }
 
     /**
-     * Time that the resource was last updated.
+     * Time the resource was last updated in UTC ISO8601 format.
      *
      * @param string $update_time
      * 
@@ -352,7 +352,7 @@ class Authorization extends PayPalResourceModel
     }
 
     /**
-     * Time that the resource was last updated.
+     * Time the resource was last updated in UTC ISO8601 format.
      *
      * @return string
      */
@@ -362,78 +362,32 @@ class Authorization extends PayPalResourceModel
     }
 
     /**
-     * Identifier to the purchase or transaction unit corresponding to this authorization transaction.
+     * Shows details for an order, by ID.
      *
-     * @param string $reference_id
-     * 
-     * @return $this
-     */
-    public function setReferenceId($reference_id)
-    {
-        $this->reference_id = $reference_id;
-        return $this;
-    }
-
-    /**
-     * Identifier to the purchase or transaction unit corresponding to this authorization transaction.
-     *
-     * @return string
-     */
-    public function getReferenceId()
-    {
-        return $this->reference_id;
-    }
-
-    /**
-     * Receipt id is 16 digit number payment identification number returned for guest users to identify the payment.
-     *
-     * @param string $receipt_id
-     * 
-     * @return $this
-     */
-    public function setReceiptId($receipt_id)
-    {
-        $this->receipt_id = $receipt_id;
-        return $this;
-    }
-
-    /**
-     * Receipt id is 16 digit number payment identification number returned for guest users to identify the payment.
-     *
-     * @return string
-     */
-    public function getReceiptId()
-    {
-        return $this->receipt_id;
-    }
-
-    /**
-     * Shows details for an authorization, by ID.
-     *
-     * @param string $authorizationId
+     * @param string $orderId
      * @param ApiContext $apiContext is the APIContext for this call. It can be used to pass dynamic configuration and credentials.
      * @param PayPalRestCall $restCall is the Rest Call Service that is used to make rest calls
-     * @return Authorization
+     * @return Order
      */
-    public static function get($authorizationId, $apiContext = null, $restCall = null)
+    public static function get($orderId, $apiContext = null, $restCall = null)
     {
-        ArgumentValidator::validate($authorizationId, 'authorizationId');
+        ArgumentValidator::validate($orderId, 'orderId');
         $payLoad = "";
         $json = self::executeCall(
-            "/v1/payments/authorization/$authorizationId",
+            "/v1/payments/orders/$orderId",
             "GET",
             $payLoad,
             null,
             $apiContext,
             $restCall
         );
-        $ret = new Authorization();
+        $ret = new Order();
         $ret->fromJson($json);
         return $ret;
     }
 
     /**
-     * Captures and processes an authorization, by ID. To use this call, the original payment call must specify an intent of `authorize`.
+     * Captures a payment for an order, by ID. To use this call, the original payment call must specify an intent of `order`. In the JSON request body, include the payment amount and indicate whether this capture is the final capture for the authorization.
      *
      * @param Capture $capture
      * @param ApiContext $apiContext is the APIContext for this call. It can be used to pass dynamic configuration and credentials.
@@ -446,7 +400,7 @@ class Authorization extends PayPalResourceModel
         ArgumentValidator::validate($capture, 'capture');
         $payLoad = $capture->toJSON();
         $json = self::executeCall(
-            "/v1/payments/authorization/{$this->getId()}/capture",
+            "/v1/payments/orders/{$this->getId()}/capture",
             "POST",
             $payLoad,
             null,
@@ -459,18 +413,18 @@ class Authorization extends PayPalResourceModel
     }
 
     /**
-     * Voids, or cancels, an authorization, by ID. You cannot void a fully captured authorization.
+     * Voids, or cancels, an order, by ID. You cannot void an order if a payment has already been partially or fully captured.
      *
      * @param ApiContext $apiContext is the APIContext for this call. It can be used to pass dynamic configuration and credentials.
      * @param PayPalRestCall $restCall is the Rest Call Service that is used to make rest calls
-     * @return Authorization
+     * @return Order
      */
     public function void($apiContext = null, $restCall = null)
     {
         ArgumentValidator::validate($this->getId(), "Id");
         $payLoad = "";
         $json = self::executeCall(
-            "/v1/payments/authorization/{$this->getId()}/void",
+            "/v1/payments/orders/{$this->getId()}/do-void",
             "POST",
             $payLoad,
             null,
@@ -482,26 +436,29 @@ class Authorization extends PayPalResourceModel
     }
 
     /**
-     * Reauthorizes a PayPal account payment, by authorization ID. To ensure that funds are still available, reauthorize a payment after the initial three-day honor period. Supports only the `amount` request parameter.
+     * Authorizes an order, by ID. Include an `amount` object in the JSON request body.
      *
+     * @param Authorization $authorization Authorization Object with Amount value to be authorized
      * @param ApiContext $apiContext is the APIContext for this call. It can be used to pass dynamic configuration and credentials.
      * @param PayPalRestCall $restCall is the Rest Call Service that is used to make rest calls
      * @return Authorization
      */
-    public function reauthorize($apiContext = null, $restCall = null)
+    public function authorize($authorization, $apiContext = null, $restCall = null)
     {
         ArgumentValidator::validate($this->getId(), "Id");
-        $payLoad = $this->toJSON();
+        ArgumentValidator::validate($authorization, 'Authorization');
+        $payLoad = $authorization->toJSON();
         $json = self::executeCall(
-            "/v1/payments/authorization/{$this->getId()}/reauthorize",
+            "/v1/payments/orders/{$this->getId()}/authorize",
             "POST",
             $payLoad,
             null,
             $apiContext,
             $restCall
         );
-        $this->fromJson($json);
-        return $this;
+        $ret = new Authorization();
+        $ret->fromJson($json);
+        return $ret;
     }
 
 }

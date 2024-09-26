@@ -63,9 +63,9 @@ class OAuthTokenCredentialTest extends TestCase
 
     public function testGetAccessTokenUnitMock()
     {
-        $config = array(
-            'mode' => 'sandbox'
-        );
+        $config = [
+            'mode' => 'sandbox',
+        ];
         /** @var OAuthTokenCredential $auth */
         $auth = $this->getMockBuilder('\PayPal\Auth\OAuthTokenCredential')
             ->setConstructorArgs(array('clientId', 'clientSecret'))

@@ -1,32 +1,21 @@
-<?php
+<?php /** @noinspection JsonEncodingApiUsageInspection */
 
 namespace PayPal\Validation;
 
-/**
- * Class JsonValidator
- *
- * @package PayPal\Validation
- */
+use InvalidArgumentException;
+
 class JsonValidator
 {
-
-    /**
-     * Helper method for validating if string provided is a valid json.
-     *
-     * @param string $string String representation of Json object
-     * @param bool $silent Flag to not throw \InvalidArgumentException
-     * @return bool
-     */
-    public static function validate($string, $silent = false)
+    public static function validate(?string $string, bool $silent = false): bool
     {
         @json_decode($string);
-        if (json_last_error() != JSON_ERROR_NONE) {
+        if (json_last_error() !== JSON_ERROR_NONE) {
             if ($string === '' || $string === null) {
                 return true;
             }
-            if ($silent == false) {
+            if (!$silent) {
                 //Throw an Exception for string or array
-                throw new \InvalidArgumentException("Invalid JSON String");
+                throw new InvalidArgumentException("Invalid JSON String");
             }
             return false;
         }

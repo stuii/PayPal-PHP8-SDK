@@ -8,7 +8,6 @@ use PayPal\Api\InvoiceItem;
 use PayPal\Api\Item;
 use PayPal\Api\Tax;
 use PayPal\Common\PayPalModel;
-use PayPal\Converter\FormatConverter;
 use PayPal\Test\Validation\NumericValidatorTest;
 use PHPUnit\Framework\TestCase;
 
@@ -64,60 +63,6 @@ class FormatConverterTest extends TestCase
             }
         }
         return $provider;
-    }
-
-    /**
-     *
-     * @dataProvider \PayPal\Test\Validation\NumericValidatorTest::positiveProvider
-     */
-    public function testFormatToTwoDecimalPlaces($input, $expected)
-    {
-        $result = FormatConverter::formatToNumber($input);
-        $this->assertEquals($expected, $result);
-    }
-
-    /**
-     * @dataProvider CurrencyListWithNoDecimalsProvider
-     */
-    public function testPriceWithNoDecimalCurrencyInvalid($input)
-    {
-        try {
-            FormatConverter::formatToPrice("1.234", $input);
-        } catch (\InvalidArgumentException $ex) {
-            $this->assertContains("value cannot have decimals for", $ex->getMessage());
-        }
-    }
-
-    /**
-     * @dataProvider CurrencyListWithNoDecimalsProvider
-     */
-    public function testPriceWithNoDecimalCurrencyValid($input)
-    {
-        $result = FormatConverter::formatToPrice("1.0000000", $input);
-        $this->assertEquals("1", $result);
-    }
-
-    /**
-     *
-     * @dataProvider \PayPal\Test\Validation\NumericValidatorTest::positiveProvider
-     */
-    public function testFormatToNumber($input, $expected)
-    {
-        $result = FormatConverter::formatToNumber($input);
-        $this->assertEquals($expected, $result);
-    }
-
-    public function testFormatToNumberDecimals()
-    {
-        $result = FormatConverter::formatToNumber("0.0", 4);
-        $this->assertEquals("0.0000", $result);
-    }
-
-
-    public function testFormat()
-    {
-        $result = FormatConverter::format("12.0123", "%0.2f");
-        $this->assertEquals("12.01", $result);
     }
 
     /**

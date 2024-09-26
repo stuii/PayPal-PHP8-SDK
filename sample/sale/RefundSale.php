@@ -11,7 +11,6 @@ $sale = require 'GetSale.php';
 $saleId = $sale->getId();
 
 use PayPal\Api\Amount;
-use PayPal\Api\Refund;
 use PayPal\Api\RefundRequest;
 use PayPal\Api\Sale;
 

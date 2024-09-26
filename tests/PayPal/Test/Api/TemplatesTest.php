@@ -2,10 +2,6 @@
 
 namespace PayPal\Test\Api;
 
-use PayPal\Common\PayPalResourceModel;
-use PayPal\Validation\ArgumentValidator;
-use PayPal\Api\Template;
-use PayPal\Rest\ApiContext;
 use PayPal\Api\Templates;
 use PHPUnit\Framework\TestCase;
 

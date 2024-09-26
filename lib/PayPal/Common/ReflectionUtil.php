@@ -3,45 +3,28 @@
 namespace PayPal\Common;
 
 use PayPal\Exception\PayPalConfigurationException;
+use ReflectionException;
+use ReflectionMethod;
+use RuntimeException;
 
-/**
- * Class ReflectionUtil
- *
- * @package PayPal\Common
- */
 class ReflectionUtil
 {
-
     /**
-     * Reflection Methods
-     *
-     * @var \ReflectionMethod[]
+     * @var array<ReflectionMethod>
      */
-    private static $propertiesRefl = array();
+    private static array $propertiesReflection = [];
+
+    private static array $propertiesType = [];
 
     /**
-     * Properties Type
-     *
-     * @var string[]
-     */
-    private static $propertiesType = array();
-
-
-    /**
-     * Gets Property Class of the given property.
-     * If the class is null, it returns null.
-     * If the property is not found, it returns null.
-     *
-     * @param $class
-     * @param $propertyName
-     * @return null|string
      * @throws PayPalConfigurationException
+     * @throws ReflectionException
      */
-    public static function getPropertyClass($class, $propertyName)
+    public static function getPropertyClass(string $class, string $propertyName): ?string
     {
-        if ($class == get_class(new PayPalModel())) {
+        if ($class === PayPalModel::class) {
             // Make it generic if PayPalModel is used for generating this
-            return get_class(new PayPalModel());
+            return PayPalModel::class;
         }
 
         // If the class doesn't exist, or the method doesn't exist, return null.
@@ -56,20 +39,16 @@ class ReflectionUtil
         if (isset($param)) {
             $anno = preg_split("/[\s\[\]]+/", $param);
             return $anno[0];
-        } else {
-            throw new PayPalConfigurationException("Getter function for '$propertyName' in '$class' class should have a proper return type.");
         }
+
+        throw new PayPalConfigurationException("Getter function for '$propertyName' in '$class' class should have a proper return type.");
     }
 
     /**
-     * Checks if the Property is of type array or an object
-     *
-     * @param $class
-     * @param $propertyName
-     * @return null|boolean
      * @throws PayPalConfigurationException
+     * @throws ReflectionException
      */
-    public static function isPropertyClassArray($class, $propertyName)
+    public static function isPropertyClassArray(string $class, string $propertyName): ?bool
     {
         // If the class doesn't exist, or the method doesn't exist, return null.
         if (!class_exists($class) || !method_exists($class, self::getter($class, $propertyName))) {
@@ -81,41 +60,36 @@ class ReflectionUtil
         }
 
         if (isset($param)) {
-            return substr($param, -strlen('[]'))==='[]';
-        } else {
-            throw new PayPalConfigurationException("Getter function for '$propertyName' in '$class' class should have a proper return type.");
+            return str_ends_with($param, '[]');
         }
+
+        throw new PayPalConfigurationException("Getter function for '$propertyName' in '$class' class should have a proper return type.");
     }
 
     /**
-     * Retrieves Annotations of each property
-     *
-     * @param $class
-     * @param $propertyName
-     * @throws \RuntimeException
-     * @return mixed
+     * @throws ReflectionException
      */
-    public static function propertyAnnotations($class, $propertyName)
+    public static function propertyAnnotations(string|object $class, string $propertyName): ?array
     {
         $class = is_object($class) ? get_class($class) : $class;
         if (!class_exists('ReflectionProperty')) {
-            throw new \RuntimeException("Property type of " . $class . "::{$propertyName} cannot be resolved");
+            throw new RuntimeException('Property type of ' . $class . "::$propertyName cannot be resolved");
         }
 
         if ($annotations =& self::$propertiesType[$class][$propertyName]) {
             return $annotations;
         }
 
-        if (!($refl =& self::$propertiesRefl[$class][$propertyName])) {
+        if (!($reflection =& self::$propertiesReflection[$class][$propertyName])) {
             $getter = self::getter($class, $propertyName);
-            $refl = new \ReflectionMethod($class, $getter);
-            self::$propertiesRefl[$class][$propertyName] = $refl;
+            $reflection = new ReflectionMethod($class, $getter);
+            self::$propertiesReflection[$class][$propertyName] = $reflection;
         }
 
         // todo: smarter regexp
         if (!preg_match_all(
             '~\@([^\s@\(]+)[\t ]*(?:\(?([^\n@]+)\)?)?~i',
-            $refl->getDocComment(),
+            $reflection->getDocComment(),
             $annots,
             PREG_PATTERN_ORDER)) {
             return null;
@@ -127,29 +101,15 @@ class ReflectionUtil
         return $annotations;
     }
 
-    /**
-     * preg_replace_callback callback function
-     *
-     * @param $match
-     * @return string
-     */
-    private static function replace_callback($match)
+    private static function replace_callback(array $match): string
     {
         return ucwords($match[2]);
     }
 
-    /**
-     * Returns the properly formatted getter function name based on class name and property
-     * Formats the property name to a standard getter function
-     *
-     * @param string $class
-     * @param string $propertyName
-     * @return string getter function name
-     */
-    public static function getter($class, $propertyName)
+    public static function getter(string $class, string $propertyName): string
     {
         return method_exists($class, "get" . ucfirst($propertyName)) ?
             "get" . ucfirst($propertyName) :
-            "get" . preg_replace_callback("/([_\-\s]?([a-z0-9]+))/", "self::replace_callback", $propertyName);
+            "get" . preg_replace_callback("/([_\-\s]?([a-z0-9]+))/", self::replace_callback(...), $propertyName);
     }
 }

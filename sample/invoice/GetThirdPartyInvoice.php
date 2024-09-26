@@ -16,7 +16,7 @@ $refreshToken = "SCNWVZfdg43XaOmoEicazpkXyda32CGnP208EkuQ_QBIrXCYMhlvORFHHyoXPT0
 try {
     // ### Step 2
     // Update your apiContext with refresh token obtained from Step 1.
-    $apiContext->getCredential()->updateAccessToken($apiContext->getConfig(), $refreshToken);
+    $apiContext->getCredential()->refreshAccessToken($apiContext->getConfig(), $refreshToken);
 
     // ### Retrieve Invoice
     // Retrieve the invoice object by calling the

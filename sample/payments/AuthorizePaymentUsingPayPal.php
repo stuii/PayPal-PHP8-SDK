@@ -8,6 +8,7 @@
 // You need to set the proper intent in the request, and the remaining data would be the same
 
 require __DIR__ . '/../bootstrap.php';
+
 use PayPal\Api\Amount;
 use PayPal\Api\Details;
 use PayPal\Api\Item;

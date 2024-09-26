@@ -1,161 +1,86 @@
-<?php
+<?php /** @noinspection ALL */
 
 namespace PayPal\Api;
 
 use PayPal\Common\PayPalModel;
 
-/**
- * Class Links
- *
- * 
- *
- * @package PayPal\Api
- *
- * @property string href
- * @property string rel
- * @property \PayPal\Api\HyperSchema targetSchema
- * @property string method
- * @property string enctype
- * @property \PayPal\Api\HyperSchema schema
- */
 class Links extends PayPalModel
 {
-    /**
-     * Sets Href
-     *
-     * @param string $href
-     * 
-     * @return $this
-     */
-    public function setHref($href)
+    public string $href;
+
+    public string $rel;
+
+    public HyperSchema $targetSchema;
+
+    public string $method;
+
+    public string $enctype;
+
+    public HyperSchema $schema;
+
+    public function setHref(string $href): self
     {
         $this->href = $href;
         return $this;
     }
 
-    /**
-     * Gets Href
-     *
-     * @return string
-     */
-    public function getHref()
+    public function getHref(): string
     {
         return $this->href;
     }
 
-    /**
-     * Sets Rel
-     *
-     * @param string $rel
-     * 
-     * @return $this
-     */
-    public function setRel($rel)
+    public function setRel(string $rel): self
     {
         $this->rel = $rel;
         return $this;
     }
 
-    /**
-     * Gets Rel
-     *
-     * @return string
-     */
-    public function getRel()
+    public function getRel(): string
     {
         return $this->rel;
     }
 
-    /**
-     * Sets TargetSchema
-     *
-     * @param \PayPal\Api\HyperSchema $targetSchema
-     * 
-     * @return $this
-     */
-    public function setTargetSchema($targetSchema)
+    public function setTargetSchema(HyperSchema $targetSchema): self
     {
         $this->targetSchema = $targetSchema;
         return $this;
     }
 
-    /**
-     * Gets TargetSchema
-     *
-     * @return \PayPal\Api\HyperSchema
-     */
-    public function getTargetSchema()
+    public function getTargetSchema(): HyperSchema
     {
         return $this->targetSchema;
     }
 
-    /**
-     * Sets Method
-     *
-     * @param string $method
-     * 
-     * @return $this
-     */
-    public function setMethod($method)
+    public function setMethod(string $method): self
     {
         $this->method = $method;
         return $this;
     }
 
-    /**
-     * Gets Method
-     *
-     * @return string
-     */
-    public function getMethod()
+    public function getMethod(): string
     {
         return $this->method;
     }
 
-    /**
-     * Sets Enctype
-     *
-     * @param string $enctype
-     * 
-     * @return $this
-     */
-    public function setEnctype($enctype)
+    public function setEnctype(string $enctype): self
     {
         $this->enctype = $enctype;
         return $this;
     }
 
-    /**
-     * Gets Enctype
-     *
-     * @return string
-     */
-    public function getEnctype()
+    public function getEnctype(): string
     {
         return $this->enctype;
     }
 
-    /**
-     * Sets Schema
-     *
-     * @param \PayPal\Api\HyperSchema $schema
-     * 
-     * @return $this
-     */
-    public function setSchema($schema)
+    public function setSchema(HyperSchema $schema): self
     {
         $this->schema = $schema;
         return $this;
     }
 
-    /**
-     * Gets Schema
-     *
-     * @return \PayPal\Api\HyperSchema
-     */
-    public function getSchema()
+    public function getSchema(): HyperSchema
     {
         return $this->schema;
     }
-
 }

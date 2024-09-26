@@ -5,58 +5,29 @@ namespace PayPal\Core;
 use PayPal\Exception\PayPalConfigurationException;
 use PayPal\Exception\PayPalConnectionException;
 
-/**
- * A wrapper class based on the curl extension.
- * Requires the PHP curl module to be enabled.
- * See for full requirements the PHP manual: http://php.net/curl
- */
 class PayPalHttpConnection
 {
+    private PayPalHttpConfig $httpConfig;
+
+    private PayPalLoggingManager $logger;
+
+    private array $responseHeaders = [];
+
+    private bool $skippedHttpStatusLine = false;
 
     /**
-     * @var PayPalHttpConfig
-     */
-    private $httpConfig;
-
-    /**
-     * LoggingManager
-     *
-     * @var PayPalLoggingManager
-     */
-    private $logger;
-
-    /**
-     * @var array
-     */
-    private $responseHeaders = array();
-
-    /**
-     * @var bool
-     */
-    private $skippedHttpStatusLine = false;
-
-    /**
-     * Default Constructor
-     *
-     * @param PayPalHttpConfig $httpConfig
-     * @param array            $config
      * @throws PayPalConfigurationException
      */
     public function __construct(PayPalHttpConfig $httpConfig, array $config)
     {
-        if (!function_exists("curl_init")) {
-            throw new PayPalConfigurationException("Curl module is not available on this system");
+        if (!function_exists('curl_init')) {
+            throw new PayPalConfigurationException('Curl module is not available on this system');
         }
         $this->httpConfig = $httpConfig;
-        $this->logger = PayPalLoggingManager::getInstance(__CLASS__);
+        $this->logger = PayPalLoggingManager::getInstance();
     }
 
-    /**
-     * Gets all Http Headers
-     *
-     * @return array
-     */
-    private function getHttpHeaders()
+    private function getHttpHeaders(): array
     {
         $ret = array();
         foreach ($this->httpConfig->getHeaders() as $k => $v) {
@@ -65,37 +36,31 @@ class PayPalHttpConnection
         return $ret;
     }
 
-    /**
-     * Parses the response headers for debugging.
-     *
-     * @param resource $ch
-     * @param string $data
-     * @return int
-     */
-    protected function parseResponseHeaders($ch, $data) {
+    protected function parseResponseHeaders(mixed $ch, string $data): int
+    {
         if (!$this->skippedHttpStatusLine) {
             $this->skippedHttpStatusLine = true;
             return strlen($data);
         }
 
         $trimmedData = trim($data);
-        if (strlen($trimmedData) == 0) {
+        if ($trimmedData === '') {
             return strlen($data);
         }
 
-        // Added condition to ignore extra header which dont have colon ( : )
-        if (strpos($trimmedData, ":") == false) {
+        // Added condition to ignore extra header which don't have colon ( : )
+        if (!strpos($trimmedData, ':')) {
             return strlen($data);
         }
         
-        list($key, $value) = explode(":", $trimmedData, 2);
+        [$key, $value] = explode(':', $trimmedData, 2);
 
         $key = trim($key);
         $value = trim($value);
 
         // This will skip over the HTTP Status Line and any other lines
         // that don't look like header lines with values
-        if (strlen($key) > 0 && strlen($value) > 0) {
+        if ($key !== '' && $value !== '') {
             // This is actually a very basic way of looking at response headers
             // and may miss a few repeated headers with different (appended)
             // values but this should work for debugging purposes.
@@ -105,30 +70,19 @@ class PayPalHttpConnection
         return strlen($data);
     }
 
-
-    /**
-     * Implodes a key/value array for printing.
-     *
-     * @param array $arr
-     * @return string
-     */
-    protected function implodeArray($arr) {
+    protected function implodeArray(array $arr): string
+    {
         $retStr = '';
         foreach($arr as $key => $value) {
             $retStr .= $key . ': ' . $value . ', ';
         }
-        rtrim($retStr, ', ');
         return $retStr;
     }
 
     /**
-     * Executes an HTTP request
-     *
-     * @param string $data query string OR POST content as a string
-     * @return mixed
      * @throws PayPalConnectionException
      */
-    public function execute($data)
+    public function execute(string $data): bool|string
     {
         //Initialize the logger
         $this->logger->info($this->httpConfig->getMethod() . ' ' . $this->httpConfig->getUrl());
@@ -159,13 +113,13 @@ class PayPalHttpConnection
         }
 
         //Default Option if Method not of given types in switch case
-        if ($this->httpConfig->getMethod() != null) {
+        if ($this->httpConfig->getMethod() !== null) {
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $this->httpConfig->getMethod());
         }
 
         $this->responseHeaders = array();
         $this->skippedHttpStatusLine = false;
-        curl_setopt($ch, CURLOPT_HEADERFUNCTION, array($this, 'parseResponseHeaders'));
+        curl_setopt($ch, CURLOPT_HEADERFUNCTION, [$this, 'parseResponseHeaders']);
 
         //Execute Curl Request
         $result = curl_exec($ch);
@@ -173,15 +127,15 @@ class PayPalHttpConnection
         $httpStatus = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
         //Retry if Certificate Exception
-        if (curl_errno($ch) == 60) {
-            $this->logger->info("Invalid or no certificate authority found - Retrying using bundled CA certs file");
-            curl_setopt($ch, CURLOPT_CAINFO, dirname(__FILE__) . '/cacert.pem');
+        if (curl_errno($ch) === 60) {
+            $this->logger->info('Invalid or no certificate authority found - Retrying using bundled CA certs file');
+            curl_setopt($ch, CURLOPT_CAINFO, __DIR__ . '/cacert.pem');
             $result = curl_exec($ch);
             //Retrieve Response Status
             $httpStatus = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         }
 
-        //Throw Exception if Retries and Certificates doenst work
+        //Throw Exception if Retries and Certificates doesn't work
         if (curl_errno($ch)) {
             $ex = new PayPalConnectionException(
                 $this->httpConfig->getUrl(),
@@ -194,8 +148,8 @@ class PayPalHttpConnection
 
         // Get Request and Response Headers
         $requestHeaders = curl_getinfo($ch, CURLINFO_HEADER_OUT);
-        $this->logger->debug("Request Headers \t: " . str_replace("\r\n", ", ", $requestHeaders));
-        $this->logger->debug(($data && $data != '' ? "Request Data\t\t: " . $data : "No Request Payload") . "\n" . str_repeat('-', 128) . "\n");
+        $this->logger->debug("Request Headers \t: " . str_replace("\r\n", ', ', $requestHeaders));
+        $this->logger->debug(($data && $data !== '' ? "Request Data\t\t: " . $data : 'No Request Payload') . "\n" . str_repeat('-', 128) . "\n");
         $this->logger->info("Response Status \t: " . $httpStatus);
         $this->logger->debug("Response Headers\t: " . $this->implodeArray($this->responseHeaders));
 
@@ -215,9 +169,8 @@ class PayPalHttpConnection
             throw $ex;
         }
 
-        $this->logger->debug(($result && $result != '' ? "Response Data \t: " . $result : "No Response Body") . "\n\n" . str_repeat('=', 128) . "\n");
+        $this->logger->debug(($result && $result !== '' ? "Response Data \t: " . $result : 'No Response Body') . "\n\n" . str_repeat('=', 128) . "\n");
 
-        //Return result object
         return $result;
     }
 }

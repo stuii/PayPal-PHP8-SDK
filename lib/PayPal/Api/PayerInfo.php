@@ -30,6 +30,38 @@ use PayPal\Common\PayPalModel;
  */
 class PayerInfo extends PayPalModel
 {
+    private string $email;
+
+    private string $externalRememberMeId;
+
+    private string $buyerAccountNumber;
+
+    private string $salutation;
+
+    private string $firstName;
+
+    private string $middleName;
+
+    private string $lastName;
+
+    private string $suffix;
+
+    private string $payerId;
+
+    private string $phone;
+
+    private string $phoneType;
+
+    private string $birthDate;
+
+    private string $taxId;
+
+    private string $taxIdType;
+
+    private string $countryCode;
+
+    private Address $billingAddress;
+
     /**
      * Email address representing the payer. 127 characters max.
      *
@@ -56,13 +88,13 @@ class PayerInfo extends PayPalModel
     /**
      * External Remember Me id representing the payer
      *
-     * @param string $external_remember_me_id
+     * @param string $externalRememberMeId
      * 
      * @return $this
      */
-    public function setExternalRememberMeId($external_remember_me_id)
+    public function setExternalRememberMeId($externalRememberMeId)
     {
-        $this->external_remember_me_id = $external_remember_me_id;
+        $this->externalRememberMeId = $externalRememberMeId;
         return $this;
     }
 
@@ -73,7 +105,7 @@ class PayerInfo extends PayPalModel
      */
     public function getExternalRememberMeId()
     {
-        return $this->external_remember_me_id;
+        return $this->externalRememberMeId;
     }
 
     /**
@@ -106,13 +138,13 @@ class PayerInfo extends PayPalModel
     /**
      * Account Number representing the Payer
      *
-     * @param string $buyer_account_number
+     * @param string $buyerAccountNumber
      * 
      * @return $this
      */
-    public function setBuyerAccountNumber($buyer_account_number)
+    public function setBuyerAccountNumber($buyerAccountNumber)
     {
-        $this->buyer_account_number = $buyer_account_number;
+        $this->buyerAccountNumber = $buyerAccountNumber;
         return $this;
     }
 
@@ -123,7 +155,7 @@ class PayerInfo extends PayPalModel
      */
     public function getBuyerAccountNumber()
     {
-        return $this->buyer_account_number;
+        return $this->buyerAccountNumber;
     }
 
     /**
@@ -152,13 +184,13 @@ class PayerInfo extends PayPalModel
     /**
      * First name of the payer.
      *
-     * @param string $first_name
+     * @param string $firstName
      * 
      * @return $this
      */
-    public function setFirstName($first_name)
+    public function setFirstName($firstName)
     {
-        $this->first_name = $first_name;
+        $this->firstName = $firstName;
         return $this;
     }
 
@@ -169,19 +201,19 @@ class PayerInfo extends PayPalModel
      */
     public function getFirstName()
     {
-        return $this->first_name;
+        return $this->firstName;
     }
 
     /**
      * Middle name of the payer.
      *
-     * @param string $middle_name
+     * @param string $middleName
      * 
      * @return $this
      */
-    public function setMiddleName($middle_name)
+    public function setMiddleName($middleName)
     {
-        $this->middle_name = $middle_name;
+        $this->middleName = $middleName;
         return $this;
     }
 
@@ -192,19 +224,19 @@ class PayerInfo extends PayPalModel
      */
     public function getMiddleName()
     {
-        return $this->middle_name;
+        return $this->middleName;
     }
 
     /**
      * Last name of the payer.
      *
-     * @param string $last_name
+     * @param string $lastName
      * 
      * @return $this
      */
-    public function setLastName($last_name)
+    public function setLastName($lastName)
     {
-        $this->last_name = $last_name;
+        $this->lastName = $lastName;
         return $this;
     }
 
@@ -215,7 +247,7 @@ class PayerInfo extends PayPalModel
      */
     public function getLastName()
     {
-        return $this->last_name;
+        return $this->lastName;
     }
 
     /**
@@ -244,13 +276,13 @@ class PayerInfo extends PayPalModel
     /**
      * PayPal assigned encrypted Payer ID.
      *
-     * @param string $payer_id
+     * @param string $payerId
      * 
      * @return $this
      */
-    public function setPayerId($payer_id)
+    public function setPayerId($payerId)
     {
-        $this->payer_id = $payer_id;
+        $this->payerId = $payerId;
         return $this;
     }
 
@@ -261,7 +293,7 @@ class PayerInfo extends PayPalModel
      */
     public function getPayerId()
     {
-        return $this->payer_id;
+        return $this->payerId;
     }
 
     /**
@@ -291,13 +323,13 @@ class PayerInfo extends PayPalModel
      * Phone type
      * Valid Values: ["HOME", "WORK", "MOBILE", "OTHER"]
      *
-     * @param string $phone_type
+     * @param string $phoneType
      * 
      * @return $this
      */
-    public function setPhoneType($phone_type)
+    public function setPhoneType($phoneType)
     {
-        $this->phone_type = $phone_type;
+        $this->phoneType = $phoneType;
         return $this;
     }
 
@@ -308,19 +340,19 @@ class PayerInfo extends PayPalModel
      */
     public function getPhoneType()
     {
-        return $this->phone_type;
+        return $this->phoneType;
     }
 
     /**
      * Birth date of the Payer in ISO8601 format (yyyy-mm-dd).
      *
-     * @param string $birth_date
+     * @param string $birthDate
      * 
      * @return $this
      */
-    public function setBirthDate($birth_date)
+    public function setBirthDate($birthDate)
     {
-        $this->birth_date = $birth_date;
+        $this->birthDate = $birthDate;
         return $this;
     }
 
@@ -331,19 +363,19 @@ class PayerInfo extends PayPalModel
      */
     public function getBirthDate()
     {
-        return $this->birth_date;
+        return $this->birthDate;
     }
 
     /**
      * Payer’s tax ID. Only supported when the `payment_method` is set to `paypal`.
      *
-     * @param string $tax_id
+     * @param string $taxId
      * 
      * @return $this
      */
-    public function setTaxId($tax_id)
+    public function setTaxId($taxId)
     {
-        $this->tax_id = $tax_id;
+        $this->taxId = $taxId;
         return $this;
     }
 
@@ -354,20 +386,20 @@ class PayerInfo extends PayPalModel
      */
     public function getTaxId()
     {
-        return $this->tax_id;
+        return $this->taxId;
     }
 
     /**
      * Payer’s tax ID type. Allowed values: `BR_CPF` or `BR_CNPJ`. Only supported when the `payment_method` is set to `paypal`.
      * Valid Values: ["BR_CPF", "BR_CNPJ"]
      *
-     * @param string $tax_id_type
+     * @param string $taxIdType
      * 
      * @return $this
      */
-    public function setTaxIdType($tax_id_type)
+    public function setTaxIdType($taxIdType)
     {
-        $this->tax_id_type = $tax_id_type;
+        $this->taxIdType = $taxIdType;
         return $this;
     }
 
@@ -378,19 +410,19 @@ class PayerInfo extends PayPalModel
      */
     public function getTaxIdType()
     {
-        return $this->tax_id_type;
+        return $this->taxIdType;
     }
 
     /**
      * Two-letter registered country code of the payer to identify the buyer country.
      *
-     * @param string $country_code
+     * @param string $countryCode
      * 
      * @return $this
      */
-    public function setCountryCode($country_code)
+    public function setCountryCode($countryCode)
     {
-        $this->country_code = $country_code;
+        $this->countryCode = $countryCode;
         return $this;
     }
 
@@ -401,19 +433,19 @@ class PayerInfo extends PayPalModel
      */
     public function getCountryCode()
     {
-        return $this->country_code;
+        return $this->countryCode;
     }
 
     /**
      * Billing address of the Payer.
      *
-     * @param \PayPal\Api\Address $billing_address
+     * @param \PayPal\Api\Address $billingAddress
      * 
      * @return $this
      */
-    public function setBillingAddress($billing_address)
+    public function setBillingAddress($billingAddress)
     {
-        $this->billing_address = $billing_address;
+        $this->billingAddress = $billingAddress;
         return $this;
     }
 
@@ -424,7 +456,7 @@ class PayerInfo extends PayPalModel
      */
     public function getBillingAddress()
     {
-        return $this->billing_address;
+        return $this->billingAddress;
     }
 
     /**

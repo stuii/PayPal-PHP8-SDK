@@ -4,7 +4,7 @@ namespace PayPal\Test\Handler;
 
 use PayPal\Auth\OAuthTokenCredential;
 use PayPal\Core\PayPalHttpConfig;
-use PayPal\Handler\OauthHandler;
+use PayPal\Handler\OauthHandlerInterface;
 use PayPal\Rest\ApiContext;
 use PHPUnit\Framework\TestCase;
 
@@ -12,7 +12,7 @@ class OauthHandlerTest extends TestCase
 {
 
     /**
-     * @var \PayPal\Handler\OauthHandler
+     * @var \PayPal\Handler\OauthHandlerInterface
      */
     public $handler;
 
@@ -44,10 +44,10 @@ class OauthHandlerTest extends TestCase
     public function modeProvider()
     {
         return array(
-            array( array('mode' => 'sandbox') ),
-            array( array('mode' => 'live')),
-            array( array( 'mode' => 'sandbox','oauth.EndPoint' => 'http://localhost/')),
-            array( array('mode' => 'sandbox','service.EndPoint' => 'http://service.localhost/'))
+            array(array('mode' => 'sandbox')),
+            array(array('mode' => 'live')),
+            array(array('mode' => 'sandbox', 'oauth.EndPoint' => 'http://localhost/')),
+            array(array('mode' => 'sandbox', 'service.EndPoint' => 'http://service.localhost/'))
         );
     }
 
@@ -59,12 +59,12 @@ class OauthHandlerTest extends TestCase
     public function testGetEndpoint($configs)
     {
         $config = $configs + array(
-            'cache.enabled' => true,
-            'http.headers.header1' => 'header1value'
-        );
+                'cache.enabled' => true,
+                'http.headers.header1' => 'header1value'
+            );
         $this->apiContext->setConfig($config);
         $this->httpConfig = new PayPalHttpConfig(null, 'POST', $config);
-        $this->handler = new OauthHandler($this->apiContext);
+        $this->handler = new OauthHandlerInterface($this->apiContext);
         $this->handler->handle($this->httpConfig, null, $this->config);
     }
 }
