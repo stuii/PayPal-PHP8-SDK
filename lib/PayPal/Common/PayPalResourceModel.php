@@ -70,7 +70,7 @@ class PayPalResourceModel extends PayPalModel
         string $url,
         string $method,
         string $payload,
-        array $headers = [],
+        ?array $headers = [],
         ?ApiContext $apiContext = null,
         ?PayPalRestCall $restCall = null,
         array $handlers = [RestHandlerInterface::class]

@@ -6,17 +6,6 @@ use PayPal\Common\PayPalModel;
 use PayPal\Converter\FormatConverter;
 use PayPal\Validation\NumericValidator;
 
-/**
- * Class Amount
- *
- * payment amount with break-ups.
- *
- * @package PayPal\Api
- *
- * @property string currency
- * @property string total
- * @property Details details
- */
 class Amount extends PayPalModel
 {
     private string $currency;

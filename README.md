@@ -56,9 +56,6 @@ We're releasing a [brand new version of our SDK!](https://github.com/paypal/PayP
 
 Read [License](LICENSE) for more licensing information.
 
-## Contributing
-
-Read [here](CONTRIBUTING.md) for more information.
 
 ## More help
    * [Going Live](https://github.com/paypal/PayPal-PHP-SDK/wiki/Going-Live)

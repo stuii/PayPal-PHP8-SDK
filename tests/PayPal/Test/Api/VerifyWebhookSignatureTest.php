@@ -42,7 +42,7 @@ class VerifyWebhookSignatureTest extends TestCase
         $this->assertNotNull($obj->getAuthAlgo());
         $this->assertNotNull($obj->getCertUrl());
         $this->assertNotNull($obj->getTransmissionId());
-        $this->assertNotNull($obj->getTransmissionSig());
+        $this->assertNotNull($obj->getTransmissionSignature());
         $this->assertNotNull($obj->getTransmissionTime());
         $this->assertNotNull($obj->getWebhookId());
         $this->assertNotNull($obj->getWebhookEvent());
@@ -59,7 +59,7 @@ class VerifyWebhookSignatureTest extends TestCase
         $this->assertEquals($obj->getAuthAlgo(), "TestSample");
         $this->assertEquals($obj->getCertUrl(), "http://www.google.com");
         $this->assertEquals($obj->getTransmissionId(), "TestSample");
-        $this->assertEquals($obj->getTransmissionSig(), "TestSample");
+        $this->assertEquals($obj->getTransmissionSignature(), "TestSample");
         $this->assertEquals($obj->getTransmissionTime(), "TestSample");
         $this->assertEquals($obj->getWebhookId(), "TestSample");
         $this->assertEquals($obj->getWebhookEvent(), WebhookEventTest::getObject());

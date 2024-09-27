@@ -23,7 +23,7 @@ class PayPalRestCall
      * @throws PayPalConfigurationException
      * @throws PayPalConnectionException
      */
-    public function execute(array $handlers = [], string $path, string $method, string $data = '', array $headers = []): bool|string
+    public function execute(array $handlers = [], string $path, string $method, string $data = '', ?array $headers = []): bool|string
     {
         $config = $this->apiContext->getConfig();
         $httpConfig = new PayPalHttpConfig(null, $method, $config);
