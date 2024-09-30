@@ -39,11 +39,9 @@ class Setup
                 ->disableOriginalConstructor()
                 ->getMock();
 
-            $test->mockPayPalRestCall->expects($test->any())
+            $test->mockPayPalRestCall
                 ->method('execute')
-                ->will($test->returnValue(
-                    $test->response
-                ));
+                ->willReturn($test->response);
         }
     }
 }

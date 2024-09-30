@@ -11,9 +11,6 @@ use stdClass;
 
 class PayPalModel
 {
-
-    private array $propMap = [];
-
     protected static OAuthTokenCredential $credential;
 
     /** @deprecated  */
@@ -92,10 +89,7 @@ class PayPalModel
 
     public function __get(string $key)
     {
-        if ($this->__isset($key)) {
-            return $this->propMap[$key];
-        }
-        return null;
+        return $this->getValue($key);
     }
 
     public function __set(string $key, $value)
@@ -103,7 +97,7 @@ class PayPalModel
         if (!is_array($value) && $value === null) {
             $this->__unset($key);
         } else {
-            $this->propMap[$key] = $value;
+            $this->assignValue($key, $value);
         }
     }
 
@@ -112,14 +106,31 @@ class PayPalModel
         return str_replace(' ', '', ucwords(str_replace(array('_', '-'), ' ', $key)));
     }
 
+    private function convertToSnake($camelCase): string
+    {
+        $result = '';
+
+        for ($i = 0, $iMax = strlen($camelCase); $i < $iMax; $i++) {
+            $char = $camelCase[$i];
+
+            if (ctype_upper($char)) {
+                $result .= '_' . strtolower($char);
+            } else {
+                $result .= $char;
+            }
+        }
+
+        return ltrim($result, '_');
+    }
+
     public function __isset(string $key): bool
     {
-        return isset($this->propMap[$key]);
+        return isset($this->$key);
     }
 
     public function __unset(string $key): void
     {
-        unset($this->propMap[$key]);
+        unset($this->$key);
     }
 
     private function _convertToArray($param): PayPalModel|array
@@ -207,6 +218,16 @@ class PayPalModel
         }
     }
 
+    private function getValue($key): mixed
+    {
+        $getter = 'get'. $this->convertToCamelCase($key);
+        // If we find the setter, use that, otherwise use magic method.
+        if (method_exists($this, $getter)) {
+            return $this->$getter();
+        }
+        return null;
+    }
+
     /**
      * @throws JsonException
      * @throws PayPalConfigurationException
@@ -220,7 +241,18 @@ class PayPalModel
 
     public function toArray(): array
     {
-        return $this->_convertToArray($this->propMap);
+        $reflect = new \ReflectionClass($this);
+        $props = $reflect->getProperties(5);
+        while ($reflect = $reflect->getParentClass()) {
+            $props = [...$props, ...$reflect->getProperties(5)];
+        }
+        $properties = [];
+        foreach ($props as $prop) {
+            $propName = $prop->name;
+            $properties[$this->convertToSnake($propName)] = $this->getValue($propName);
+        }
+
+        return $this->_convertToArray($properties);
     }
 
     /**

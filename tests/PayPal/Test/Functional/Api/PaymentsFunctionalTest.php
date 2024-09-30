@@ -5,6 +5,8 @@ namespace PayPal\Test\Functional\Api;
 use PayPal\Api\Payment;
 use PayPal\Api\Refund;
 use PayPal\Api\Sale;
+use PayPal\Exception\PayPalConfigurationException;
+use PayPal\Exception\PayPalConnectionException;
 use PayPal\Test\Functional\Setup;
 use PHPUnit\Framework\TestCase;
 
@@ -24,7 +26,7 @@ class PaymentsFunctionalTest extends TestCase
 
     public $apiContext;
 
-    public function setUp()
+    public function setUp(): void
     {
         $className = $this->getClassName();
         $testName = $this->getName();
@@ -68,6 +70,10 @@ class PaymentsFunctionalTest extends TestCase
      * @depends testCreate
      * @param $payment Payment
      * @return Payment
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testGet($payment)
     {
@@ -81,6 +87,10 @@ class PaymentsFunctionalTest extends TestCase
      * @depends testGet
      * @param $payment Payment
      * @return Sale
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testGetSale($payment)
     {
@@ -97,7 +107,11 @@ class PaymentsFunctionalTest extends TestCase
     /**
      * @depends testGetSale
      * @param $sale Sale
-     * @return Sale
+     * @return void
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testRefundSale($sale)
     {
@@ -112,7 +126,7 @@ class PaymentsFunctionalTest extends TestCase
     /**
      * @depends testGet
      * @param $payment Payment
-     * @return Payment
+     * @return void
      */
     public function testExecute($payment)
     {

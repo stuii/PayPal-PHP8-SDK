@@ -33,7 +33,7 @@ class PayPalCredentialManagerTest extends TestCase
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->object = PayPalCredentialManager::getInstance($this->config);
     }
@@ -42,12 +42,11 @@ class PayPalCredentialManagerTest extends TestCase
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
     }
 
     /**
-     * @test
      */
     public function testGetInstance()
     {
@@ -56,14 +55,13 @@ class PayPalCredentialManagerTest extends TestCase
     }
 
     /**
-     * @test
      */
     public function testGetSpecificCredentialObject()
     {
         $cred = $this->object->getCredentialObject('acct1');
         $this->assertNotNull($cred);
-        $this->assertAttributeEquals('client-id', 'clientId', $cred);
-        $this->assertAttributeEquals('client-secret', 'clientSecret', $cred);
+        $this->assertEquals('client-id', $cred->getClientId());
+        $this->assertEquals('client-secret', $cred->getClientSecret());
     }
 
     /**
@@ -114,11 +112,10 @@ class PayPalCredentialManagerTest extends TestCase
 
 
     /**
-     * @test
      */
     public function testGetInvalidCredentialObject()
     {
-        $this->setExpectedException('PayPal\Exception\PayPalInvalidCredentialException');
+        $this->expectException('PayPal\Exception\PayPalInvalidCredentialException');
         $cred = $this->object->getCredentialObject('invalid_biz_api1.gmail.com');
     }
 
@@ -129,21 +126,17 @@ class PayPalCredentialManagerTest extends TestCase
     {
         $cred = $this->object->getCredentialObject();
         $this->assertNotNull($cred);
-        $this->assertAttributeEquals('client-id', 'clientId', $cred);
-        $this->assertAttributeEquals('client-secret', 'clientSecret', $cred);
+        $this->assertEquals('client-id', $cred->getClientId());
+        $this->assertEquals('client-secret', $cred->getClientSecret());
     }
 
     /**
-     * @test
      */
     public function testGetRestCredentialObject()
     {
         $cred = $this->object->getCredentialObject('acct1');
-
         $this->assertNotNull($cred);
-
-        $this->assertAttributeEquals($this->config['acct1.ClientId'], 'clientId', $cred);
-
-        $this->assertAttributeEquals($this->config['acct1.ClientSecret'], 'clientSecret', $cred);
+        $this->assertEquals($this->config['acct1.ClientId'], $cred->getClientId());
+        $this->assertEquals($this->config['acct1.ClientSecret'], $cred->getClientSecret());
     }
 }

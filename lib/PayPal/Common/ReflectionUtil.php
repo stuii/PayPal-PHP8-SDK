@@ -32,16 +32,11 @@ class ReflectionUtil
             return null;
         }
 
-        if (($annotations = self::propertyAnnotations($class, $propertyName)) && isset($annotations['return'])) {
-            $param = $annotations['return'];
+        $reflection = new \ReflectionProperty($class, $propertyName);
+        if ($reflection->hasType()) {
+            return $reflection->getType()?->getName();
         }
-
-        if (isset($param)) {
-            $anno = preg_split("/[\s\[\]]+/", $param);
-            return $anno[0];
-        }
-
-        throw new PayPalConfigurationException("Getter function for '$propertyName' in '$class' class should have a proper return type.");
+        return null;
     }
 
     /**
@@ -54,16 +49,8 @@ class ReflectionUtil
         if (!class_exists($class) || !method_exists($class, self::getter($class, $propertyName))) {
             return null;
         }
-
-        if (($annotations = self::propertyAnnotations($class, $propertyName)) && isset($annotations['return'])) {
-            $param = $annotations['return'];
-        }
-
-        if (isset($param)) {
-            return str_ends_with($param, '[]');
-        }
-
-        throw new PayPalConfigurationException("Getter function for '$propertyName' in '$class' class should have a proper return type.");
+        $reflection = new \ReflectionProperty($class, $propertyName);
+        return $reflection->getType()?->getName() === 'array';
     }
 
     /**

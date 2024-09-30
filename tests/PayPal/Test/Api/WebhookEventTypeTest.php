@@ -3,6 +3,8 @@
 namespace PayPal\Test\Api;
 
 use PayPal\Api\WebhookEventType;
+use PayPal\Exception\PayPalConfigurationException;
+use PayPal\Exception\PayPalConnectionException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -24,6 +26,9 @@ class WebhookEventTypeTest extends TestCase
     /**
      * Gets Object Instance with Json data filled in
      * @return WebhookEventType
+     * @throws PayPalConfigurationException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public static function getObject()
     {
@@ -34,6 +39,9 @@ class WebhookEventTypeTest extends TestCase
     /**
      * Tests for Serialization and Deserialization Issues
      * @return WebhookEventType
+     * @throws PayPalConfigurationException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testSerializationDeserialization()
     {
@@ -60,6 +68,11 @@ class WebhookEventTypeTest extends TestCase
     /**
      * @dataProvider mockProvider
      * @param WebhookEventType $obj
+     * @param $mockApiContext
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testSubscribedEventTypes($obj, $mockApiContext)
     {
@@ -67,18 +80,22 @@ class WebhookEventTypeTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $mockPPRestCall->expects($this->any())
+        $mockPPRestCall
             ->method('execute')
-            ->will($this->returnValue(
-                    WebhookEventTypeListTest::getJson()
-            ));
+            ->willReturn(WebhookEventTypeListTest::getJson());
 
         $result = $obj->subscribedEventTypes("webhookId", $mockApiContext, $mockPPRestCall);
         $this->assertNotNull($result);
     }
+
     /**
      * @dataProvider mockProvider
      * @param WebhookEventType $obj
+     * @param $mockApiContext
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testAvailableEventTypes($obj, $mockApiContext)
     {
@@ -86,11 +103,9 @@ class WebhookEventTypeTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $mockPPRestCall->expects($this->any())
+        $mockPPRestCall
             ->method('execute')
-            ->will($this->returnValue(
-                    WebhookEventTypeListTest::getJson()
-            ));
+            ->willReturn(WebhookEventTypeListTest::getJson());
 
         $result = $obj->availableEventTypes($mockApiContext, $mockPPRestCall);
         $this->assertNotNull($result);

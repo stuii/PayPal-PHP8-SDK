@@ -9,6 +9,7 @@ use PayPal\Api\WebhookEvent;
 use PayPal\Api\WebhookEventType;
 use PayPal\Api\WebhookEventTypeList;
 use PayPal\Api\WebhookList;
+use PayPal\Exception\PayPalConfigurationException;
 use PayPal\Exception\PayPalConnectionException;
 use PayPal\Test\Functional\Setup;
 use PHPUnit\Framework\TestCase;
@@ -29,7 +30,7 @@ class WebhookFunctionalTest extends TestCase
 
     public $apiContext;
 
-    public function setUp()
+    public function setUp(): void
     {
         $className = $this->getClassName();
         $testName = $this->getName();
@@ -85,6 +86,10 @@ class WebhookFunctionalTest extends TestCase
      * @depends testCreate
      * @param $webhook Webhook
      * @return Webhook
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testGet($webhook)
     {
@@ -98,6 +103,10 @@ class WebhookFunctionalTest extends TestCase
      * @depends testGet
      * @param $webhook Webhook
      * @return WebhookEventTypeList
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testGetSubscribedEventTypes($webhook)
     {
@@ -111,6 +120,10 @@ class WebhookFunctionalTest extends TestCase
      * @depends testGet
      * @param $webhook Webhook
      * @return WebhookList
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testGetAll($webhook)
     {
@@ -133,6 +146,10 @@ class WebhookFunctionalTest extends TestCase
     /**
      * @depends testGet
      * @param $webhook Webhook
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testUpdate($webhook)
     {
@@ -168,6 +185,8 @@ class WebhookFunctionalTest extends TestCase
     /**
      * @depends testGet
      * @param $webhook Webhook
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
      */
     public function testDelete($webhook)
     {

@@ -4,6 +4,7 @@ namespace PayPal\Test\Api;
 
 use PayPal\Common\PayPalModel;
 use PayPal\Api\WebhookEventList;
+use PayPal\Exception\PayPalConfigurationException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -25,6 +26,9 @@ class WebhookEventListTest extends TestCase
     /**
      * Gets Object Instance with Json data filled in
      * @return WebhookEventList
+     * @throws PayPalConfigurationException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public static function getObject()
     {
@@ -35,6 +39,9 @@ class WebhookEventListTest extends TestCase
     /**
      * Tests for Serialization and Deserialization Issues
      * @return WebhookEventList
+     * @throws PayPalConfigurationException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testSerializationDeserialization()
     {

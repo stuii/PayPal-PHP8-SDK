@@ -3,6 +3,8 @@
 namespace PayPal\Test\Api;
 
 use PayPal\Api\Payment;
+use PayPal\Exception\PayPalConfigurationException;
+use PayPal\Exception\PayPalConnectionException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -24,6 +26,9 @@ class PaymentTest extends TestCase
     /**
      * Gets Object Instance with Json data filled in
      * @return Payment
+     * @throws PayPalConfigurationException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public static function getObject()
     {
@@ -55,6 +60,9 @@ class PaymentTest extends TestCase
     /**
      * Tests for Serialization and Deserialization Issues
      * @return Payment
+     * @throws PayPalConfigurationException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testSerializationDeserialization()
     {
@@ -113,6 +121,11 @@ class PaymentTest extends TestCase
     /**
      * @dataProvider mockProvider
      * @param Payment $obj
+     * @param $mockApiContext
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testCreate($obj, $mockApiContext)
     {
@@ -120,18 +133,22 @@ class PaymentTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $mockPPRestCall->expects($this->any())
+        $mockPPRestCall
             ->method('execute')
-            ->will($this->returnValue(
-                    self::getJson()
-            ));
+            ->willReturn(self::getJson());
 
         $result = $obj->create($mockApiContext, $mockPPRestCall);
         $this->assertNotNull($result);
     }
+
     /**
      * @dataProvider mockProvider
      * @param Payment $obj
+     * @param $mockApiContext
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testGet($obj, $mockApiContext)
     {
@@ -139,18 +156,22 @@ class PaymentTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $mockPPRestCall->expects($this->any())
+        $mockPPRestCall
             ->method('execute')
-            ->will($this->returnValue(
-                    PaymentTest::getJson()
-            ));
+            ->willReturn(PaymentTest::getJson());
 
         $result = $obj->get("paymentId", $mockApiContext, $mockPPRestCall);
         $this->assertNotNull($result);
     }
+
     /**
      * @dataProvider mockProvider
      * @param Payment $obj
+     * @param $mockApiContext
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testUpdate($obj, $mockApiContext)
     {
@@ -158,19 +179,23 @@ class PaymentTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $mockPPRestCall->expects($this->any())
+        $mockPPRestCall
             ->method('execute')
-            ->will($this->returnValue(
-                    true
-            ));
+            ->willReturn(true);
         $patchRequest = PatchRequestTest::getObject();
 
         $result = $obj->update($patchRequest, $mockApiContext, $mockPPRestCall);
         $this->assertNotNull($result);
     }
+
     /**
      * @dataProvider mockProvider
      * @param Payment $obj
+     * @param $mockApiContext
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testExecute($obj, $mockApiContext)
     {
@@ -178,19 +203,23 @@ class PaymentTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $mockPPRestCall->expects($this->any())
+        $mockPPRestCall
             ->method('execute')
-            ->will($this->returnValue(
-                    self::getJson()
-            ));
+            ->willReturn(self::getJson());
         $paymentExecution = PaymentExecutionTest::getObject();
 
         $result = $obj->execute($paymentExecution, $mockApiContext, $mockPPRestCall);
         $this->assertNotNull($result);
     }
+
     /**
      * @dataProvider mockProvider
      * @param Payment $obj
+     * @param $mockApiContext
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testList($obj, $mockApiContext)
     {
@@ -198,11 +227,9 @@ class PaymentTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $mockPPRestCall->expects($this->any())
+        $mockPPRestCall
             ->method('execute')
-            ->will($this->returnValue(
-                    PaymentHistoryTest::getJson()
-            ));
+            ->willReturn(PaymentHistoryTest::getJson());
         $params = array();
 
         $result = $obj->all($params, $mockApiContext, $mockPPRestCall);

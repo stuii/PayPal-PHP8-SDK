@@ -3,6 +3,8 @@
 namespace PayPal\Test\Api;
 
 use PayPal\Api\Refund;
+use PayPal\Exception\PayPalConfigurationException;
+use PayPal\Exception\PayPalConnectionException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -24,6 +26,9 @@ class RefundTest extends TestCase
     /**
      * Gets Object Instance with Json data filled in
      * @return Refund
+     * @throws PayPalConfigurationException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public static function getObject()
     {
@@ -34,6 +39,9 @@ class RefundTest extends TestCase
     /**
      * Tests for Serialization and Deserialization Issues
      * @return Refund
+     * @throws PayPalConfigurationException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testSerializationDeserialization()
     {
@@ -80,6 +88,11 @@ class RefundTest extends TestCase
     /**
      * @dataProvider mockProvider
      * @param Refund $obj
+     * @param $mockApiContext
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testGet($obj, $mockApiContext)
     {
@@ -87,11 +100,9 @@ class RefundTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $mockPPRestCall->expects($this->any())
+        $mockPPRestCall
             ->method('execute')
-            ->will($this->returnValue(
-                    RefundTest::getJson()
-            ));
+            ->willReturn(RefundTest::getJson());
 
         $result = $obj->get("refundId", $mockApiContext, $mockPPRestCall);
         $this->assertNotNull($result);

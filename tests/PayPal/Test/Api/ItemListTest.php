@@ -4,6 +4,7 @@ namespace PayPal\Test\Api;
 
 use PayPal\Api\Item;
 use PayPal\Api\ItemList;
+use PayPal\Exception\PayPalConfigurationException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -25,6 +26,9 @@ class ItemListTest extends TestCase
     /**
      * Gets Object Instance with Json data filled in
      * @return ItemList
+     * @throws PayPalConfigurationException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public static function getObject()
     {
@@ -35,6 +39,9 @@ class ItemListTest extends TestCase
     /**
      * Tests for Serialization and Deserialization Issues
      * @return ItemList
+     * @throws PayPalConfigurationException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testSerializationDeserialization()
     {
@@ -59,10 +66,13 @@ class ItemListTest extends TestCase
         $this->assertEquals($obj->getShippingMethod(), "TestSample");
         $this->assertEquals($obj->getShippingPhoneNumber(), "TestSample");
     }
-	
-	/**
+
+    /**
      * @depends testSerializationDeserialization
      * @param ItemList $obj
+     * @throws PayPalConfigurationException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testAddRemove($obj)
     {

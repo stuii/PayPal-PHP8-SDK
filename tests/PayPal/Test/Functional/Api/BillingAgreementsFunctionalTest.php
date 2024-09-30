@@ -8,6 +8,7 @@ use PayPal\Api\Currency;
 use PayPal\Api\Patch;
 use PayPal\Api\PatchRequest;
 use PayPal\Api\Plan;
+use PayPal\Exception\PayPalConfigurationException;
 use PayPal\Test\Functional\Setup;
 use PHPUnit\Framework\TestCase;
 
@@ -27,7 +28,7 @@ class BillingAgreementsFunctionalTest extends TestCase
 
     public $mockPayPalRestCall;
 
-    public function setUp()
+    public function setUp(): void
     {
         $className = $this->getClassName();
         $testName = $this->getName();
@@ -141,6 +142,9 @@ class BillingAgreementsFunctionalTest extends TestCase
      * @depends testGet
      * @param $agreement Agreement
      * @return Agreement
+     * @throws PayPalConfigurationException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testSetBalance($agreement)
     {
@@ -168,7 +172,7 @@ class BillingAgreementsFunctionalTest extends TestCase
     /**
      * @depends testGet
      * @param $agreement Agreement
-     * @return Agreement
+     * @return void
      */
     public function testGetTransactions($agreement)
     {
@@ -185,7 +189,7 @@ class BillingAgreementsFunctionalTest extends TestCase
     /**
      * @depends testGet
      * @param $agreement Agreement
-     * @return Agreement
+     * @return Plan
      */
     public function testSuspend($agreement)
     {
@@ -201,7 +205,7 @@ class BillingAgreementsFunctionalTest extends TestCase
     /**
      * @depends testSuspend
      * @param $agreement Agreement
-     * @return Agreement
+     * @return Plan
      */
     public function testReactivate($agreement)
     {
@@ -217,7 +221,7 @@ class BillingAgreementsFunctionalTest extends TestCase
     /**
      * @depends testReactivate
      * @param $agreement Agreement
-     * @return Agreement
+     * @return Plan
      */
     public function testCancel($agreement)
     {

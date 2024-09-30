@@ -3,6 +3,7 @@
 namespace PayPal\Test\Api;
 
 use PayPal\Api\PaymentHistory;
+use PayPal\Exception\PayPalConfigurationException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -24,6 +25,9 @@ class PaymentHistoryTest extends TestCase
     /**
      * Gets Object Instance with Json data filled in
      * @return PaymentHistory
+     * @throws PayPalConfigurationException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public static function getObject()
     {
@@ -34,6 +38,9 @@ class PaymentHistoryTest extends TestCase
     /**
      * Tests for Serialization and Deserialization Issues
      * @return PaymentHistory
+     * @throws PayPalConfigurationException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testSerializationDeserialization()
     {

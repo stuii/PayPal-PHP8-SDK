@@ -3,6 +3,8 @@
 namespace PayPal\Test\Api;
 
 use PayPal\Api\Sale;
+use PayPal\Exception\PayPalConfigurationException;
+use PayPal\Exception\PayPalConnectionException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -24,6 +26,9 @@ class SaleTest extends TestCase
     /**
      * Gets Object Instance with Json data filled in
      * @return Sale
+     * @throws PayPalConfigurationException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public static function getObject()
     {
@@ -34,6 +39,9 @@ class SaleTest extends TestCase
     /**
      * Tests for Serialization and Deserialization Issues
      * @return Sale
+     * @throws PayPalConfigurationException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testSerializationDeserialization()
     {
@@ -98,6 +106,11 @@ class SaleTest extends TestCase
     /**
      * @dataProvider mockProvider
      * @param Sale $obj
+     * @param $mockApiContext
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testGet($obj, $mockApiContext)
     {
@@ -105,18 +118,22 @@ class SaleTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $mockPPRestCall->expects($this->any())
+        $mockPPRestCall
             ->method('execute')
-            ->will($this->returnValue(
-                    SaleTest::getJson()
-            ));
+            ->willReturn(SaleTest::getJson());
 
         $result = $obj->get("saleId", $mockApiContext, $mockPPRestCall);
         $this->assertNotNull($result);
     }
+
     /**
      * @dataProvider mockProvider
      * @param Sale $obj
+     * @param $mockApiContext
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testRefund($obj, $mockApiContext)
     {
@@ -124,11 +141,9 @@ class SaleTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $mockPPRestCall->expects($this->any())
+        $mockPPRestCall
             ->method('execute')
-            ->will($this->returnValue(
-                RefundTest::getJson()
-            ));
+            ->willReturn(RefundTest::getJson());
         $refund = RefundTest::getObject();
 
         $result = $obj->refund($refund, $mockApiContext, $mockPPRestCall);

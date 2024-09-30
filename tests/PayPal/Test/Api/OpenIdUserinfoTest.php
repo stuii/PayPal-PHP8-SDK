@@ -17,7 +17,7 @@ class OpenIdUserinfoTest extends TestCase
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
-    protected function setUp()
+    protected function setUp(): void
     {
     }
 
@@ -25,13 +25,12 @@ class OpenIdUserinfoTest extends TestCase
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
     }
 
 
     /**
-     * @test
      */
     public function testSerializationDeserialization()
     {
@@ -54,11 +53,10 @@ class OpenIdUserinfoTest extends TestCase
     }
 
     /**
-     * @test
      */
     public function testInvalidParamUserInfoCall()
     {
-        $this->setExpectedException('PayPal\Exception\PayPalConnectionException');
+        $this->expectException('PayPal\Exception\PayPalConnectionException');
         OpenIdUserinfo::getUserinfo(array('access_token' => 'accessToken'));
     }
 }

@@ -78,7 +78,8 @@ class ContainerModelTestClass extends PayPalModel
     /**
      *
      * @access public
-     * @param SimpleModelTestClass $field1
+     * @param $nested1
+     * @return ContainerModelTestClass
      */
     public function setNested1($nested1)
     {
@@ -152,7 +153,7 @@ class PayPalModelTest extends TestCase
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
-    protected function setUp()
+    protected function setUp(): void
     {
     }
 
@@ -160,12 +161,11 @@ class PayPalModelTest extends TestCase
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
     }
 
     /**
-     * @test
      */
     public function testSimpleConversion()
     {
@@ -181,7 +181,6 @@ class PayPalModelTest extends TestCase
     }
 
     /**
-     * @test
      */
     public function testEmptyObject()
     {
@@ -201,7 +200,6 @@ class PayPalModelTest extends TestCase
     }
 
     /**
-     * @test
      */
     public function testSpecialChars()
     {
@@ -218,7 +216,6 @@ class PayPalModelTest extends TestCase
 
 
     /**
-     * @test
      */
     public function testNestedConversion()
     {
@@ -240,7 +237,6 @@ class PayPalModelTest extends TestCase
 
 
     /**
-     * @test
      */
     public function testListConversion()
     {
@@ -275,6 +271,7 @@ class PayPalModelTest extends TestCase
      * @dataProvider EmptyNullProvider
      * @param string|null $field2
      * @param bool $matches
+     * @throws JsonException
      */
     public function testEmptyNullConversion($field2, $matches)
     {
@@ -325,6 +322,9 @@ class PayPalModelTest extends TestCase
      * @param string|null $input
      * @param int $count
      * @param mixed $expected
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws \PayPal\Exception\PayPalConfigurationException
      */
     public function testGetList($input, $count, $expected)
     {
@@ -342,6 +342,9 @@ class PayPalModelTest extends TestCase
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Invalid JSON String
      * @param string|null $input
+     * @throws JsonException
+     * @throws ReflectionException
+     * @throws \PayPal\Exception\PayPalConfigurationException
      */
     public function testGetListInvalidInput($input)
     {

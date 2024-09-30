@@ -3,6 +3,8 @@
 namespace PayPal\Test\Api;
 
 use PayPal\Api\Webhook;
+use PayPal\Exception\PayPalConfigurationException;
+use PayPal\Exception\PayPalConnectionException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -24,6 +26,9 @@ class WebhookTest extends TestCase
     /**
      * Gets Object Instance with Json data filled in
      * @return Webhook
+     * @throws PayPalConfigurationException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public static function getObject()
     {
@@ -34,6 +39,9 @@ class WebhookTest extends TestCase
     /**
      * Tests for Serialization and Deserialization Issues
      * @return Webhook
+     * @throws PayPalConfigurationException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testSerializationDeserialization()
     {
@@ -68,9 +76,15 @@ class WebhookTest extends TestCase
         $obj = new Webhook();
         $obj->setUrl(null);
     }
+
     /**
      * @dataProvider mockProvider
      * @param Webhook $obj
+     * @param $mockApiContext
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testCreate($obj, $mockApiContext)
     {
@@ -78,18 +92,22 @@ class WebhookTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $mockPPRestCall->expects($this->any())
+        $mockPPRestCall
             ->method('execute')
-            ->will($this->returnValue(
-                    self::getJson()
-            ));
+            ->willReturn(self::getJson());
 
         $result = $obj->create($mockApiContext, $mockPPRestCall);
         $this->assertNotNull($result);
     }
+
     /**
      * @dataProvider mockProvider
      * @param Webhook $obj
+     * @param $mockApiContext
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testGet($obj, $mockApiContext)
     {
@@ -97,18 +115,22 @@ class WebhookTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $mockPPRestCall->expects($this->any())
+        $mockPPRestCall
             ->method('execute')
-            ->will($this->returnValue(
-                    WebhookTest::getJson()
-            ));
+            ->willReturn(WebhookTest::getJson());
 
         $result = $obj->get("webhookId", $mockApiContext, $mockPPRestCall);
         $this->assertNotNull($result);
     }
+
     /**
      * @dataProvider mockProvider
      * @param Webhook $obj
+     * @param $mockApiContext
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testGetAll($obj, $mockApiContext)
     {
@@ -116,19 +138,23 @@ class WebhookTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $mockPPRestCall->expects($this->any())
+        $mockPPRestCall
             ->method('execute')
-            ->will($this->returnValue(
-                    WebhookListTest::getJson()
-            ));
+            ->willReturn(WebhookListTest::getJson());
         $params = array();
 
         $result = $obj->getAllWithParams($params, $mockApiContext, $mockPPRestCall);
         $this->assertNotNull($result);
     }
+
     /**
      * @dataProvider mockProvider
      * @param Webhook $obj
+     * @param $mockApiContext
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testUpdate($obj, $mockApiContext)
     {
@@ -136,19 +162,21 @@ class WebhookTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $mockPPRestCall->expects($this->any())
+        $mockPPRestCall
             ->method('execute')
-            ->will($this->returnValue(
-                    self::getJson()
-            ));
+            ->willReturn(self::getJson());
         $patchRequest = PatchRequestTest::getObject();
 
         $result = $obj->update($patchRequest, $mockApiContext, $mockPPRestCall);
         $this->assertNotNull($result);
     }
+
     /**
      * @dataProvider mockProvider
      * @param Webhook $obj
+     * @param $mockApiContext
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
      */
     public function testDelete($obj, $mockApiContext)
     {
@@ -156,11 +184,9 @@ class WebhookTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $mockPPRestCall->expects($this->any())
+        $mockPPRestCall
             ->method('execute')
-            ->will($this->returnValue(
-                    true
-            ));
+            ->willReturn(true);
 
         $result = $obj->delete($mockApiContext, $mockPPRestCall);
         $this->assertNotNull($result);

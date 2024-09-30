@@ -3,6 +3,8 @@
 namespace PayPal\Test\Api;
 
 use PayPal\Api\VerifyWebhookSignature;
+use PayPal\Exception\PayPalConfigurationException;
+use PayPal\Exception\PayPalConnectionException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -24,6 +26,9 @@ class VerifyWebhookSignatureTest extends TestCase
     /**
      * Gets Object Instance with Json data filled in
      * @return VerifyWebhookSignature
+     * @throws PayPalConfigurationException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public static function getObject()
     {
@@ -34,6 +39,9 @@ class VerifyWebhookSignatureTest extends TestCase
     /**
      * Tests for Serialization and Deserialization Issues
      * @return VerifyWebhookSignature
+     * @throws PayPalConfigurationException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testSerializationDeserialization()
     {
@@ -86,6 +94,11 @@ class VerifyWebhookSignatureTest extends TestCase
     /**
      * @dataProvider mockProvider
      * @param VerifyWebhookSignature $obj
+     * @param $mockApiContext
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testPost($obj, $mockApiContext)
     {
@@ -93,11 +106,9 @@ class VerifyWebhookSignatureTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $mockPPRestCall->expects($this->any())
+        $mockPPRestCall
             ->method('execute')
-            ->will($this->returnValue(
-                    VerifyWebhookSignatureResponseTest::getJson()
-            ));
+            ->willReturn(VerifyWebhookSignatureResponseTest::getJson());
 
         $result = $obj->post($mockApiContext, $mockPPRestCall);
         $this->assertNotNull($result);

@@ -3,6 +3,8 @@
 namespace PayPal\Test\Api;
 
 use PayPal\Api\Capture;
+use PayPal\Exception\PayPalConfigurationException;
+use PayPal\Exception\PayPalConnectionException;
 use PayPal\Transport\PPRestCall;
 use PHPUnit\Framework\TestCase;
 
@@ -25,6 +27,9 @@ class CaptureTest extends TestCase
     /**
      * Gets Object Instance with Json data filled in
      * @return Capture
+     * @throws PayPalConfigurationException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public static function getObject()
     {
@@ -35,6 +40,9 @@ class CaptureTest extends TestCase
     /**
      * Tests for Serialization and Deserialization Issues
      * @return Capture
+     * @throws PayPalConfigurationException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testSerializationDeserialization()
     {
@@ -77,6 +85,11 @@ class CaptureTest extends TestCase
     /**
      * @dataProvider mockProvider
      * @param Capture $obj
+     * @param $mockApiContext
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testGet($obj, $mockApiContext)
     {
@@ -84,18 +97,22 @@ class CaptureTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $mockPPRestCall->expects($this->any())
+        $mockPPRestCall
             ->method('execute')
-            ->will($this->returnValue(
-                    CaptureTest::getJson()
-            ));
+            ->willReturn(CaptureTest::getJson());
 
         $result = $obj->get("captureId", $mockApiContext, $mockPPRestCall);
         $this->assertNotNull($result);
     }
+
     /**
      * @dataProvider mockProvider
      * @param Capture $obj
+     * @param $mockApiContext
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testRefund($obj, $mockApiContext)
     {
@@ -103,11 +120,9 @@ class CaptureTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $mockPPRestCall->expects($this->any())
+        $mockPPRestCall
             ->method('execute')
-            ->will($this->returnValue(
-                RefundTest::getJson()
-            ));
+            ->willReturn(RefundTest::getJson());
         $refund = RefundTest::getObject();
 
         $result = $obj->refund($refund, $mockApiContext, $mockPPRestCall);

@@ -3,6 +3,7 @@
 namespace PayPal\Test\Api;
 
 use PayPal\Api\Details;
+use PayPal\Exception\PayPalConfigurationException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -26,6 +27,9 @@ class DetailsTest extends TestCase
      * Gets Object Instance with Json data filled in
      *
      * @return Details
+     * @throws PayPalConfigurationException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public static function getObject()
     {
@@ -37,6 +41,9 @@ class DetailsTest extends TestCase
      * Tests for Serialization and Deserialization Issues
      *
      * @return Details
+     * @throws PayPalConfigurationException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testSerializationDeserialization()
     {

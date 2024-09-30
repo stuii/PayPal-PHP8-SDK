@@ -36,7 +36,7 @@ class OAuthTokenCredentialTest extends TestCase
      */
     public function testInvalidCredentials()
     {
-        $this->setExpectedException('PayPal\Exception\PayPalConnectionException');
+        $this->expectException('PayPal\Exception\PayPalConnectionException');
         $cred = new OAuthTokenCredential('dummy', 'secret');
         $this->assertNull($cred->getAccessToken(PayPalConfigManager::getInstance()->getConfigHashmap()));
     }
@@ -72,11 +72,9 @@ class OAuthTokenCredentialTest extends TestCase
             ->setMethods(array('getToken'))
             ->getMock();
 
-        $auth->expects($this->any())
+        $auth
             ->method('getToken')
-            ->will($this->returnValue(
-                array('refresh_token' => 'refresh_token_value')
-            ));
+            ->willReturn(array('refresh_token' => 'refresh_token_value'));
         $response = $auth->getRefreshToken($config, 'auth_value');
         $this->assertNotNull($response);
         $this->assertEquals('refresh_token_value', $response);
@@ -93,13 +91,11 @@ class OAuthTokenCredentialTest extends TestCase
             ->setMethods(array('getToken'))
             ->getMock();
 
-        $auth->expects($this->any())
+        $auth
             ->method('getToken')
-            ->will($this->returnValue(
-                array(
-                    'access_token' => 'accessToken',
-                    'expires_in' => 280
-                )
+            ->willReturn(array(
+                'access_token' => 'accessToken',
+                'expires_in' => 280
             ));
 
         $response = $auth->updateAccessToken($config);
@@ -126,12 +122,9 @@ class OAuthTokenCredentialTest extends TestCase
             ->setMethods(array('getToken'))
             ->getMock();
 
-        $auth->expects($this->any())
+        $auth
             ->method('getToken')
-            ->will($this->returnValue(
-                array(
-                )
-            ));
+            ->willReturn(array());
 
         $response = $auth->updateAccessToken($config);
         $this->assertNotNull($response);

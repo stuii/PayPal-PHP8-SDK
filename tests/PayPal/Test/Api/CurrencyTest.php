@@ -3,6 +3,7 @@
 namespace PayPal\Test\Api;
 
 use PayPal\Api\Currency;
+use PayPal\Exception\PayPalConfigurationException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -26,6 +27,9 @@ class CurrencyTest extends TestCase
      * Gets Object Instance with Json data filled in
      *
      * @return Currency
+     * @throws PayPalConfigurationException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public static function getObject()
     {
@@ -37,6 +41,9 @@ class CurrencyTest extends TestCase
      * Tests for Serialization and Deserialization Issues
      *
      * @return Currency
+     * @throws PayPalConfigurationException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testSerializationDeserialization()
     {

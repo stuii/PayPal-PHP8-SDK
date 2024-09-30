@@ -2,6 +2,7 @@
 namespace PayPal\Test\Api;
 
 use PayPal\Api\Address;
+use PayPal\Exception\PayPalConfigurationException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -23,6 +24,9 @@ class AddressTest extends TestCase
     /**
      * Gets Object Instance with Json data filled in
      * @return Address
+     * @throws PayPalConfigurationException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public static function getObject()
     {
@@ -32,6 +36,9 @@ class AddressTest extends TestCase
     /**
      * Tests for Serialization and Deserialization Issues
      * @return Address
+     * @throws PayPalConfigurationException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testSerializationDeserialization()
     {
@@ -47,7 +54,7 @@ class AddressTest extends TestCase
         $this->assertNotNull($obj->getNormalizationStatus());
         $this->assertNotNull($obj->getStatus());
         $this->assertNotNull($obj->getType());
-        $this->assertEquals(self::getJson(), $obj->toJson());
+        $this->assertJsonStringEqualsJsonString(self::getJson(), $obj->toJson());
         return $obj;
     }
 

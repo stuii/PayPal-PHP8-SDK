@@ -29,7 +29,7 @@ class InvoiceFunctionalTest extends TestCase
 
     public $apiContext;
 
-    public function setUp()
+    public function setUp(): void
     {
         $className = $this->getClassName();
         $testName = $this->getName();
@@ -96,7 +96,7 @@ class InvoiceFunctionalTest extends TestCase
     /**
      * @depends testSend
      * @param $invoice Invoice
-     * @return Invoice
+     * @return void
      */
     public function testGetAll($invoice)
     {
@@ -126,7 +126,7 @@ class InvoiceFunctionalTest extends TestCase
     /**
      * @depends testSend
      * @param $invoice Invoice
-     * @return Invoice
+     * @return void
      */
     public function testUpdate($invoice)
     {
@@ -138,7 +138,7 @@ class InvoiceFunctionalTest extends TestCase
     /**
      * @depends testSend
      * @param $invoice Invoice
-     * @return Invoice
+     * @return void
      */
     public function testSearch($invoice)
     {
@@ -152,7 +152,7 @@ class InvoiceFunctionalTest extends TestCase
     /**
      * @depends testSend
      * @param $invoice Invoice
-     * @return Invoice
+     * @return void
      */
     public function testRemind($invoice)
     {
@@ -165,7 +165,7 @@ class InvoiceFunctionalTest extends TestCase
     /**
      * @depends testSend
      * @param $invoice Invoice
-     * @return Invoice
+     * @return void
      */
     public function testCancel($invoice)
     {
@@ -178,7 +178,7 @@ class InvoiceFunctionalTest extends TestCase
     /**
      * @depends testSend
      * @param $invoice Invoice
-     * @return Invoice
+     * @return void
      */
     public function testQRCode($invoice)
     {
@@ -226,7 +226,7 @@ class InvoiceFunctionalTest extends TestCase
     /**
      * @depends testGet
      * @param $invoice Invoice
-     * @return Invoice
+     * @return void
      */
     public function testDelete($invoice)
     {

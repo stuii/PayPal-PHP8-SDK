@@ -15,7 +15,7 @@ class PayPalCredentialManager
 
     private array $credentialHashmap = [];
 
-    private ?string $defaultAccountName;
+    private ?string $defaultAccountName = null;
 
     /**
      * @throws Exception
@@ -35,7 +35,7 @@ class PayPalCredentialManager
      */
     public static function getInstance(?array $config = null): self
     {
-        if (!self::$instance) {
+        if (!isset(self::$instance)) {
             self::$instance = new self($config ?? []);
         }
         return self::$instance;

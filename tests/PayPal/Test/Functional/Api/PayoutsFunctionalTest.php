@@ -26,7 +26,7 @@ class PayoutsFunctionalTest extends TestCase
 
     public static $batchId;
 
-    public function setUp()
+    public function setUp(): void
     {
         $className = $this->getClassName();
         $testName = $this->getName();
@@ -86,7 +86,7 @@ class PayoutsFunctionalTest extends TestCase
     /**
      * @depends testCreate
      * @param $payoutBatch PayoutBatch
-     * @return PayoutBatch
+     * @return void
      */
     public function testGetItem($payoutBatch)
     {
@@ -103,7 +103,7 @@ class PayoutsFunctionalTest extends TestCase
     /**
      * @depends testCreate
      * @param $payoutBatch PayoutBatch
-     * @return PayoutBatch
+     * @return void
      */
     public function testCancel($payoutBatch)
     {

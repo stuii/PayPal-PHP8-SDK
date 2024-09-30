@@ -4,6 +4,8 @@ namespace PayPal\Test\Api;
 
 use PayPal\Api\Authorization;
 use PayPal\Api\Order;
+use PayPal\Exception\PayPalConfigurationException;
+use PayPal\Exception\PayPalConnectionException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -25,6 +27,9 @@ class OrderTest extends TestCase
     /**
      * Gets Object Instance with Json data filled in
      * @return Order
+     * @throws PayPalConfigurationException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public static function getObject()
     {
@@ -35,6 +40,9 @@ class OrderTest extends TestCase
     /**
      * Tests for Serialization and Deserialization Issues
      * @return Order
+     * @throws PayPalConfigurationException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testSerializationDeserialization()
     {
@@ -83,6 +91,11 @@ class OrderTest extends TestCase
     /**
      * @dataProvider mockProvider
      * @param Order $obj
+     * @param $mockApiContext
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testGet($obj, $mockApiContext)
     {
@@ -90,18 +103,22 @@ class OrderTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $mockPPRestCall->expects($this->any())
+        $mockPPRestCall
             ->method('execute')
-            ->will($this->returnValue(
-                    OrderTest::getJson()
-            ));
+            ->willReturn(OrderTest::getJson());
 
         $result = $obj->get("orderId", $mockApiContext, $mockPPRestCall);
         $this->assertNotNull($result);
     }
+
     /**
      * @dataProvider mockProvider
      * @param Order $obj
+     * @param $mockApiContext
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testCapture($obj, $mockApiContext)
     {
@@ -109,19 +126,23 @@ class OrderTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $mockPPRestCall->expects($this->any())
+        $mockPPRestCall
             ->method('execute')
-            ->will($this->returnValue(
-                    CaptureTest::getJson()
-            ));
+            ->willReturn(CaptureTest::getJson());
         $capture = CaptureTest::getObject();
 
         $result = $obj->capture($capture, $mockApiContext, $mockPPRestCall);
         $this->assertNotNull($result);
     }
+
     /**
      * @dataProvider mockProvider
      * @param Order $obj
+     * @param $mockApiContext
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testVoid($obj, $mockApiContext)
     {
@@ -129,18 +150,22 @@ class OrderTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $mockPPRestCall->expects($this->any())
+        $mockPPRestCall
             ->method('execute')
-            ->will($this->returnValue(
-                    self::getJson()
-            ));
+            ->willReturn(self::getJson());
 
         $result = $obj->void($mockApiContext, $mockPPRestCall);
         $this->assertNotNull($result);
     }
+
     /**
      * @dataProvider mockProvider
      * @param Order $obj
+     * @param $mockApiContext
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws \JsonException
+     * @throws \ReflectionException
      */
     public function testAuthorize($obj, $mockApiContext)
     {
@@ -148,11 +173,9 @@ class OrderTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $mockPPRestCall->expects($this->any())
+        $mockPPRestCall
             ->method('execute')
-            ->will($this->returnValue(
-                    AuthorizationTest::getJson()
-            ));
+            ->willReturn(AuthorizationTest::getJson());
 
         $authorization = new Authorization();
         $result = $obj->authorize($authorization, $mockApiContext, $mockPPRestCall);
