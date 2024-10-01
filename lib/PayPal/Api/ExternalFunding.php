@@ -6,17 +6,12 @@ use PayPal\Common\PayPalModel;
 
 class ExternalFunding extends PayPalModel
 {
-    private string $referenceId;
-
-    private string $code;
-
-    private string $fundingAccountId;
-
-    private string $displayText;
-
-    private Amount $amount;
-
-    private string $fundingInstruction;
+    private ?string $referenceId = null;
+    private ?string $code = null;
+    private ?string $fundingAccountId = null;
+    private ?string $displayText = null;
+    private ?Amount $amount = null;
+    private ?string $fundingInstruction = null;
 
     public function setReferenceId(string $referenceId): ExternalFunding
     {
@@ -24,7 +19,7 @@ class ExternalFunding extends PayPalModel
         return $this;
     }
 
-    public function getReferenceId(): string
+    public function getReferenceId(): ?string
     {
         return $this->referenceId;
     }
@@ -35,7 +30,7 @@ class ExternalFunding extends PayPalModel
         return $this;
     }
 
-    public function getCode(): string
+    public function getCode(): ?string
     {
         return $this->code;
     }
@@ -46,7 +41,7 @@ class ExternalFunding extends PayPalModel
         return $this;
     }
 
-    public function getFundingAccountId(): string
+    public function getFundingAccountId(): ?string
     {
         return $this->fundingAccountId;
     }
@@ -57,7 +52,7 @@ class ExternalFunding extends PayPalModel
         return $this;
     }
 
-    public function getDisplayText(): string
+    public function getDisplayText(): ?string
     {
         return $this->displayText;
     }
@@ -68,7 +63,7 @@ class ExternalFunding extends PayPalModel
         return $this;
     }
 
-    public function getAmount(): Amount
+    public function getAmount(): ?Amount
     {
         return $this->amount;
     }
@@ -79,7 +74,7 @@ class ExternalFunding extends PayPalModel
         return $this;
     }
 
-    public function getFundingInstruction(): string
+    public function getFundingInstruction(): ?string
     {
         return $this->fundingInstruction;
     }

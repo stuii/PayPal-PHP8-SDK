@@ -14,20 +14,14 @@ use ReflectionException;
 
 class VerifyWebhookSignature extends PayPalResourceModel
 {
-    private string $authAlgo;
-
-    private string $certUrl;
-
-    private string $transmissionId;
-
-    private string $transmissionSignature;
-
-    private string $transmissionTime;
-
-    private string $webhookId;
-
-    private WebhookEvent $webhookEvent;
-    private ?string $requestBody;
+    private ?string $authAlgo = null;
+    private ?string $certUrl = null;
+    private ?string $transmissionId = null;
+    private ?string $transmissionSig = null;
+    private ?string $transmissionTime = null;
+    private ?string $webhookId = null;
+    private ?WebhookEvent $webhookEvent = null;
+    private ?string $requestBody = null;
 
     public function setAuthAlgo(string $authAlgo): self
     {
@@ -35,7 +29,7 @@ class VerifyWebhookSignature extends PayPalResourceModel
         return $this;
     }
 
-    public function getAuthAlgo(): string
+    public function getAuthAlgo(): ?string
     {
         return $this->authAlgo;
     }
@@ -50,7 +44,7 @@ class VerifyWebhookSignature extends PayPalResourceModel
         return $this;
     }
 
-    public function getCertUrl(): string
+    public function getCertUrl(): ?string
     {
         return $this->certUrl;
     }
@@ -61,20 +55,20 @@ class VerifyWebhookSignature extends PayPalResourceModel
         return $this;
     }
 
-    public function getTransmissionId(): string
+    public function getTransmissionId(): ?string
     {
         return $this->transmissionId;
     }
 
-    public function setTransmissionSignature(string $transmissionSignature): self
+    public function setTransmissionSig(string $transmissionSig): self
     {
-        $this->transmissionSignature = $transmissionSignature;
+        $this->transmissionSig = $transmissionSig;
         return $this;
     }
 
-    public function getTransmissionSignature(): string
+    public function getTransmissionSig(): ?string
     {
-        return $this->transmissionSignature;
+        return $this->transmissionSig;
     }
 
     public function setTransmissionTime(string $transmissionTime): self
@@ -83,7 +77,7 @@ class VerifyWebhookSignature extends PayPalResourceModel
         return $this;
     }
 
-    public function getTransmissionTime(): string
+    public function getTransmissionTime(): ?string
     {
         return $this->transmissionTime;
     }
@@ -94,7 +88,7 @@ class VerifyWebhookSignature extends PayPalResourceModel
         return $this;
     }
 
-    public function getWebhookId(): string
+    public function getWebhookId(): ?string
     {
         return $this->webhookId;
     }
@@ -108,7 +102,7 @@ class VerifyWebhookSignature extends PayPalResourceModel
         return $this;
     }
 
-    public function getWebhookEvent(): WebhookEvent
+    public function getWebhookEvent(): ?WebhookEvent
     {
         return $this->webhookEvent;
     }
@@ -119,7 +113,7 @@ class VerifyWebhookSignature extends PayPalResourceModel
         return $this;
     }
 
-    public function getRequestBody(): string
+    public function getRequestBody(): ?string
     {
         return $this->requestBody;
     }

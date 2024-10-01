@@ -4,18 +4,18 @@ namespace PayPal\Api;
 
 class DetailedRefund extends Refund
 {
-    private string $custom;
+    private ?string $custom = null;
 
-    private Currency $refundToPayer;
+    private ?Currency $refundToPayer = null;
 
-    /** @var array<ExternalFunding> $refundToExternalFunding */
-    private array $refundToExternalFunding;
+    /** @var array<\PayPal\Api\ExternalFunding> $refundToExternalFunding */
+    private array $refundToExternalFunding = [];
 
-    private Currency $refundFromTransactionFee;
+    private ?Currency $refundFromTransactionFee = null;
 
-    private Currency $refundFromReceivedAmount;
+    private ?Currency $refundFromReceivedAmount = null;
 
-    private Currency $totalRefundedAmount;
+    private ?Currency $totalRefundedAmount = null;
 
     public function setCustom(string $custom): self
     {
@@ -23,7 +23,7 @@ class DetailedRefund extends Refund
         return $this;
     }
 
-    public function getCustom(): string
+    public function getCustom(): ?string
     {
         return $this->custom;
     }
@@ -34,7 +34,7 @@ class DetailedRefund extends Refund
         return $this;
     }
 
-    public function getRefundToPayer(): Currency
+    public function getRefundToPayer(): ?Currency
     {
         return $this->refundToPayer;
     }
@@ -56,7 +56,7 @@ class DetailedRefund extends Refund
         return $this->refundToExternalFunding;
     }
 
-    public function getRefundFromTransactionFee(): Currency
+    public function getRefundFromTransactionFee(): ?Currency
     {
         return $this->refundFromTransactionFee;
     }
@@ -67,7 +67,7 @@ class DetailedRefund extends Refund
         return $this;
     }
 
-    public function getRefundFromReceivedAmount(): Currency
+    public function getRefundFromReceivedAmount(): ?Currency
     {
         return $this->refundFromReceivedAmount;
     }
@@ -78,7 +78,7 @@ class DetailedRefund extends Refund
         return $this;
     }
 
-    public function getTotalRefundedAmount(): Currency
+    public function getTotalRefundedAmount(): ?Currency
     {
         return $this->totalRefundedAmount;
     }

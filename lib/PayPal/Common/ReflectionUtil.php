@@ -3,8 +3,11 @@
 namespace PayPal\Common;
 
 use PayPal\Exception\PayPalConfigurationException;
+use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
+use ReflectionProperty;
+use ReflectionType;
 use RuntimeException;
 
 class ReflectionUtil
@@ -22,19 +25,41 @@ class ReflectionUtil
      */
     public static function getPropertyClass(string $class, string $propertyName): ?string
     {
+        $propertyName = PayPalModel::convertToCamelCase($propertyName);
         if ($class === PayPalModel::class) {
             // Make it generic if PayPalModel is used for generating this
             return PayPalModel::class;
         }
 
-        // If the class doesn't exist, or the method doesn't exist, return null.
-        if (!class_exists($class) || !method_exists($class, self::getter($class, $propertyName))) {
-            return null;
-        }
+        $reflection = self::getRealReflectionProperty($class, $propertyName);
 
-        $reflection = new \ReflectionProperty($class, $propertyName);
-        if ($reflection->hasType()) {
-            return $reflection->getType()?->getName();
+        if ($reflection?->hasType()) {
+            if ($reflection?->getType()?->getName() === 'array') {
+                $found = preg_match('/\/\*\*(.*)array<(.*)>(.*)\*\//m', $reflection->getDocComment(), $matches);
+                return $found === 0 ? $reflection?->getType()?->getName() : $matches[2];
+            }
+            return $reflection?->getType()?->getName();
+        }
+        return null;
+    }
+
+    public static function getRealReflectionProperty(string $class, string $propertyName): ?ReflectionProperty
+    {
+        $depth = 1;
+        while($depth < 5) {
+            if (!class_exists($class)) {
+                return null;
+            }
+            $reflectionClass = new ReflectionClass($class);
+            if ($reflectionClass->hasProperty($propertyName)) {
+                return new ReflectionProperty($class, $propertyName);
+            }
+            $parentClass = $reflectionClass->getParentClass();
+            if (!$parentClass) {
+                return null;
+            }
+            $class = $parentClass->getName();
+            ++$depth;
         }
         return null;
     }
@@ -45,12 +70,10 @@ class ReflectionUtil
      */
     public static function isPropertyClassArray(string $class, string $propertyName): ?bool
     {
-        // If the class doesn't exist, or the method doesn't exist, return null.
-        if (!class_exists($class) || !method_exists($class, self::getter($class, $propertyName))) {
-            return null;
-        }
-        $reflection = new \ReflectionProperty($class, $propertyName);
-        return $reflection->getType()?->getName() === 'array';
+        $propertyName = PayPalModel::convertToCamelCase($propertyName);
+        $reflection = self::getRealReflectionProperty($class, $propertyName);
+        return $reflection->getType()?->getName() === 'array'
+            && preg_match('/\/\*\*(.*)array<(.*)>(.*)\*\//m', $reflection->getDocComment());
     }
 
     /**

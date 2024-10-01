@@ -6,37 +6,22 @@ use PayPal\Common\PayPalModel;
 
 class PayerInfo extends PayPalModel
 {
-    private string $email;
-
-    private string $externalRememberMeId;
-
-    private string $buyerAccountNumber;
-
-    private string $salutation;
-
-    private string $firstName;
-
-    private string $middleName;
-
-    private string $lastName;
-
-    private string $suffix;
-
-    private string $payerId;
-
-    private string $phone;
-
-    private string $phoneType;
-
-    private string $birthDate;
-
-    private string $taxId;
-
-    private string $taxIdType;
-
-    private string $countryCode;
-
-    private Address $billingAddress;
+    private ?string $email = null;
+    private ?string $externalRememberMeId = null;
+    private ?string $buyerAccountNumber = null;
+    private ?string $salutation = null;
+    private ?string $firstName = null;
+    private ?string $middleName = null;
+    private ?string $lastName = null;
+    private ?string $suffix = null;
+    private ?string $payerId = null;
+    private ?string $phone = null;
+    private ?string $phoneType = null;
+    private ?string $birthDate = null;
+    private ?string $taxId = null;
+    private ?string $taxIdType = null;
+    private ?string $countryCode = null;
+    private ?Address $billingAddress = null;
 
     public function setEmail(string $email): self
     {
@@ -44,7 +29,7 @@ class PayerInfo extends PayPalModel
         return $this;
     }
 
-    public function getEmail(): string
+    public function getEmail(): ?string
     {
         return $this->email;
     }
@@ -55,7 +40,7 @@ class PayerInfo extends PayPalModel
         return $this;
     }
 
-    public function getExternalRememberMeId(): string
+    public function getExternalRememberMeId(): ?string
     {
         return $this->externalRememberMeId;
     }
@@ -66,7 +51,7 @@ class PayerInfo extends PayPalModel
         return $this;
     }
 
-    public function getBuyerAccountNumber(): string
+    public function getBuyerAccountNumber(): ?string
     {
         return $this->buyerAccountNumber;
     }
@@ -77,7 +62,7 @@ class PayerInfo extends PayPalModel
         return $this;
     }
 
-    public function getSalutation(): string
+    public function getSalutation(): ?string
     {
         return $this->salutation;
     }
@@ -88,7 +73,7 @@ class PayerInfo extends PayPalModel
         return $this;
     }
 
-    public function getFirstName(): string
+    public function getFirstName(): ?string
     {
         return $this->firstName;
     }
@@ -99,7 +84,7 @@ class PayerInfo extends PayPalModel
         return $this;
     }
 
-    public function getMiddleName(): string
+    public function getMiddleName(): ?string
     {
         return $this->middleName;
     }
@@ -110,7 +95,7 @@ class PayerInfo extends PayPalModel
         return $this;
     }
 
-    public function getLastName(): string
+    public function getLastName(): ?string
     {
         return $this->lastName;
     }
@@ -121,7 +106,7 @@ class PayerInfo extends PayPalModel
         return $this;
     }
 
-    public function getSuffix(): string
+    public function getSuffix(): ?string
     {
         return $this->suffix;
     }
@@ -132,7 +117,7 @@ class PayerInfo extends PayPalModel
         return $this;
     }
 
-    public function getPayerId(): string
+    public function getPayerId(): ?string
     {
         return $this->payerId;
     }
@@ -143,7 +128,7 @@ class PayerInfo extends PayPalModel
         return $this;
     }
 
-    public function getPhone(): string
+    public function getPhone(): ?string
     {
         return $this->phone;
     }
@@ -154,7 +139,7 @@ class PayerInfo extends PayPalModel
         return $this;
     }
 
-    public function getPhoneType(): string
+    public function getPhoneType(): ?string
     {
         return $this->phoneType;
     }
@@ -165,7 +150,7 @@ class PayerInfo extends PayPalModel
         return $this;
     }
 
-    public function getBirthDate(): string
+    public function getBirthDate(): ?string
     {
         return $this->birthDate;
     }
@@ -176,7 +161,7 @@ class PayerInfo extends PayPalModel
         return $this;
     }
 
-    public function getTaxId(): string
+    public function getTaxId(): ?string
     {
         return $this->taxId;
     }
@@ -187,7 +172,7 @@ class PayerInfo extends PayPalModel
         return $this;
     }
 
-    public function getTaxIdType(): string
+    public function getTaxIdType(): ?string
     {
         return $this->taxIdType;
     }
@@ -198,7 +183,7 @@ class PayerInfo extends PayPalModel
         return $this;
     }
 
-    public function getCountryCode(): string
+    public function getCountryCode(): ?string
     {
         return $this->countryCode;
     }
@@ -209,7 +194,7 @@ class PayerInfo extends PayPalModel
         return $this;
     }
 
-    public function getBillingAddress(): Address
+    public function getBillingAddress(): ?Address
     {
         return $this->billingAddress;
     }

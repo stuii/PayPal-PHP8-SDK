@@ -2,9 +2,12 @@
 
 namespace PayPal\Test\Api;
 
+use JsonException;
 use PayPal\Api\ExternalFunding;
 use PayPal\Exception\PayPalConfigurationException;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 
 /**
  * Class ExternalFunding
@@ -26,8 +29,8 @@ class ExternalFundingTest extends TestCase
      * Gets Object Instance with Json data filled in
      * @return ExternalFunding
      * @throws PayPalConfigurationException
-     * @throws \JsonException
-     * @throws \ReflectionException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public static function getObject()
     {
@@ -39,8 +42,8 @@ class ExternalFundingTest extends TestCase
      * Tests for Serialization and Deserialization Issues
      * @return ExternalFunding
      * @throws PayPalConfigurationException
-     * @throws \JsonException
-     * @throws \ReflectionException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public function testSerializationDeserialization()
     {
@@ -51,20 +54,20 @@ class ExternalFundingTest extends TestCase
         $this->assertNotNull($obj->getFundingAccountId());
         $this->assertNotNull($obj->getDisplayText());
         $this->assertNotNull($obj->getAmount());
-        $this->assertEquals(self::getJson(), $obj->toJson());
+        $this->assertJsonStringEqualsJsonString(self::getJson(), $obj->toJson());
         return $obj;
     }
 
     /**
-     * @depends testSerializationDeserialization
      * @param ExternalFunding $obj
      */
+    #[Depends('testSerializationDeserialization')]
     public function testGetters($obj)
     {
-        $this->assertEquals($obj->getReferenceId(), "TestSample");
-        $this->assertEquals($obj->getCode(), "TestSample");
-        $this->assertEquals($obj->getFundingAccountId(), "TestSample");
-        $this->assertEquals($obj->getDisplayText(), "TestSample");
+        $this->assertEquals("TestSample", $obj->getReferenceId());
+        $this->assertEquals("TestSample", $obj->getCode());
+        $this->assertEquals("TestSample", $obj->getFundingAccountId());
+        $this->assertEquals("TestSample", $obj->getDisplayText());
         $this->assertEquals($obj->getAmount(), AmountTest::getObject());
     }
 }

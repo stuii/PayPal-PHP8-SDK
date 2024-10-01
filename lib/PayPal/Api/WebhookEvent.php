@@ -16,19 +16,13 @@ use ReflectionException;
 
 class WebhookEvent extends PayPalResourceModel
 {
-    private string $id;
-
-    private string $createTime;
-
-    private string $resourceType;
-
-    private string $eventVersion;
-
-    private string $eventType;
-
-    private string $summary;
-
-    private PayPalModel $resource;
+    private ?string $id = null;
+    private ?string $createTime = null;
+    private ?string $resourceType = null;
+    private ?string $eventVersion = null;
+    private ?string $eventType = null;
+    private ?string $summary = null;
+    private ?PayPalModel $resource = null;
 
 
     public function setId(string $id): self
@@ -37,7 +31,7 @@ class WebhookEvent extends PayPalResourceModel
         return $this;
     }
 
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -48,7 +42,7 @@ class WebhookEvent extends PayPalResourceModel
         return $this;
     }
 
-    public function getCreateTime(): string
+    public function getCreateTime(): ?string
     {
         return $this->createTime;
     }
@@ -59,7 +53,7 @@ class WebhookEvent extends PayPalResourceModel
         return $this;
     }
 
-    public function getResourceType(): string
+    public function getResourceType(): ?string
     {
         return $this->resourceType;
     }
@@ -70,7 +64,7 @@ class WebhookEvent extends PayPalResourceModel
         return $this;
     }
 
-    public function getEventVersion(): string
+    public function getEventVersion(): ?string
     {
         return $this->eventVersion;
     }
@@ -81,7 +75,7 @@ class WebhookEvent extends PayPalResourceModel
         return $this;
     }
 
-    public function getEventType(): string
+    public function getEventType(): ?string
     {
         return $this->eventType;
     }
@@ -92,7 +86,7 @@ class WebhookEvent extends PayPalResourceModel
         return $this;
     }
 
-    public function getSummary(): string
+    public function getSummary(): ?string
     {
         return $this->summary;
     }
@@ -103,7 +97,7 @@ class WebhookEvent extends PayPalResourceModel
         return $this;
     }
 
-    public function getResource(): PayPalModel
+    public function getResource(): ?PayPalModel
     {
         return $this->resource;
     }

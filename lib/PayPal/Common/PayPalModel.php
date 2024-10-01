@@ -89,7 +89,7 @@ class PayPalModel
 
     public function __get(string $key)
     {
-        return $this->getValue($key);
+        return $this->getVal($key);
     }
 
     public function __set(string $key, $value)
@@ -101,12 +101,14 @@ class PayPalModel
         }
     }
 
-    private function convertToCamelCase(string $key): string
+    public static function convertToCamelCase(string $key): string
     {
-        return str_replace(' ', '', ucwords(str_replace(array('_', '-'), ' ', $key)));
+        $uc = str_replace(' ', '', ucwords(str_replace(array('_', '-'), ' ', $key)));;
+        return strtolower($uc[0]) .
+            substr($uc, 1);
     }
 
-    private function convertToSnake($camelCase): string
+    public static function convertToSnake($camelCase): string
     {
         $result = '';
 
@@ -150,9 +152,6 @@ class PayPalModel
         // If the array is empty, which means an empty object,
         // we need to convert array to StdClass object to properly
         // represent JSON String
-        if (count($ret) <= 0) {
-            $ret = new PayPalModel();
-        }
         return $ret;
     }
 
@@ -161,7 +160,7 @@ class PayPalModel
      * @throws ReflectionException
      * @throws ReflectionException
      */
-    public function fromArray(array $arr): self
+    /*public function fromArray(array $arr): self
     {
         if (!empty($arr)) {
             // Iterate over each element in array
@@ -171,19 +170,19 @@ class PayPalModel
                 if (is_array($v) && ($clazz = ReflectionUtil::getPropertyClass(get_class($this), $k)) !== null) {
                     // If the value is an associative array, it means, it's an object. Just make recursive call to it.
                     if (empty($v)) {
-                        if (ReflectionUtil::isPropertyClassArray(get_class($this), $k)) {
-                            // It means, it is an array of objects.
-                            $this->assignValue($k, []);
-                            continue;
-                        }
+                        echo '[EMPTY] ' . $clazz . '::' . $k;
                         $o = new $clazz();
                         //$arr = [];
                         $this->assignValue($k, $o);
                     } elseif (ArrayUtil::isAssocArray($v)) {
-                        /** @var self $o */
+                        echo '[EMPTY] ' . $clazz . '::' . $k;
+                        /** @var self $o *
                         $o = new $clazz();
                         $o->fromArray($v);
                         $this->assignValue($k, $o);
+                    } elseif (ReflectionUtil::isPropertyClassArray(get_class($this), $k)) {
+                        echo '[ARRAY] ' . $clazz . '::' . $k;
+                        $this->assignValue($k, [$o]);
                     } else {
                         // Else, value is an array of object/data
                         $arr = [];
@@ -205,11 +204,63 @@ class PayPalModel
             }
         }
         return $this;
+    }*/
+
+    public function fromArray(array $input): self {
+        if (!empty($input)) {
+
+            // Iterate over each element in array
+            foreach ($input as $key => $value) {
+
+                // If the value is an array, it means, it is an object after conversion
+                if (is_array($value)) {
+
+                    // Determine the class of the object
+                    if (($class = ReflectionUtil::getPropertyClass(get_class($this), $key)) !== null) {
+
+                        // If the value is an associative array, it means, its an object. Just make recursive call to it.
+                        if (empty($value)) {
+                            if ($class === 'array' || ReflectionUtil::isPropertyClassArray(get_class($this), $key)) {
+                                // It means, it is an array of objects.
+                                $this->assignValue($key, []);
+                                continue;
+                            }
+                            $object = new $class();
+                            $this->assignValue($key, $object);
+                        } elseif (ArrayUtil::isAssocArray($value)) {
+                            /** @var self $object */
+                            $object = new $class();
+                            $object->fromArray($value);
+                            $this->assignValue($key, $object);
+                        } else {
+                            // Else, value is an array of object/data
+                            $arr = [];
+                            // Iterate through each element in that array.
+                            foreach ($value as $newKey => $newValue) {
+                                if (is_array($newValue)) {
+                                    $object = new $class();
+                                    $object->fromArray($newValue);
+                                    $arr[$newKey] = $object;
+                                } else {
+                                    $arr[$newKey] = $newValue;
+                                }
+                            }
+                            $this->assignValue($key, $arr);
+                        }
+                    } else {
+                        $this->assignValue($key, $value);
+                    }
+                } else {
+                    $this->assignValue($key, $value);
+                }
+            }
+        }
+        return $this;
     }
 
     private function assignValue($key, $value): void
     {
-        $setter = 'set'. $this->convertToCamelCase($key);
+        $setter = 'set'. self::convertToCamelCase($key);
         // If we find the setter, use that, otherwise use magic method.
         if (method_exists($this, $setter)) {
             $this->$setter($value);
@@ -218,9 +269,9 @@ class PayPalModel
         }
     }
 
-    private function getValue($key): mixed
+    private function getVal($key): mixed
     {
-        $getter = 'get'. $this->convertToCamelCase($key);
+        $getter = 'get'. self::convertToCamelCase($key);
         // If we find the setter, use that, otherwise use magic method.
         if (method_exists($this, $getter)) {
             return $this->$getter();
@@ -249,7 +300,10 @@ class PayPalModel
         $properties = [];
         foreach ($props as $prop) {
             $propName = $prop->name;
-            $properties[$this->convertToSnake($propName)] = $this->getValue($propName);
+            $value = $this->getVal($propName);
+            if ($value !== null && $value !== []) {
+                $properties[self::convertToSnake($propName)] = $value;
+            }
         }
 
         return $this->_convertToArray($properties);

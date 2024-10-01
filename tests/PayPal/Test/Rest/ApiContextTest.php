@@ -1,5 +1,7 @@
 <?php
 
+namespace PayPal\Test\Rest;
+
 use PayPal\Rest\ApiContext;
 use PHPUnit\Framework\TestCase;
 

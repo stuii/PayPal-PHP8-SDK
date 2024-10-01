@@ -2,10 +2,13 @@
 
 namespace PayPal\Test\Api;
 
+use JsonException;
 use PayPal\Common\PayPalModel;
 use PayPal\Api\Patch;
 use PayPal\Exception\PayPalConfigurationException;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 
 /**
  * Class Patch
@@ -27,8 +30,8 @@ class PatchTest extends TestCase
      * Gets Object Instance with Json data filled in
      * @return Patch
      * @throws PayPalConfigurationException
-     * @throws \JsonException
-     * @throws \ReflectionException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public static function getObject()
     {
@@ -40,8 +43,8 @@ class PatchTest extends TestCase
      * Tests for Serialization and Deserialization Issues
      * @return Patch
      * @throws PayPalConfigurationException
-     * @throws \JsonException
-     * @throws \ReflectionException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public function testSerializationDeserialization()
     {
@@ -51,20 +54,20 @@ class PatchTest extends TestCase
         $this->assertNotNull($obj->getPath());
         $this->assertNotNull($obj->getValue());
         $this->assertNotNull($obj->getFrom());
-        $this->assertEquals(self::getJson(), $obj->toJson());
+        $this->assertJsonStringEqualsJsonString(self::getJson(), $obj->toJson());
         return $obj;
     }
 
     /**
-     * @depends testSerializationDeserialization
      * @param Patch $obj
      */
+    #[Depends('testSerializationDeserialization')]
     public function testGetters($obj)
     {
-        $this->assertEquals($obj->getOp(), "TestSample");
-        $this->assertEquals($obj->getPath(), "TestSample");
-        $this->assertEquals($obj->getValue(), "TestSample");
-        $this->assertEquals($obj->getFrom(), "TestSample");
+        $this->assertEquals("TestSample", $obj->getOp());
+        $this->assertEquals("TestSample", $obj->getPath());
+        $this->assertEquals("TestSample", $obj->getValue());
+        $this->assertEquals("TestSample", $obj->getFrom());
     }
 
 

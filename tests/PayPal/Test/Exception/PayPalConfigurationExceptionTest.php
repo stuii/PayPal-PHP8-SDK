@@ -1,4 +1,7 @@
 <?php
+
+namespace PayPal\Test\Exception;
+
 use PayPal\Exception\PayPalConfigurationException;
 use PHPUnit\Framework\TestCase;
 

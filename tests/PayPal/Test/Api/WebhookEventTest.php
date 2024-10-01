@@ -2,10 +2,14 @@
 
 namespace PayPal\Test\Api;
 
+use JsonException;
 use PayPal\Api\WebhookEvent;
 use PayPal\Exception\PayPalConfigurationException;
 use PayPal\Exception\PayPalConnectionException;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 
 /**
  * Class WebhookEvent
@@ -20,15 +24,15 @@ class WebhookEventTest extends TestCase
      */
     public static function getJson()
     {
-        return '{"id":"TestSample","create_time":"TestSample","resource_type":"TestSample","event_version":"TestSample","event_type":"TestSample","summary":"TestSample","resource":"TestSampleObject","status":"TestSample","transmissions":"TestSampleObject","links":' .LinksTest::getJson() . '}';
+        return '{"id":"TestSample","create_time":"TestSample","resource_type":"TestSample","event_version":"TestSample","event_type":"TestSample","summary":"TestSample","links":[' .LinksTest::getJson() . ']}';
     }
 
     /**
      * Gets Object Instance with Json data filled in
      * @return WebhookEvent
      * @throws PayPalConfigurationException
-     * @throws \JsonException
-     * @throws \ReflectionException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public static function getObject()
     {
@@ -40,8 +44,8 @@ class WebhookEventTest extends TestCase
      * Tests for Serialization and Deserialization Issues
      * @return WebhookEvent
      * @throws PayPalConfigurationException
-     * @throws \JsonException
-     * @throws \ReflectionException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public function testSerializationDeserialization()
     {
@@ -53,41 +57,35 @@ class WebhookEventTest extends TestCase
         $this->assertNotNull($obj->getEventVersion());
         $this->assertNotNull($obj->getEventType());
         $this->assertNotNull($obj->getSummary());
-        $this->assertNotNull($obj->getResource());
-        $this->assertNotNull($obj->getStatus());
-        $this->assertNotNull($obj->getTransmissions());
         $this->assertNotNull($obj->getLinks());
-        $this->assertEquals(self::getJson(), $obj->toJson());
+        $this->assertJsonStringEqualsJsonString(self::getJson(), $obj->toJson());
         return $obj;
     }
 
     /**
-     * @depends testSerializationDeserialization
      * @param WebhookEvent $obj
      */
+    #[Depends('testSerializationDeserialization')]
     public function testGetters($obj)
     {
-        $this->assertEquals($obj->getId(), "TestSample");
-        $this->assertEquals($obj->getCreateTime(), "TestSample");
-        $this->assertEquals($obj->getResourceType(), "TestSample");
-        $this->assertEquals($obj->getEventVersion(), "TestSample");
-        $this->assertEquals($obj->getEventType(), "TestSample");
-        $this->assertEquals($obj->getSummary(), "TestSample");
-        $this->assertEquals($obj->getResource(), "TestSampleObject");
-        $this->assertEquals($obj->getStatus(), "TestSample");
-        $this->assertEquals($obj->getTransmissions(), "TestSampleObject");
-        $this->assertEquals($obj->getLinks(), LinksTest::getObject());
+        $this->assertEquals("TestSample", $obj->getId());
+        $this->assertEquals("TestSample", $obj->getCreateTime());
+        $this->assertEquals("TestSample", $obj->getResourceType());
+        $this->assertEquals("TestSample", $obj->getEventVersion());
+        $this->assertEquals("TestSample", $obj->getEventType());
+        $this->assertEquals("TestSample", $obj->getSummary());
+        $this->assertEquals($obj->getLinks(), [LinksTest::getObject()]);
     }
 
     /**
-     * @dataProvider mockProvider
      * @param WebhookEvent $obj
      * @param $mockApiContext
      * @throws PayPalConfigurationException
      * @throws PayPalConnectionException
-     * @throws \JsonException
-     * @throws \ReflectionException
+     * @throws JsonException
+     * @throws ReflectionException
      */
+    #[DataProvider('mockProvider')]
     public function testGet($obj, $mockApiContext)
     {
         $mockPPRestCall = $this->getMockBuilder('\PayPal\Transport\PayPalRestCall')
@@ -103,14 +101,14 @@ class WebhookEventTest extends TestCase
     }
 
     /**
-     * @dataProvider mockProvider
      * @param WebhookEvent $obj
      * @param $mockApiContext
      * @throws PayPalConfigurationException
      * @throws PayPalConnectionException
-     * @throws \JsonException
-     * @throws \ReflectionException
+     * @throws JsonException
+     * @throws ReflectionException
      */
+    #[DataProvider('mockProvider')]
     public function testResend($obj, $mockApiContext)
     {
         $mockPPRestCall = $this->getMockBuilder('\PayPal\Transport\PayPalRestCall')
@@ -127,14 +125,14 @@ class WebhookEventTest extends TestCase
     }
 
     /**
-     * @dataProvider mockProvider
      * @param WebhookEvent $obj
      * @param $mockApiContext
      * @throws PayPalConfigurationException
      * @throws PayPalConnectionException
-     * @throws \JsonException
-     * @throws \ReflectionException
+     * @throws JsonException
+     * @throws ReflectionException
      */
+    #[DataProvider('mockProvider')]
     public function testList($obj, $mockApiContext)
     {
         $mockPPRestCall = $this->getMockBuilder('\PayPal\Transport\PayPalRestCall')
@@ -150,10 +148,10 @@ class WebhookEventTest extends TestCase
         $this->assertNotNull($result);
     }
 
-    public function mockProvider()
+    public static function mockProvider()
     {
         $obj = self::getObject();
-        $mockApiContext = $this->getMockBuilder('ApiContext')
+        $mockApiContext = self::getMockBuilder('ApiContext')
                     ->disableOriginalConstructor()
                     ->getMock();
         return array(

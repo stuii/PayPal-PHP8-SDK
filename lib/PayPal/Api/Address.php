@@ -4,9 +4,9 @@ namespace PayPal\Api;
 
 class Address extends BaseAddress
 {
-    private string $phone;
+    private ?string $phone = null;
 
-    private string $type;
+    private ?string $type = null;
 
     public function setPhone(string $phone): self
     {
@@ -14,7 +14,7 @@ class Address extends BaseAddress
         return $this;
     }
 
-    public function getPhone(): string
+    public function getPhone(): ?string
     {
         return $this->phone;
     }
@@ -25,7 +25,7 @@ class Address extends BaseAddress
         return $this;
     }
 
-    public function getType(): string
+    public function getType(): ?string
     {
         return $this->type;
     }

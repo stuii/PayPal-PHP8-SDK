@@ -10,21 +10,14 @@ use PayPal\Validation\UrlValidator;
 
 class Item extends PayPalModel
 {
-    private string $sku;
-
-    private string $name;
-
-    private string $description;
-
-    private string $quantity;
-
-    private string $price;
-
-    private string $currency;
-
-    private string $tax;
-
-    private string $url;
+    private ?string $sku = null;
+    private ?string $name = null;
+    private ?string $description = null;
+    private ?string $quantity = null;
+    private ?string $price = null;
+    private ?string $currency = null;
+    private ?string $tax = null;
+    private ?string $url = null;
 
     public function setSku(string $sku): self
     {
@@ -32,7 +25,7 @@ class Item extends PayPalModel
         return $this;
     }
 
-    public function getSku(): string
+    public function getSku(): ?string
     {
         return $this->sku;
     }
@@ -43,7 +36,7 @@ class Item extends PayPalModel
         return $this;
     }
 
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -54,7 +47,7 @@ class Item extends PayPalModel
         return $this;
     }
 
-    public function getDescription(): string
+    public function getDescription(): ?string
     {
         return $this->description;
     }
@@ -65,7 +58,7 @@ class Item extends PayPalModel
         return $this;
     }
 
-    public function getQuantity(): string
+    public function getQuantity(): ?string
     {
         return $this->quantity;
     }
@@ -78,7 +71,7 @@ class Item extends PayPalModel
         return $this;
     }
 
-    public function getPrice(): string
+    public function getPrice(): ?string
     {
         return $this->price;
     }
@@ -89,7 +82,7 @@ class Item extends PayPalModel
         return $this;
     }
 
-    public function getCurrency(): string
+    public function getCurrency(): ?string
     {
         return $this->currency;
     }
@@ -102,7 +95,7 @@ class Item extends PayPalModel
         return $this;
     }
 
-    public function getTax(): string
+    public function getTax(): ?string
     {
         return $this->tax;
     }
@@ -117,7 +110,7 @@ class Item extends PayPalModel
         return $this;
     }
 
-    public function getUrl(): string
+    public function getUrl(): ?string
     {
         return $this->url;
     }

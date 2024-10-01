@@ -21,17 +21,18 @@ class PayPalLogger extends AbstractLogger
         LogLevel::DEBUG,
     ];
 
-    private LogLevel $loggingLevel;
+    private string $loggingLevel;
 
     private ?string $loggerFile = null;
 
-    private bool $isLoggingEnabled = true;
+    private bool $isLoggingEnabled = false;
 
     private string $loggerName;
 
     public function __construct(string $className)
     {
         $this->loggerName = $className;
+        $this->loggingLevel = LogLevel::DEBUG;
     }
 
     public function log($level, string|Stringable $message, array $context = []): void

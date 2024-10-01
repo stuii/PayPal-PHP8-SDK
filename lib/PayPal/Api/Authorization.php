@@ -13,37 +13,22 @@ use ReflectionException;
 
 class Authorization extends PayPalResourceModel
 {
-    private string $id;
-
-    private Amount $amount;
-
-    private string $paymentMode;
-
-    private string $state;
-
-    private string $reasonCode;
-
-    private string $pendingReason;
-
-    private string $protectionEligibility;
-
-    private string $protectionEligibilityType;
-
-    private FmfDetails $fmfDetails;
-
-    private string $parentPayment;
-
-    private ProcessorResponse $processorResponse;
-
-    private string $validUntil;
-
-    private string $createTime;
-
-    private string $updateTime;
-
-    private string $referenceId;
-
-    private string $receiptId;
+    private ?string $id = null;
+    private ?Amount $amount = null;
+    private ?string $paymentMode = null;
+    private ?string $state = null;
+    private ?string $reasonCode = null;
+    private ?string $pendingReason = null;
+    private ?string $protectionEligibility = null;
+    private ?string $protectionEligibilityType = null;
+    private ?FmfDetails $fmfDetails = null;
+    private ?string $parentPayment = null;
+    private ?ProcessorResponse $processorResponse = null;
+    private ?string $validUntil = null;
+    private ?string $createTime = null;
+    private ?string $updateTime = null;
+    private ?string $referenceId = null;
+    private ?string $receiptId = null;
 
 
     public function setId(string $id): self
@@ -52,7 +37,7 @@ class Authorization extends PayPalResourceModel
         return $this;
     }
 
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -63,7 +48,7 @@ class Authorization extends PayPalResourceModel
         return $this;
     }
 
-    public function getAmount(): Amount
+    public function getAmount(): ?Amount
     {
         return $this->amount;
     }
@@ -74,7 +59,7 @@ class Authorization extends PayPalResourceModel
         return $this;
     }
 
-    public function getPaymentMode(): string
+    public function getPaymentMode(): ?string
     {
         return $this->paymentMode;
     }
@@ -85,7 +70,7 @@ class Authorization extends PayPalResourceModel
         return $this;
     }
 
-    public function getState(): string
+    public function getState(): ?string
     {
         return $this->state;
     }
@@ -96,7 +81,7 @@ class Authorization extends PayPalResourceModel
         return $this;
     }
 
-    public function getReasonCode(): string
+    public function getReasonCode(): ?string
     {
         return $this->reasonCode;
     }
@@ -114,7 +99,7 @@ class Authorization extends PayPalResourceModel
     /**
      * @deprecated  [DEPRECATED] Reason code for the transaction state being Pending.Obsolete. use reason_code field instead.
      */
-    public function getPendingReason(): string
+    public function getPendingReason(): ?string
     {
         return $this->pendingReason;
     }
@@ -125,7 +110,7 @@ class Authorization extends PayPalResourceModel
         return $this;
     }
 
-    public function getProtectionEligibility(): string
+    public function getProtectionEligibility(): ?string
     {
         return $this->protectionEligibility;
     }
@@ -136,7 +121,7 @@ class Authorization extends PayPalResourceModel
         return $this;
     }
 
-    public function getProtectionEligibilityType(): string
+    public function getProtectionEligibilityType(): ?string
     {
         return $this->protectionEligibilityType;
     }
@@ -147,7 +132,7 @@ class Authorization extends PayPalResourceModel
         return $this;
     }
 
-    public function getFmfDetails(): FmfDetails
+    public function getFmfDetails(): ?FmfDetails
     {
         return $this->fmfDetails;
     }
@@ -158,7 +143,7 @@ class Authorization extends PayPalResourceModel
         return $this;
     }
 
-    public function getParentPayment(): string
+    public function getParentPayment(): ?string
     {
         return $this->parentPayment;
     }
@@ -169,7 +154,7 @@ class Authorization extends PayPalResourceModel
         return $this;
     }
 
-    public function getProcessorResponse(): ProcessorResponse
+    public function getProcessorResponse(): ?ProcessorResponse
     {
         return $this->processorResponse;
     }
@@ -180,7 +165,7 @@ class Authorization extends PayPalResourceModel
         return $this;
     }
 
-    public function getValidUntil(): string
+    public function getValidUntil(): ?string
     {
         return $this->validUntil;
     }
@@ -191,7 +176,7 @@ class Authorization extends PayPalResourceModel
         return $this;
     }
 
-    public function getCreateTime(): string
+    public function getCreateTime(): ?string
     {
         return $this->createTime;
     }
@@ -202,7 +187,7 @@ class Authorization extends PayPalResourceModel
         return $this;
     }
 
-    public function getUpdateTime(): string
+    public function getUpdateTime(): ?string
     {
         return $this->updateTime;
     }
@@ -213,7 +198,7 @@ class Authorization extends PayPalResourceModel
         return $this;
     }
 
-    public function getReferenceId(): string
+    public function getReferenceId(): ?string
     {
         return $this->referenceId;
     }
@@ -224,7 +209,7 @@ class Authorization extends PayPalResourceModel
         return $this;
     }
 
-    public function getReceiptId(): string
+    public function getReceiptId(): ?string
     {
         return $this->receiptId;
     }

@@ -6,7 +6,7 @@ use PayPal\Common\PayPalModel;
 
 class PatchRequest extends PayPalModel
 {
-    /** @var array<Patch> $patches */
+    /** @var array<\PayPal\Api\Patch> $patches */
     private array $patches;
 
     /**

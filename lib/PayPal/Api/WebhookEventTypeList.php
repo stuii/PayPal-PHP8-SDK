@@ -6,7 +6,7 @@ use PayPal\Common\PayPalModel;
 
 class WebhookEventTypeList extends PayPalModel
 {
-    /** @var array<WebhookEventType> $eventTypes */
+    /** @var array<\PayPal\Api\WebhookEventType> $eventTypes */
     private array $eventTypes;
 
     /**

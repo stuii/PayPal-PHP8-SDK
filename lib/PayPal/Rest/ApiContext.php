@@ -7,7 +7,6 @@ use PayPal\Auth\OAuthTokenCredential;
 use PayPal\Core\PayPalConfigManager;
 use PayPal\Core\PayPalCredentialManager;
 use PayPal\Exception\PayPalInvalidCredentialException;
-use Random\RandomException;
 
 class ApiContext
 {

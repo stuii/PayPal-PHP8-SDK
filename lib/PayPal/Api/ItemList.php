@@ -6,14 +6,14 @@ use PayPal\Common\PayPalModel;
 
 class ItemList extends PayPalModel
 {
-    /** @var array<Item> $items */
-    private array $items;
+    /** @var array<\PayPal\Api\Item> $items */
+    private array $items = [];
 
-    private ShippingAddress $shippingAddress;
+    private ?ShippingAddress $shippingAddress = null;
 
-    private string $shippingMethod;
+    private ?string $shippingMethod = null;
 
-    private string $shippingPhoneNumber;
+    private ?string $shippingPhoneNumber = null;
 
     /**
      * @param array<Item> $items
@@ -56,7 +56,7 @@ class ItemList extends PayPalModel
         return $this;
     }
 
-    public function getShippingAddress(): ShippingAddress
+    public function getShippingAddress(): ?ShippingAddress
     {
         return $this->shippingAddress;
     }
@@ -67,7 +67,7 @@ class ItemList extends PayPalModel
         return $this;
     }
 
-    public function getShippingMethod(): string
+    public function getShippingMethod(): ?string
     {
         return $this->shippingMethod;
     }
@@ -78,7 +78,7 @@ class ItemList extends PayPalModel
         return $this;
     }
 
-    public function getShippingPhoneNumber(): string
+    public function getShippingPhoneNumber(): ?string
     {
         return $this->shippingPhoneNumber;
     }

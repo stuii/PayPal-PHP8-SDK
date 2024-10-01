@@ -13,37 +13,20 @@ use ReflectionException;
 
 class CreditCard extends PayPalResourceModel
 {
-    private string $number;
-
-    private string $type;
-
-    private int $expireMonth;
-
-    private int $expireYear;
-
-    private string $cvv2;
-
-    private string $firstName;
-
-    private string $lastName;
-
-    private Address $billingAddress;
-
-    private string $externalCustomerId;
-
-    private string $state;
-
-    private string $validUntil;
-
-    /** @var array<Links> $links */
-    public array $links;
-
-    private string $createTime;
-
-    private string $updateTime;
-
-    private string $id;
-
+    private ?string $number = null;
+    private ?string $type = null;
+    private ?int $expireMonth = null;
+    private ?int $expireYear = null;
+    private ?string $cvv2 = null;
+    private ?string $firstName = null;
+    private ?string $lastName = null;
+    private ?Address $billingAddress = null;
+    private ?string $externalCustomerId = null;
+    private ?string $state = null;
+    private ?string $validUntil = null;
+    private ?string $createTime = null;
+    private ?string $updateTime = null;
+    private ?string $id = null;
 
     public function setId(string $id): self
     {
@@ -51,7 +34,7 @@ class CreditCard extends PayPalResourceModel
         return $this;
     }
 
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -62,7 +45,7 @@ class CreditCard extends PayPalResourceModel
         return $this;
     }
 
-    public function getNumber(): string
+    public function getNumber(): ?string
     {
         return $this->number;
     }
@@ -73,7 +56,7 @@ class CreditCard extends PayPalResourceModel
         return $this;
     }
 
-    public function getType(): string
+    public function getType(): ?string
     {
         return $this->type;
     }
@@ -106,7 +89,7 @@ class CreditCard extends PayPalResourceModel
         return $this;
     }
 
-    public function getCvv2(): string
+    public function getCvv2(): ?string
     {
         return $this->cvv2;
     }
@@ -117,7 +100,7 @@ class CreditCard extends PayPalResourceModel
         return $this;
     }
 
-    public function getFirstName(): string
+    public function getFirstName(): ?string
     {
         return $this->firstName;
     }
@@ -128,7 +111,7 @@ class CreditCard extends PayPalResourceModel
         return $this;
     }
 
-    public function getLastName(): string
+    public function getLastName(): ?string
     {
         return $this->lastName;
     }
@@ -150,7 +133,7 @@ class CreditCard extends PayPalResourceModel
         return $this;
     }
 
-    public function getExternalCustomerId(): string
+    public function getExternalCustomerId(): ?string
     {
         return $this->externalCustomerId;
     }
@@ -161,7 +144,7 @@ class CreditCard extends PayPalResourceModel
         return $this;
     }
 
-    public function getState(): string
+    public function getState(): ?string
     {
         return $this->state;
     }
@@ -172,7 +155,7 @@ class CreditCard extends PayPalResourceModel
         return $this;
     }
 
-    public function getCreateTime(): string
+    public function getCreateTime(): ?string
     {
         return $this->createTime;
     }
@@ -183,7 +166,7 @@ class CreditCard extends PayPalResourceModel
         return $this;
     }
 
-    public function getUpdateTime(): string
+    public function getUpdateTime(): ?string
     {
         return $this->updateTime;
     }
@@ -194,7 +177,7 @@ class CreditCard extends PayPalResourceModel
         return $this;
     }
 
-    public function getValidUntil(): string
+    public function getValidUntil(): ?string
     {
         return $this->validUntil;
     }

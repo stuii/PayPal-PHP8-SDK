@@ -8,7 +8,7 @@ class PaymentExecution extends PayPalModel
 {
     private string $payerId;
 
-    /** @var array<Transaction> $transactions */
+    /** @var array<\PayPal\Api\Transaction> $transactions */
     private array $transactions;
 
 

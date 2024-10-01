@@ -6,15 +6,11 @@ use PayPal\Common\PayPalModel;
 
 class RelatedResources extends PayPalModel
 {
-    private Sale $sale;
-
-    private Authorization $authorization;
-
-    private Order $order;
-
-    private Capture $capture;
-
-    private Refund $refund;
+    private ?Sale $sale = null;
+    private ?Authorization $authorization = null;
+    private ?Order $order = null;
+    private ?Capture $capture = null;
+    private ?Refund $refund = null;
 
     public function setSale(Sale $sale): self
     {
@@ -22,7 +18,7 @@ class RelatedResources extends PayPalModel
         return $this;
     }
 
-    public function getSale(): Sale
+    public function getSale(): ?Sale
     {
         return $this->sale;
     }
@@ -33,7 +29,7 @@ class RelatedResources extends PayPalModel
         return $this;
     }
 
-    public function getAuthorization(): Authorization
+    public function getAuthorization(): ?Authorization
     {
         return $this->authorization;
     }
@@ -44,7 +40,7 @@ class RelatedResources extends PayPalModel
         return $this;
     }
 
-    public function getOrder(): Order
+    public function getOrder(): ?Order
     {
         return $this->order;
     }
@@ -55,7 +51,7 @@ class RelatedResources extends PayPalModel
         return $this;
     }
 
-    public function getCapture(): Capture
+    public function getCapture(): ?Capture
     {
         return $this->capture;
     }
@@ -66,7 +62,7 @@ class RelatedResources extends PayPalModel
         return $this;
     }
 
-    public function getRefund(): Refund
+    public function getRefund(): ?Refund
     {
         return $this->refund;
     }

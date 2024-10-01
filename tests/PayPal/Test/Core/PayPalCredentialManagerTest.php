@@ -1,12 +1,18 @@
 <?php
+
+namespace PayPal\Test\Core;
+
 use PayPal\Core\PayPalCredentialManager;
+use PayPal\Exception\PayPalInvalidCredentialException;
+use PHPUnit\Framework\Attributes\After;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Test class for PayPalCredentialManager.
  *
- * @runTestsInSeparateProcesses
  */
+#[RunTestsInSeparateProcesses]
 class PayPalCredentialManagerTest extends TestCase
 {
     /**
@@ -65,10 +71,10 @@ class PayPalCredentialManagerTest extends TestCase
     }
 
     /**
-     * @after testGetDefaultCredentialObject
      *
-     * @throws \PayPal\Exception\PayPalInvalidCredentialException
+     * @throws PayPalInvalidCredentialException
      */
+    #[After]
     public function testSetCredentialObject()
     {
         $authObject = $this->getMockBuilder('\Paypal\Auth\OAuthTokenCredential')
@@ -81,10 +87,10 @@ class PayPalCredentialManagerTest extends TestCase
     }
 
     /**
-     * @after testGetDefaultCredentialObject
      *
-     * @throws \PayPal\Exception\PayPalInvalidCredentialException
+     * @throws PayPalInvalidCredentialException
      */
+    #[After]
     public function testSetCredentialObjectWithUserId()
     {
         $authObject = $this->getMockBuilder('\Paypal\Auth\OAuthTokenCredential')
@@ -96,10 +102,10 @@ class PayPalCredentialManagerTest extends TestCase
     }
 
     /**
-     * @after testGetDefaultCredentialObject
      *
-     * @throws \PayPal\Exception\PayPalInvalidCredentialException
+     * @throws PayPalInvalidCredentialException
      */
+    #[After]
     public function testSetCredentialObjectWithoutDefault()
     {
         $authObject = $this->getMockBuilder('\Paypal\Auth\OAuthTokenCredential')

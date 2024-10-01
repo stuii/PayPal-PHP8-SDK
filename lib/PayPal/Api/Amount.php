@@ -8,11 +8,11 @@ use PayPal\Validation\NumericValidator;
 
 class Amount extends PayPalModel
 {
-    private string $currency;
+    private ?string $currency = null;
 
-    private string $total;
+    private ?string $total = null;
 
-    private Details $details;
+    private ?Details $details = null;
 
     public function setCurrency(string $currency): static
     {
@@ -20,7 +20,7 @@ class Amount extends PayPalModel
         return $this;
     }
 
-    public function getCurrency(): string
+    public function getCurrency(): ?string
     {
         return $this->currency;
     }
@@ -33,7 +33,7 @@ class Amount extends PayPalModel
         return $this;
     }
 
-    public function getTotal(): string
+    public function getTotal(): ?string
     {
         return $this->total;
     }
@@ -44,7 +44,7 @@ class Amount extends PayPalModel
         return $this;
     }
 
-    public function getDetails(): Details
+    public function getDetails(): ?Details
     {
         return $this->details;
     }

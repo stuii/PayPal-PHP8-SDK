@@ -6,13 +6,11 @@ use PayPal\Common\PayPalModel;
 
 class WebhookEventList extends PayPalModel
 {
-    /** @var array<WebhookEvent> $events  */
+    /** @var array<\PayPal\Api\WebhookEvent> $events  */
     private array $events;
 
     private int $count;
 
-    /** @var array<Links> $links */
-    private array $links;
 
     /**
      * @param array<WebhookEvent> $events

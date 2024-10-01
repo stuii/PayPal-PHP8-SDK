@@ -8,13 +8,13 @@ use PayPal\Exception\PayPalConfigurationException;
 use PayPal\Exception\PayPalConnectionException;
 use PayPal\Exception\PayPalInvalidCredentialException;
 use PayPal\Exception\PayPalMissingCredentialException;
-use PayPal\Handler\RestHandlerInterface;
+use PayPal\Handler\RestHandler;
 use PayPal\Rest\ApiContext;
 use PayPal\Transport\PayPalRestCall;
 
 class PayPalResourceModel extends PayPalModel
 {
-    /** @var array<Links> $links  */
+    /** @var array<\PayPal\Api\Links> $links  */
     public array $links = [];
 
     /**
@@ -22,7 +22,15 @@ class PayPalResourceModel extends PayPalModel
      */
     public function setLinks(array $links): self
     {
-        $this->links = $links;
+        $definiteLinks = [];
+        foreach ($links as $link) {
+            if ($link instanceof Links) {
+                $definiteLinks[] = $link;
+            } else {
+                $definiteLinks[] = (new Links())->fromArray($link);
+            }
+        }
+        $this->links = $definiteLinks;
         return $this;
     }
 
@@ -73,7 +81,7 @@ class PayPalResourceModel extends PayPalModel
         ?array $headers = [],
         ?ApiContext $apiContext = null,
         ?PayPalRestCall $restCall = null,
-        array $handlers = [RestHandlerInterface::class]
+        array $handlers = [RestHandler::class]
     ): string {
         //Initialize the context and rest call object if not provided explicitly
         $apiContext = $apiContext ?: new ApiContext(self::$credential);

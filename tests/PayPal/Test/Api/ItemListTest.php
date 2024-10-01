@@ -2,10 +2,13 @@
 
 namespace PayPal\Test\Api;
 
+use JsonException;
 use PayPal\Api\Item;
 use PayPal\Api\ItemList;
 use PayPal\Exception\PayPalConfigurationException;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 
 /**
  * Class ItemList
@@ -27,8 +30,8 @@ class ItemListTest extends TestCase
      * Gets Object Instance with Json data filled in
      * @return ItemList
      * @throws PayPalConfigurationException
-     * @throws \JsonException
-     * @throws \ReflectionException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public static function getObject()
     {
@@ -40,8 +43,8 @@ class ItemListTest extends TestCase
      * Tests for Serialization and Deserialization Issues
      * @return ItemList
      * @throws PayPalConfigurationException
-     * @throws \JsonException
-     * @throws \ReflectionException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public function testSerializationDeserialization()
     {
@@ -51,29 +54,29 @@ class ItemListTest extends TestCase
         $this->assertNotNull($obj->getShippingAddress());
         $this->assertNotNull($obj->getShippingMethod());
         $this->assertNotNull($obj->getShippingPhoneNumber());
-        $this->assertEquals(self::getJson(), $obj->toJson());
+        $this->assertJsonStringEqualsJsonString(self::getJson(), $obj->toJson());
         return $obj;
     }
 
     /**
-     * @depends testSerializationDeserialization
      * @param ItemList $obj
      */
+    #[Depends('testSerializationDeserialization')]
     public function testGetters($obj)
     {
         $this->assertEquals($obj->getItems(), array(ItemTest::getObject()));
         $this->assertEquals($obj->getShippingAddress(), ShippingAddressTest::getObject());
-        $this->assertEquals($obj->getShippingMethod(), "TestSample");
-        $this->assertEquals($obj->getShippingPhoneNumber(), "TestSample");
+        $this->assertEquals("TestSample", $obj->getShippingMethod());
+        $this->assertEquals("TestSample", $obj->getShippingPhoneNumber());
     }
 
     /**
-     * @depends testSerializationDeserialization
      * @param ItemList $obj
      * @throws PayPalConfigurationException
-     * @throws \JsonException
-     * @throws \ReflectionException
+     * @throws JsonException
+     * @throws ReflectionException
      */
+    #[Depends('testSerializationDeserialization')]
     public function testAddRemove($obj)
     {
 		$item2 = new Item(ItemTest::getJSON());
@@ -86,6 +89,6 @@ class ItemListTest extends TestCase
 		$obj->removeItem($item2);
 		
 		$this->assertCount(2, $obj->getItems());
-		$this->assertContains('"items":[', $obj->toJSON());
+		$this->assertStringContainsString('"items":[', $obj->toJSON());
     }
 }

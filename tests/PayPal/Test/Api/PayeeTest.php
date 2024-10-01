@@ -2,9 +2,12 @@
 
 namespace PayPal\Test\Api;
 
+use JsonException;
 use PayPal\Api\Payee;
 use PayPal\Exception\PayPalConfigurationException;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 
 /**
  * Class Payee
@@ -19,15 +22,15 @@ class PayeeTest extends TestCase
      */
     public static function getJson()
     {
-        return '{"email":"TestSample","merchant_id":"TestSample","first_name":"TestSample","last_name":"TestSample","account_number":"TestSample","phone":' .PhoneTest::getJson() . '}';
+        return '{"email":"TestSample","merchant_id":"TestSample"}';
     }
 
     /**
      * Gets Object Instance with Json data filled in
      * @return Payee
      * @throws PayPalConfigurationException
-     * @throws \JsonException
-     * @throws \ReflectionException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public static function getObject()
     {
@@ -39,8 +42,8 @@ class PayeeTest extends TestCase
      * Tests for Serialization and Deserialization Issues
      * @return Payee
      * @throws PayPalConfigurationException
-     * @throws \JsonException
-     * @throws \ReflectionException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public function testSerializationDeserialization()
     {
@@ -48,25 +51,17 @@ class PayeeTest extends TestCase
         $this->assertNotNull($obj);
         $this->assertNotNull($obj->getEmail());
         $this->assertNotNull($obj->getMerchantId());
-        $this->assertNotNull($obj->getFirstName());
-        $this->assertNotNull($obj->getLastName());
-        $this->assertNotNull($obj->getAccountNumber());
-        $this->assertNotNull($obj->getPhone());
-        $this->assertEquals(self::getJson(), $obj->toJson());
+        $this->assertJsonStringEqualsJsonString(self::getJson(), $obj->toJson());
         return $obj;
     }
 
     /**
-     * @depends testSerializationDeserialization
      * @param Payee $obj
      */
+    #[Depends('testSerializationDeserialization')]
     public function testGetters($obj)
     {
-        $this->assertEquals($obj->getEmail(), "TestSample");
-        $this->assertEquals($obj->getMerchantId(), "TestSample");
-        $this->assertEquals($obj->getFirstName(), "TestSample");
-        $this->assertEquals($obj->getLastName(), "TestSample");
-        $this->assertEquals($obj->getAccountNumber(), "TestSample");
-        $this->assertEquals($obj->getPhone(), PhoneTest::getObject());
+        $this->assertEquals("TestSample", $obj->getEmail());
+        $this->assertEquals("TestSample", $obj->getMerchantId());
     }
 }

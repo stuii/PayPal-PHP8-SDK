@@ -2,10 +2,13 @@
 
 namespace PayPal\Test\Api;
 
+use JsonException;
 use PayPal\Common\PayPalModel;
 use PayPal\Api\WebhookEventList;
 use PayPal\Exception\PayPalConfigurationException;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 
 /**
  * Class WebhookEventList
@@ -20,15 +23,15 @@ class WebhookEventListTest extends TestCase
      */
     public static function getJson()
     {
-        return '{"events":' .WebhookEventTest::getJson() . ',"count":123,"links":' .LinksTest::getJson() . '}';
+        return '{"events":[' .WebhookEventTest::getJson() . '],"count":123,"links":[' .LinksTest::getJson() . ']}';
     }
 
     /**
      * Gets Object Instance with Json data filled in
      * @return WebhookEventList
      * @throws PayPalConfigurationException
-     * @throws \JsonException
-     * @throws \ReflectionException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public static function getObject()
     {
@@ -40,8 +43,8 @@ class WebhookEventListTest extends TestCase
      * Tests for Serialization and Deserialization Issues
      * @return WebhookEventList
      * @throws PayPalConfigurationException
-     * @throws \JsonException
-     * @throws \ReflectionException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public function testSerializationDeserialization()
     {
@@ -50,19 +53,19 @@ class WebhookEventListTest extends TestCase
         $this->assertNotNull($obj->getEvents());
         $this->assertNotNull($obj->getCount());
         $this->assertNotNull($obj->getLinks());
-        $this->assertEquals(self::getJson(), $obj->toJson());
+        $this->assertJsonStringEqualsJsonString(self::getJson(), $obj->toJson());
         return $obj;
     }
 
     /**
-     * @depends testSerializationDeserialization
      * @param WebhookEventList $obj
      */
+    #[Depends('testSerializationDeserialization')]
     public function testGetters($obj)
     {
-        $this->assertEquals($obj->getEvents(), WebhookEventTest::getObject());
-        $this->assertEquals($obj->getCount(), 123);
-        $this->assertEquals($obj->getLinks(), LinksTest::getObject());
+        $this->assertEquals($obj->getEvents(), [WebhookEventTest::getObject()]);
+        $this->assertEquals(123, $obj->getCount());
+        $this->assertEquals($obj->getLinks(), [LinksTest::getObject()]);
     }
 
 

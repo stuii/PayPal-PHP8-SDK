@@ -6,21 +6,14 @@ use PayPal\Common\PayPalModel;
 
 class BaseAddress extends PayPalModel
 {
-    private string $line1;
-
-    private string $line2;
-
-    private string $city;
-
-    private string $countryCode;
-
-    private string $postalCode;
-
-    private string $state;
-
-    private string $normalizationStatus;
-
-    private string $status;
+    private ?string $line1 = null;
+    private ?string $line2 = null;
+    private ?string $city = null;
+    private ?string $countryCode = null;
+    private ?string $postalCode = null;
+    private ?string $state = null;
+    private ?string $normalizationStatus = null;
+    private ?string $status = null;
 
     public function setLine1(string $line1): self
     {
@@ -28,7 +21,7 @@ class BaseAddress extends PayPalModel
         return $this;
     }
 
-    public function getLine1(): string
+    public function getLine1(): ?string
     {
         return $this->line1;
     }
@@ -39,7 +32,7 @@ class BaseAddress extends PayPalModel
         return $this;
     }
 
-    public function getLine2(): string
+    public function getLine2(): ?string
     {
         return $this->line2;
     }
@@ -50,7 +43,7 @@ class BaseAddress extends PayPalModel
         return $this;
     }
 
-    public function getCity(): string
+    public function getCity(): ?string
     {
         return $this->city;
     }
@@ -61,7 +54,7 @@ class BaseAddress extends PayPalModel
         return $this;
     }
 
-    public function getCountryCode(): string
+    public function getCountryCode(): ?string
     {
         return $this->countryCode;
     }
@@ -72,7 +65,7 @@ class BaseAddress extends PayPalModel
         return $this;
     }
 
-    public function getPostalCode(): string
+    public function getPostalCode(): ?string
     {
         return $this->postalCode;
     }
@@ -83,7 +76,7 @@ class BaseAddress extends PayPalModel
         return $this;
     }
 
-    public function getState(): string
+    public function getState(): ?string
     {
         return $this->state;
     }
@@ -94,7 +87,7 @@ class BaseAddress extends PayPalModel
         return $this;
     }
 
-    public function getNormalizationStatus(): string
+    public function getNormalizationStatus(): ?string
     {
         return $this->normalizationStatus;
     }
@@ -105,7 +98,7 @@ class BaseAddress extends PayPalModel
         return $this;
     }
 
-    public function getStatus(): string
+    public function getStatus(): ?string
     {
         return $this->status;
     }

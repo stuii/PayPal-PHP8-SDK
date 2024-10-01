@@ -6,13 +6,10 @@ use PayPal\Common\PayPalModel;
 
 class FundingInstrument extends PayPalModel
 {
-    private CreditCard $creditCard;
-
-    private CreditCardToken $creditCardToken;
-
-    private Billing $billing;
-
-    private PaymentCard $paymentCard;
+    private ?CreditCard $creditCard = null;
+    private ?CreditCardToken $creditCardToken = null;
+    private ?Billing $billing = null;
+    private ?PaymentCard $paymentCard = null;
 
 
     public function setCreditCard(CreditCard $creditCard): self
@@ -21,7 +18,7 @@ class FundingInstrument extends PayPalModel
         return $this;
     }
 
-    public function getCreditCard(): CreditCard
+    public function getCreditCard(): ?CreditCard
     {
         return $this->creditCard;
     }
@@ -32,7 +29,7 @@ class FundingInstrument extends PayPalModel
         return $this;
     }
 
-    public function getCreditCardToken(): CreditCardToken
+    public function getCreditCardToken(): ?CreditCardToken
     {
         return $this->creditCardToken;
     }
@@ -43,7 +40,7 @@ class FundingInstrument extends PayPalModel
         return $this;
     }
 
-    public function getPaymentCard(): PaymentCard
+    public function getPaymentCard(): ?PaymentCard
     {
         return $this->paymentCard;
     }
@@ -54,7 +51,7 @@ class FundingInstrument extends PayPalModel
         return $this;
     }
 
-    public function getBilling(): Billing
+    public function getBilling(): ?Billing
     {
         return $this->billing;
     }

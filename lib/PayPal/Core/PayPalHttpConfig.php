@@ -78,7 +78,7 @@ class PayPalHttpConfig
         $this->headers = $headers;
     }
 
-    public function addHeader(string $name, string $value, bool $override = true): void
+    public function addHeader(string $name, ?string $value, bool $override = true): void
     {
         if (!array_key_exists($name, $this->headers) || $override) {
             $this->headers[$name] = $value;

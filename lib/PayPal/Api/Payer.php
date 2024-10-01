@@ -8,12 +8,10 @@ class Payer extends PayPalModel
 {
     private string $paymentMethod;
 
-    private string $status;
+    private ?string $status = null;
 
-    /** @var array<FundingInstrument> */
-    private array $fundingInstruments;
-
-    private string $externalSelectedFundingInstrumentType;
+    /** @var array<\PayPal\Api\FundingInstrument> */
+    private array $fundingInstruments = [];
 
     private PayerInfo $payerInfo;
 
@@ -34,7 +32,7 @@ class Payer extends PayPalModel
         return $this;
     }
 
-    public function getStatus(): string
+    public function getStatus(): ?string
     {
         return $this->status;
     }

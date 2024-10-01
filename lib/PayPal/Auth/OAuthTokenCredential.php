@@ -13,8 +13,9 @@ use PayPal\Exception\PayPalConfigurationException;
 use PayPal\Exception\PayPalConnectionException;
 use PayPal\Exception\PayPalInvalidCredentialException;
 use PayPal\Exception\PayPalMissingCredentialException;
+use PayPal\Handler\OAuthHandler;
 use PayPal\Handler\PayPalHandlerInterface;
-use PayPal\Handler\RestHandlerInterface;
+use PayPal\Handler\RestHandler;
 use PayPal\Rest\ApiContext;
 use PayPal\Security\Cipher;
 
@@ -24,7 +25,7 @@ use PayPal\Security\Cipher;
 class OAuthTokenCredential extends PayPalResourceModel
 {
 
-    public const string AUTH_HANDLER = RestHandlerInterface::class;
+    public const string AUTH_HANDLER = OAuthHandler::class;
 
     public static int $expiryBufferTime = 120;
 
@@ -32,11 +33,11 @@ class OAuthTokenCredential extends PayPalResourceModel
 
     private string $clientSecret;
 
-    private ?string $targetSubject;
+    private ?string $targetSubject = null;
 
-    private ?string $accessToken;
+    private ?string $accessToken = null;
 
-    private ?int $tokenExpiresIn;
+    private ?int $tokenExpiresIn = null;
 
     private float $tokenCreateTime;
 

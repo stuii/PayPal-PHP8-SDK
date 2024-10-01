@@ -21,7 +21,7 @@ abstract class AuthorizationCache
     public static function pull(?array $config = null, ?string $clientId = null): mixed
     {
         // Return if not enabled
-        if (!self::isEnabled($config)) {
+        if (!self::isEnabled($config ?? [])) {
             return null;
         }
 

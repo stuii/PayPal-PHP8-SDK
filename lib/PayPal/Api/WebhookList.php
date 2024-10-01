@@ -6,7 +6,7 @@ use PayPal\Common\PayPalModel;
 
 class WebhookList extends PayPalModel
 {
-    /** @var array<Webhook> $webhooks  */
+    /** @var array<\PayPal\Api\Webhook> $webhooks  */
     private array $webhooks;
 
     /**

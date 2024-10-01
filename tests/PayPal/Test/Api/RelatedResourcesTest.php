@@ -2,9 +2,12 @@
 
 namespace PayPal\Test\Api;
 
+use JsonException;
 use PayPal\Api\RelatedResources;
 use PayPal\Exception\PayPalConfigurationException;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 
 /**
  * Class RelatedResources
@@ -26,8 +29,8 @@ class RelatedResourcesTest extends TestCase
      * Gets Object Instance with Json data filled in
      * @return RelatedResources
      * @throws PayPalConfigurationException
-     * @throws \JsonException
-     * @throws \ReflectionException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public static function getObject()
     {
@@ -39,8 +42,8 @@ class RelatedResourcesTest extends TestCase
      * Tests for Serialization and Deserialization Issues
      * @return RelatedResources
      * @throws PayPalConfigurationException
-     * @throws \JsonException
-     * @throws \ReflectionException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public function testSerializationDeserialization()
     {
@@ -51,14 +54,14 @@ class RelatedResourcesTest extends TestCase
         $this->assertNotNull($obj->getOrder());
         $this->assertNotNull($obj->getCapture());
         $this->assertNotNull($obj->getRefund());
-        $this->assertEquals(self::getJson(), $obj->toJson());
+        $this->assertJsonStringEqualsJsonString(self::getJson(), $obj->toJson());
         return $obj;
     }
 
     /**
-     * @depends testSerializationDeserialization
      * @param RelatedResources $obj
      */
+    #[Depends('testSerializationDeserialization')]
     public function testGetters($obj)
     {
         $this->assertEquals($obj->getSale(), SaleTest::getObject());

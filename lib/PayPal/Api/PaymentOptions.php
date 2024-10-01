@@ -6,7 +6,7 @@ use PayPal\Common\PayPalModel;
 
 class PaymentOptions extends PayPalModel
 {
-    private string $allowedPaymentMethod;
+    private ?string $allowedPaymentMethod = null;
 
     public function setAllowedPaymentMethod(string $allowedPaymentMethod): self
     {
@@ -14,7 +14,7 @@ class PaymentOptions extends PayPalModel
         return $this;
     }
 
-    public function getAllowedPaymentMethod(): string
+    public function getAllowedPaymentMethod(): ?string
     {
         return $this->allowedPaymentMethod;
     }

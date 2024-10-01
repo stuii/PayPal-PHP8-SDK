@@ -13,29 +13,18 @@ use ReflectionException;
 
 class Refund extends PayPalResourceModel
 {
-    private string $id;
-
-    private Amount $amount;
-
-    private string $state;
-
-    private string $reason;
-
-    private string $invoiceNumber;
-
-    private string $saleId;
-
-    private string $captureId;
-
-    private string $parentPayment;
-
-    private string $description;
-
-    private string $createTime;
-
-    private string $updateTime;
-
-    private string $reasonCode;
+    private ?string $id = null;
+    private ?Amount $amount = null;
+    private ?string $state = null;
+    private ?string $reason = null;
+    private ?string $invoiceNumber = null;
+    private ?string $saleId = null;
+    private ?string $captureId = null;
+    private ?string $parentPayment = null;
+    private ?string $description = null;
+    private ?string $createTime = null;
+    private ?string $updateTime = null;
+    private ?string $reasonCode = null;
 
 
     public function setId(string $id): self
@@ -44,7 +33,7 @@ class Refund extends PayPalResourceModel
         return $this;
     }
 
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -55,7 +44,7 @@ class Refund extends PayPalResourceModel
         return $this;
     }
 
-    public function getAmount(): Amount
+    public function getAmount(): ?Amount
     {
         return $this->amount;
     }
@@ -66,7 +55,7 @@ class Refund extends PayPalResourceModel
         return $this;
     }
 
-    public function getState(): string
+    public function getState(): ?string
     {
         return $this->state;
     }
@@ -77,7 +66,7 @@ class Refund extends PayPalResourceModel
         return $this;
     }
 
-    public function getReason(): string
+    public function getReason(): ?string
     {
         return $this->reason;
     }
@@ -88,7 +77,7 @@ class Refund extends PayPalResourceModel
         return $this;
     }
 
-    public function getInvoiceNumber(): string
+    public function getInvoiceNumber(): ?string
     {
         return $this->invoiceNumber;
     }
@@ -99,7 +88,7 @@ class Refund extends PayPalResourceModel
         return $this;
     }
 
-    public function getSaleId(): string
+    public function getSaleId(): ?string
     {
         return $this->saleId;
     }
@@ -110,7 +99,7 @@ class Refund extends PayPalResourceModel
         return $this;
     }
 
-    public function getCaptureId(): string
+    public function getCaptureId(): ?string
     {
         return $this->captureId;
     }
@@ -121,7 +110,7 @@ class Refund extends PayPalResourceModel
         return $this;
     }
 
-    public function getParentPayment(): string
+    public function getParentPayment(): ?string
     {
         return $this->parentPayment;
     }
@@ -132,7 +121,7 @@ class Refund extends PayPalResourceModel
         return $this;
     }
 
-    public function getDescription(): string
+    public function getDescription(): ?string
     {
         return $this->description;
     }
@@ -143,7 +132,7 @@ class Refund extends PayPalResourceModel
         return $this;
     }
 
-    public function getCreateTime(): string
+    public function getCreateTime(): ?string
     {
         return $this->createTime;
     }
@@ -154,7 +143,7 @@ class Refund extends PayPalResourceModel
         return $this;
     }
 
-    public function getUpdateTime(): string
+    public function getUpdateTime(): ?string
     {
         return $this->updateTime;
     }
@@ -165,7 +154,7 @@ class Refund extends PayPalResourceModel
         return $this;
     }
 
-    public function getReasonCode(): string
+    public function getReasonCode(): ?string
     {
         return $this->reasonCode;
     }

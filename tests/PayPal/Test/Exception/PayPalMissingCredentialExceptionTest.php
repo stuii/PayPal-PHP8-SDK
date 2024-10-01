@@ -1,4 +1,7 @@
 <?php
+
+namespace PayPal\Test\Exception;
+
 use PayPal\Exception\PayPalMissingCredentialException;
 use PHPUnit\Framework\TestCase;
 
@@ -35,6 +38,6 @@ class PayPalMissingCredentialExceptionTest extends TestCase
     public function testErrorMessage()
     {
         $msg = $this->object->errorMessage();
-        $this->assertContains('Error on line', $msg);
+        $this->assertStringContainsString('Error on line', $msg);
     }
 }

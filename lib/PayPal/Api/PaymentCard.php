@@ -40,9 +40,6 @@ class PaymentCard extends PayPalModel
 
     private string $issueNumber;
 
-    /** @var array<Links> $links */
-    private array $links;
-
 
     public function setId(string $id): self
     {

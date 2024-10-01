@@ -8,31 +8,19 @@ use PayPal\Validation\UrlValidator;
 
 class CartBase extends PayPalModel
 {
-    private string $referenceId;
-
-    private Amount $amount;
-
-    private Payee $payee;
-
-    private string $description;
-
-    private string $noteToPayee;
-
-    private string $custom;
-
-    private string $invoiceNumber;
-
-    private string $purchaseOrder;
-
-    private string $softDescriptor;
-
-    private PaymentOptions $paymentOptions;
-
-    private ItemList $itemList;
-
-    private string $notifyUrl;
-
-    private string $orderUrl;
+    private ?string $referenceId = null;
+    private ?Amount $amount = null;
+    private ?Payee $payee = null;
+    private ?string $description = null;
+    private ?string $noteToPayee = null;
+    private ?string $custom = null;
+    private ?string $invoiceNumber = null;
+    private ?string $purchaseOrder = null;
+    private ?string $softDescriptor = null;
+    private ?PaymentOptions $paymentOptions = null;
+    private ?ItemList $itemList = null;
+    private ?string $notifyUrl = null;
+    private ?string $orderUrl = null;
 
     public function setReferenceId(string $referenceId): self
     {
@@ -40,7 +28,7 @@ class CartBase extends PayPalModel
         return $this;
     }
 
-    public function getReferenceId(): string
+    public function getReferenceId(): ?string
     {
         return $this->referenceId;
     }
@@ -51,7 +39,7 @@ class CartBase extends PayPalModel
         return $this;
     }
 
-    public function getAmount(): Amount
+    public function getAmount(): ?Amount
     {
         return $this->amount;
     }
@@ -62,7 +50,7 @@ class CartBase extends PayPalModel
         return $this;
     }
 
-    public function getPayee(): Payee
+    public function getPayee(): ?Payee
     {
         return $this->payee;
     }
@@ -73,7 +61,7 @@ class CartBase extends PayPalModel
         return $this;
     }
 
-    public function getDescription(): string
+    public function getDescription(): ?string
     {
         return $this->description;
     }
@@ -84,7 +72,7 @@ class CartBase extends PayPalModel
         return $this;
     }
 
-    public function getNoteToPayee(): string
+    public function getNoteToPayee(): ?string
     {
         return $this->noteToPayee;
     }
@@ -95,7 +83,7 @@ class CartBase extends PayPalModel
         return $this;
     }
 
-    public function getCustom(): string
+    public function getCustom(): ?string
     {
         return $this->custom;
     }
@@ -106,7 +94,7 @@ class CartBase extends PayPalModel
         return $this;
     }
 
-    public function getInvoiceNumber(): string
+    public function getInvoiceNumber(): ?string
     {
         return $this->invoiceNumber;
     }
@@ -117,7 +105,7 @@ class CartBase extends PayPalModel
         return $this;
     }
 
-    public function getPurchaseOrder(): string
+    public function getPurchaseOrder(): ?string
     {
         return $this->purchaseOrder;
     }
@@ -128,7 +116,7 @@ class CartBase extends PayPalModel
         return $this;
     }
 
-    public function getSoftDescriptor(): string
+    public function getSoftDescriptor(): ?string
     {
         return $this->softDescriptor;
     }
@@ -139,7 +127,7 @@ class CartBase extends PayPalModel
         return $this;
     }
 
-    public function getPaymentOptions(): PaymentOptions
+    public function getPaymentOptions(): ?PaymentOptions
     {
         return $this->paymentOptions;
     }
@@ -150,7 +138,7 @@ class CartBase extends PayPalModel
         return $this;
     }
 
-    public function getItemList(): ItemList
+    public function getItemList(): ?ItemList
     {
         return $this->itemList;
     }
@@ -165,7 +153,7 @@ class CartBase extends PayPalModel
         return $this;
     }
 
-    public function getNotifyUrl(): string
+    public function getNotifyUrl(): ?string
     {
         return $this->notifyUrl;
     }
@@ -180,7 +168,7 @@ class CartBase extends PayPalModel
         return $this;
     }
 
-    public function getOrderUrl(): string
+    public function getOrderUrl(): ?string
     {
         return $this->orderUrl;
     }

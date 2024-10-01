@@ -2,9 +2,12 @@
 
 namespace PayPal\Test\Api;
 
+use JsonException;
 use PayPal\Api\Currency;
 use PayPal\Exception\PayPalConfigurationException;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 
 /**
  * Class Currency
@@ -28,8 +31,8 @@ class CurrencyTest extends TestCase
      *
      * @return Currency
      * @throws PayPalConfigurationException
-     * @throws \JsonException
-     * @throws \ReflectionException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public static function getObject()
     {
@@ -42,8 +45,8 @@ class CurrencyTest extends TestCase
      *
      * @return Currency
      * @throws PayPalConfigurationException
-     * @throws \JsonException
-     * @throws \ReflectionException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public function testSerializationDeserialization()
     {
@@ -51,17 +54,17 @@ class CurrencyTest extends TestCase
         $this->assertNotNull($obj);
         $this->assertNotNull($obj->getCurrency());
         $this->assertNotNull($obj->getValue());
-        $this->assertEquals(self::getJson(), $obj->toJson());
+        $this->assertJsonStringEqualsJsonString(self::getJson(), $obj->toJson());
         return $obj;
     }
 
     /**
-     * @depends testSerializationDeserialization
      * @param Currency $obj
      */
+    #[Depends('testSerializationDeserialization')]
     public function testGetters($obj)
     {
-        $this->assertEquals($obj->getCurrency(), "TestSample");
-        $this->assertEquals($obj->getValue(), "12.34");
+        $this->assertEquals("TestSample", $obj->getCurrency());
+        $this->assertEquals("12.34", $obj->getValue());
     }
 }

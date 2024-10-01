@@ -14,33 +14,28 @@ use ReflectionException;
 
 class Payment extends PayPalResourceModel
 {
-    private string $id;
+    private ?string $id = null;
 
     private string $intent;
 
     private Payer $payer;
 
-    /** @var array<Transaction> $transactions */
-    private array $transactions;
+    /** @var array<\PayPal\Api\Transaction> $transactions */
+    private array $transactions = [];
 
-    private string $state;
+    private ?string $state = null;
 
-    private string $experienceProfileId;
+    private ?string $noteToPayer = null;
 
-    private string $noteToPayer;
+    private ?Payee $payee = null;
 
-    private Payee $payee;
+    private RedirectUrls $redirectUrls;
 
-    private RedirectUrls $redirect_urls;
+    private ?string $failureReason = null;
 
-    private string $failureReason;
+    private ?string $createTime = null;
 
-    private string $createTime;
-
-    private string $updateTime;
-
-    /** @var array<Links> $links */
-    public array $links;
+    private ?string $updateTime = null;
 
     public function setId(string $id): self
     {
@@ -48,7 +43,7 @@ class Payment extends PayPalResourceModel
         return $this;
     }
 
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -81,7 +76,7 @@ class Payment extends PayPalResourceModel
         return $this;
     }
 
-    public function getPayee(): Payee
+    public function getPayee(): ?Payee
     {
         return $this->payee;
     }
@@ -127,7 +122,7 @@ class Payment extends PayPalResourceModel
         return $this;
     }
 
-    public function getState(): string
+    public function getState(): ?string
     {
         return $this->state;
     }
@@ -138,7 +133,7 @@ class Payment extends PayPalResourceModel
         return $this;
     }
 
-    public function getExperienceProfileId(): string
+    public function getExperienceProfileId(): ?string
     {
         return $this->experienceProfileId;
     }
@@ -149,20 +144,20 @@ class Payment extends PayPalResourceModel
         return $this;
     }
 
-    public function getNoteToPayer(): string
+    public function getNoteToPayer(): ?string
     {
         return $this->noteToPayer;
     }
 
-    public function setRedirectUrls(RedirectUrls $redirect_urls): self
+    public function setRedirectUrls(RedirectUrls $redirectUrls): self
     {
-        $this->redirect_urls = $redirect_urls;
+        $this->redirectUrls = $redirectUrls;
         return $this;
     }
 
     public function getRedirectUrls(): RedirectUrls
     {
-        return $this->redirect_urls;
+        return $this->redirectUrls;
     }
 
     public function setFailureReason(string $failureReason): self
@@ -171,7 +166,7 @@ class Payment extends PayPalResourceModel
         return $this;
     }
 
-    public function getFailureReason(): string
+    public function getFailureReason(): ?string
     {
         return $this->failureReason;
     }
@@ -182,7 +177,7 @@ class Payment extends PayPalResourceModel
         return $this;
     }
 
-    public function getCreateTime(): string
+    public function getCreateTime(): ?string
     {
         return $this->createTime;
     }
@@ -193,7 +188,7 @@ class Payment extends PayPalResourceModel
         return $this;
     }
 
-    public function getUpdateTime(): string
+    public function getUpdateTime(): ?string
     {
         return $this->updateTime;
     }

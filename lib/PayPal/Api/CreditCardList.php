@@ -6,12 +6,12 @@ use PayPal\Common\PayPalResourceModel;
 
 class CreditCardList extends PayPalResourceModel
 {
-    /** @var array<CreditCard> $items */
-    private array $items;
+    /** @var array<\PayPal\Api\CreditCard> $items */
+    private array $items = [];
 
-    private int $totalItems;
+    private int $totalItems = 0;
 
-    private int $totalPages;
+    private int $totalPages = 0;
 
     /**
      * @param array<CreditCard> $items

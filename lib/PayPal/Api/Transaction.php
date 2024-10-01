@@ -4,8 +4,8 @@ namespace PayPal\Api;
 
 class Transaction extends TransactionBase
 {
-    /** @var array<Transaction> $transactions */
-    private array $transactions;
+    /** @var array<\PayPal\Api\Transaction> $transactions */
+    private array $transactions = [];
 
     public function setTransactions(array $transactions): self
     {

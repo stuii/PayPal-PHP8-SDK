@@ -1,4 +1,7 @@
 <?php
+
+namespace PayPal\Test\Core;
+
 use PayPal\Core\PayPalLoggingManager;
 use PHPUnit\Framework\TestCase;
 
@@ -34,6 +37,7 @@ class PayPalLoggingManagerTest extends TestCase
      */
     public function testError()
     {
+        $this->expectNotToPerformAssertions();
         $this->object->error('Test Error Message');
     }
 
@@ -41,6 +45,7 @@ class PayPalLoggingManagerTest extends TestCase
      */
     public function testWarning()
     {
+        $this->expectNotToPerformAssertions();
         $this->object->warning('Test Warning Message');
     }
 
@@ -48,6 +53,7 @@ class PayPalLoggingManagerTest extends TestCase
      */
     public function testInfo()
     {
+        $this->expectNotToPerformAssertions();
         $this->object->info('Test info Message');
     }
 
@@ -55,6 +61,7 @@ class PayPalLoggingManagerTest extends TestCase
      */
     public function testFine()
     {
+        $this->expectNotToPerformAssertions();
         $this->object->fine('Test fine Message');
     }
 }

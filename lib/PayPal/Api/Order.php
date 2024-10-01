@@ -13,42 +13,29 @@ use ReflectionException;
 
 class Order extends PayPalResourceModel
 {
-    private string $id;
+    private ?string $id = null;
+    private ?string $referenceId = null;
+    private ?Amount $amount = null;
+    private ?string $paymentMode = null;
+    private ?string $state = null;
+    private ?string $reasonCode = null;
+    private ?string $pendingReason = null;
+    private ?string $protectionEligibility = null;
+    private ?string $protectionEligibilityType = null;
+    private ?string $parentPayment = null;
+    private ?FmfDetails $fmfDetails = null;
+    private ?string $createTime = null;
+    private ?string $updateTime = null;
+    private ?string $purchaseUnitReferenceId = null;
 
-    private string $referenceId;
-
-    private Amount $amount;
-
-    private string $paymentMode;
-
-    private string $state;
-
-    private string $reasonCode;
-
-    private string $pendingReason;
-
-    private string $protectionEligibility;
-
-    private string $protectionEligibilityType;
-
-    private string $parentPayment;
-
-    private FmfDetails $fmfDetails;
-
-    private string $createTime;
-
-    private string $updateTime;
-
-    private string $purchaseUnitReferenceId;
-
-
+    
     public function setId(string $id): self
     {
         $this->id = $id;
         return $this;
     }
 
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -59,7 +46,7 @@ class Order extends PayPalResourceModel
         return $this;
     }
 
-    public function getPurchaseUnitReferenceId(): string
+    public function getPurchaseUnitReferenceId(): ?string
     {
         return $this->purchaseUnitReferenceId;
     }
@@ -70,7 +57,7 @@ class Order extends PayPalResourceModel
         return $this;
     }
 
-    public function getReferenceId(): string
+    public function getReferenceId(): ?string
     {
         return $this->referenceId;
     }
@@ -81,7 +68,7 @@ class Order extends PayPalResourceModel
         return $this;
     }
 
-    public function getAmount(): Amount
+    public function getAmount(): ?Amount
     {
         return $this->amount;
     }
@@ -92,7 +79,7 @@ class Order extends PayPalResourceModel
         return $this;
     }
 
-    public function getPaymentMode(): string
+    public function getPaymentMode(): ?string
     {
         return $this->paymentMode;
     }
@@ -103,7 +90,7 @@ class Order extends PayPalResourceModel
         return $this;
     }
 
-    public function getState(): string
+    public function getState(): ?string
     {
         return $this->state;
     }
@@ -114,7 +101,7 @@ class Order extends PayPalResourceModel
         return $this;
     }
 
-    public function getReasonCode(): string
+    public function getReasonCode(): ?string
     {
         return $this->reasonCode;
     }
@@ -131,7 +118,7 @@ class Order extends PayPalResourceModel
     /**
      * @deprecated [DEPRECATED] Reason code for the transaction state being Pending. Obsolete. Retained for backward compatability. Use reason_code field above instead.
      */
-    public function getPendingReason(): string
+    public function getPendingReason(): ?string
     {
         return $this->pendingReason;
     }
@@ -142,7 +129,7 @@ class Order extends PayPalResourceModel
         return $this;
     }
 
-    public function getProtectionEligibility(): string
+    public function getProtectionEligibility(): ?string
     {
         return $this->protectionEligibility;
     }
@@ -153,7 +140,7 @@ class Order extends PayPalResourceModel
         return $this;
     }
 
-    public function getProtectionEligibilityType(): string
+    public function getProtectionEligibilityType(): ?string
     {
         return $this->protectionEligibilityType;
     }
@@ -164,7 +151,7 @@ class Order extends PayPalResourceModel
         return $this;
     }
 
-    public function getParentPayment(): string
+    public function getParentPayment(): ?string
     {
         return $this->parentPayment;
     }
@@ -175,7 +162,7 @@ class Order extends PayPalResourceModel
         return $this;
     }
 
-    public function getFmfDetails(): FmfDetails
+    public function getFmfDetails(): ?FmfDetails
     {
         return $this->fmfDetails;
     }
@@ -186,7 +173,7 @@ class Order extends PayPalResourceModel
         return $this;
     }
 
-    public function getCreateTime(): string
+    public function getCreateTime(): ?string
     {
         return $this->createTime;
     }
@@ -197,7 +184,7 @@ class Order extends PayPalResourceModel
         return $this;
     }
 
-    public function getUpdateTime(): string
+    public function getUpdateTime(): ?string
     {
         return $this->updateTime;
     }

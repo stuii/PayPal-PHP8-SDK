@@ -8,21 +8,14 @@ use PayPal\Validation\NumericValidator;
 
 class Details extends PayPalModel
 {
-    private string $subtotal;
-
-    private string $shipping;
-
-    private string $tax;
-
-    private string $handlingFee;
-
-    private string $shippingDiscount;
-
-    private string $insurance;
-
-    private string $giftWrap;
-
-    private string $fee;
+    private ?string $subtotal = null;
+    private ?string $shipping = null;
+    private ?string $tax = null;
+    private ?string $handlingFee = null;
+    private ?string $shippingDiscount = null;
+    private ?string $insurance = null;
+    private ?string $giftWrap = null;
+    private ?string $fee = null;
 
     public function setSubtotal(string|float $subtotal): self
     {
@@ -32,7 +25,7 @@ class Details extends PayPalModel
         return $this;
     }
 
-    public function getSubtotal(): string
+    public function getSubtotal(): ?string
     {
         return $this->subtotal;
     }
@@ -45,7 +38,7 @@ class Details extends PayPalModel
         return $this;
     }
 
-    public function getShipping(): string
+    public function getShipping(): ?string
     {
         return $this->shipping;
     }
@@ -58,7 +51,7 @@ class Details extends PayPalModel
         return $this;
     }
 
-    public function getTax(): string
+    public function getTax(): ?string
     {
         return $this->tax;
     }
@@ -71,7 +64,7 @@ class Details extends PayPalModel
         return $this;
     }
 
-    public function getHandlingFee(): string
+    public function getHandlingFee(): ?string
     {
         return $this->handlingFee;
     }
@@ -84,7 +77,7 @@ class Details extends PayPalModel
         return $this;
     }
 
-    public function getShippingDiscount(): string
+    public function getShippingDiscount(): ?string
     {
         return $this->shippingDiscount;
     }
@@ -97,7 +90,7 @@ class Details extends PayPalModel
         return $this;
     }
 
-    public function getInsurance(): string
+    public function getInsurance(): ?string
     {
         return $this->insurance;
     }
@@ -110,7 +103,7 @@ class Details extends PayPalModel
         return $this;
     }
 
-    public function getGiftWrap(): string
+    public function getGiftWrap(): ?string
     {
         return $this->giftWrap;
     }
@@ -123,7 +116,7 @@ class Details extends PayPalModel
         return $this;
     }
 
-    public function getFee(): string
+    public function getFee(): ?string
     {
         return $this->fee;
     }

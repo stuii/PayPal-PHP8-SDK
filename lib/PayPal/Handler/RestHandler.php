@@ -16,7 +16,7 @@ use Paypal\Rest\ApiContext;
 /**
  * Class RestHandler
  */
-readonly class RestHandlerInterface implements PayPalHandlerInterface
+readonly class RestHandler implements PayPalHandlerInterface
 {
     public function __construct(private ApiContext $apiContext)
     {
@@ -49,7 +49,6 @@ readonly class RestHandlerInterface implements PayPalHandlerInterface
         if (!$credential instanceof OAuthTokenCredential) {
             throw new PayPalInvalidCredentialException('Invalid credentials passed');
         }
-
         $httpConfig->setUrl(
             rtrim(trim($this->getEndpoint($config)), '/') .
             ($options['path'] ?? '')
@@ -62,7 +61,7 @@ readonly class RestHandlerInterface implements PayPalHandlerInterface
             $httpConfig->addHeader('User-Agent', PayPalUserAgent::getValue(PayPalConstants::SDK_NAME, PayPalConstants::SDK_VERSION));
         }
 
-        if ($httpConfig->getHeader('Authorization') !== null) {
+        if ($httpConfig->getHeader('Authorization') === null) {
             $httpConfig->addHeader('Authorization', 'Bearer ' . $credential->getAccessToken($config), false);
         }
 

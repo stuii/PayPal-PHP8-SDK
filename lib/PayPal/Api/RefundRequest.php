@@ -6,17 +6,12 @@ use PayPal\Common\PayPalModel;
 
 class RefundRequest extends PayPalModel
 {
-    private Amount $amount;
-
-    private string $description;
-
-    private string $refundSource;
-
-    private string $reason;
-
-    private string $invoiceNumber;
-
-    private bool $refundAdvice;
+    private ?Amount $amount = null;
+    private ?string $description = null;
+    private ?string $refundSource = null;
+    private ?string $reason = null;
+    private ?string $invoiceNumber = null;
+    private bool $refundAdvice = false;
 
     public function setAmount(Amount $amount): self
     {
@@ -24,7 +19,7 @@ class RefundRequest extends PayPalModel
         return $this;
     }
 
-    public function getAmount(): Amount
+    public function getAmount(): ?Amount
     {
         return $this->amount;
     }
@@ -35,7 +30,7 @@ class RefundRequest extends PayPalModel
         return $this;
     }
 
-    public function getDescription(): string
+    public function getDescription(): ?string
     {
         return $this->description;
     }
@@ -46,7 +41,7 @@ class RefundRequest extends PayPalModel
         return $this;
     }
 
-    public function getRefundSource(): string
+    public function getRefundSource(): ?string
     {
         return $this->refundSource;
     }
@@ -57,7 +52,7 @@ class RefundRequest extends PayPalModel
         return $this;
     }
 
-    public function getReason(): string
+    public function getReason(): ?string
     {
         return $this->reason;
     }
@@ -68,7 +63,7 @@ class RefundRequest extends PayPalModel
         return $this;
     }
 
-    public function getInvoiceNumber(): string
+    public function getInvoiceNumber(): ?string
     {
         return $this->invoiceNumber;
     }
