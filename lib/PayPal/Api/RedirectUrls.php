@@ -2,67 +2,45 @@
 
 namespace PayPal\Api;
 
+use InvalidArgumentException;
 use PayPal\Common\PayPalModel;
 use PayPal\Validation\UrlValidator;
 
-/**
- * Class RedirectUrls
- *
- * Set of redirect URLs you provide only for PayPal-based payments.
- *
- * @package PayPal\Api
- *
- * @property string return_url
- * @property string cancel_url
- */
 class RedirectUrls extends PayPalModel
 {
+    private string $returnUrl;
+
+    private string $cancelUrl;
+
+
     /**
-     * Url where the payer would be redirected to after approving the payment. **Required for PayPal account payments.**
-     *
-     * @param string $return_url
-     * @throws \InvalidArgumentException
-     * @return $this
+     * @throws InvalidArgumentException
      */
-    public function setReturnUrl($return_url)
+    public function setReturnUrl(string $returnUrl): self
     {
-        UrlValidator::validate($return_url, "ReturnUrl");
-        $this->return_url = $return_url;
+        UrlValidator::validate($returnUrl, 'ReturnUrl');
+        $this->returnUrl = $returnUrl;
         return $this;
     }
 
-    /**
-     * Url where the payer would be redirected to after approving the payment. **Required for PayPal account payments.**
-     *
-     * @return string
-     */
-    public function getReturnUrl()
+    public function getReturnUrl(): string
     {
-        return $this->return_url;
+        return $this->returnUrl;
     }
 
     /**
-     * Url where the payer would be redirected to after canceling the payment. **Required for PayPal account payments.**
-     *
-     * @param string $cancel_url
-     * @throws \InvalidArgumentException
-     * @return $this
+     * @throws InvalidArgumentException
      */
-    public function setCancelUrl($cancel_url)
+    public function setCancelUrl(string $cancelUrl): self
     {
-        UrlValidator::validate($cancel_url, "CancelUrl");
-        $this->cancel_url = $cancel_url;
+        UrlValidator::validate($cancelUrl, 'CancelUrl');
+        $this->cancelUrl = $cancelUrl;
         return $this;
     }
 
-    /**
-     * Url where the payer would be redirected to after canceling the payment. **Required for PayPal account payments.**
-     *
-     * @return string
-     */
-    public function getCancelUrl()
+    public function getCancelUrl(): string
     {
-        return $this->cancel_url;
+        return $this->cancelUrl;
     }
 
 }

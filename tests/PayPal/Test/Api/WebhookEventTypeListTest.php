@@ -2,9 +2,13 @@
 
 namespace PayPal\Test\Api;
 
+use JsonException;
 use PayPal\Common\PayPalModel;
 use PayPal\Api\WebhookEventTypeList;
+use PayPal\Exception\PayPalConfigurationException;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 
 /**
  * Class WebhookEventTypeList
@@ -19,12 +23,15 @@ class WebhookEventTypeListTest extends TestCase
      */
     public static function getJson()
     {
-        return '{"event_types":' .WebhookEventTypeTest::getJson() . '}';
+        return '{"event_types":[' .WebhookEventTypeTest::getJson() . ']}';
     }
 
     /**
      * Gets Object Instance with Json data filled in
      * @return WebhookEventTypeList
+     * @throws PayPalConfigurationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public static function getObject()
     {
@@ -35,23 +42,26 @@ class WebhookEventTypeListTest extends TestCase
     /**
      * Tests for Serialization and Deserialization Issues
      * @return WebhookEventTypeList
+     * @throws PayPalConfigurationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public function testSerializationDeserialization()
     {
         $obj = new WebhookEventTypeList(self::getJson());
         $this->assertNotNull($obj);
         $this->assertNotNull($obj->getEventTypes());
-        $this->assertEquals(self::getJson(), $obj->toJson());
+        $this->assertJsonStringEqualsJsonString(self::getJson(), $obj->toJson());
         return $obj;
     }
 
     /**
-     * @depends testSerializationDeserialization
      * @param WebhookEventTypeList $obj
      */
+    #[Depends('testSerializationDeserialization')]
     public function testGetters($obj)
     {
-        $this->assertEquals($obj->getEventTypes(), WebhookEventTypeTest::getObject());
+        $this->assertEquals($obj->getEventTypes(), [WebhookEventTypeTest::getObject()]);
     }
 
 

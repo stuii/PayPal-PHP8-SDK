@@ -4,68 +4,43 @@ namespace PayPal\Api;
 
 use PayPal\Common\PayPalModel;
 
-/**
- * Class WebhookEventTypeList
- *
- * List of webhook events.
- *
- * @package PayPal\Api
- *
- * @property \PayPal\Api\WebhookEventType[] event_types
- */
 class WebhookEventTypeList extends PayPalModel
 {
+    /** @var array<\PayPal\Api\WebhookEventType> $eventTypes */
+    private array $eventTypes;
+
     /**
-     * A list of webhook events.
-     *
-     * @param \PayPal\Api\WebhookEventType[] $event_types
-     * 
-     * @return $this
+     * @param array<WebhookEventType> $eventTypes
      */
-    public function setEventTypes($event_types)
+    public function setEventTypes(array $eventTypes): self
     {
-        $this->event_types = $event_types;
+        $this->eventTypes = $eventTypes;
         return $this;
     }
 
     /**
-     * A list of webhook events.
-     *
-     * @return \PayPal\Api\WebhookEventType[]
+     * @return array<WebhookEventType>
      */
-    public function getEventTypes()
+    public function getEventTypes(): array
     {
-        return $this->event_types;
+        return $this->eventTypes;
     }
 
-    /**
-     * Append EventTypes to the list.
-     *
-     * @param \PayPal\Api\WebhookEventType $webhookEventType
-     * @return $this
-     */
-    public function addEventType($webhookEventType)
+    public function addEventType(WebhookEventType $webhookEventType): ?self
     {
         if (!$this->getEventTypes()) {
-            return $this->setEventTypes(array($webhookEventType));
-        } else {
-            return $this->setEventTypes(
-                array_merge($this->getEventTypes(), array($webhookEventType))
-            );
+            return $this->setEventTypes([$webhookEventType]);
         }
-    }
 
-    /**
-     * Remove EventTypes from the list.
-     *
-     * @param \PayPal\Api\WebhookEventType $webhookEventType
-     * @return $this
-     */
-    public function removeEventType($webhookEventType)
-    {
         return $this->setEventTypes(
-            array_diff($this->getEventTypes(), array($webhookEventType))
+            [...$this->getEventTypes(), $webhookEventType]
         );
     }
 
+    public function removeEventType(WebhookEventType $webhookEventType): self
+    {
+        return $this->setEventTypes(
+            array_diff($this->getEventTypes(), [$webhookEventType])
+        );
+    }
 }

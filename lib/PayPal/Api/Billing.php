@@ -4,40 +4,20 @@ namespace PayPal\Api;
 
 use PayPal\Common\PayPalModel;
 
-/**
- * Class Billing
- *
- * Billing instrument used to charge the payer.
- *
- * @package PayPal\Api
- *
- * @deprecated Used internally only.
- *
- * @property string billing_agreement_id
- */
 class Billing extends PayPalModel
 {
-    /**
-     * Identifier of the instrument in PayPal Wallet
-     *
-     * @param string $billing_agreement_id
-     * 
-     * @return $this
-     */
-    public function setBillingAgreementId($billing_agreement_id)
+    private string $billingAgreementId;
+
+
+    public function setBillingAgreementId(string $billingAgreementId): self
     {
-        $this->billing_agreement_id = $billing_agreement_id;
+        $this->billingAgreementId = $billingAgreementId;
         return $this;
     }
 
-    /**
-     * Identifier of the instrument in PayPal Wallet
-     *
-     * @return string
-     */
-    public function getBillingAgreementId()
+    public function getBillingAgreementId(): string
     {
-        return $this->billing_agreement_id;
+        return $this->billingAgreementId;
     }
 
 }

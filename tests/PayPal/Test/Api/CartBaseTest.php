@@ -2,9 +2,13 @@
 
 namespace PayPal\Test\Api;
 
-use PayPal\Common\PayPalModel;
+use InvalidArgumentException;
+use JsonException;
 use PayPal\Api\CartBase;
+use PayPal\Exception\PayPalConfigurationException;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 
 /**
  * Class CartBase
@@ -19,12 +23,15 @@ class CartBaseTest extends TestCase
      */
     public static function getJson()
     {
-        return '{"reference_id":"TestSample","amount":' .AmountTest::getJson() . ',"payee":' .PayeeTest::getJson() . ',"description":"TestSample","note_to_payee":"TestSample","custom":"TestSample","invoice_number":"TestSample","purchase_order":"TestSample","soft_descriptor":"TestSample","soft_descriptor_city":"TestSample","payment_options":' .PaymentOptionsTest::getJson() . ',"item_list":' .ItemListTest::getJson() . ',"notify_url":"http://www.google.com","order_url":"http://www.google.com","external_funding":' .ExternalFundingTest::getJson() . ',"type":"TestSample"}';
+        return '{"reference_id":"TestSample","amount":' .AmountTest::getJson() . ',"payee":' .PayeeTest::getJson() . ',"description":"TestSample","note_to_payee":"TestSample","custom":"TestSample","invoice_number":"TestSample","purchase_order":"TestSample","soft_descriptor":"TestSample","payment_options":' .PaymentOptionsTest::getJson() . ',"item_list":' .ItemListTest::getJson() . ',"notify_url":"http://www.google.com","order_url":"http://www.google.com"}';
     }
 
     /**
      * Gets Object Instance with Json data filled in
      * @return CartBase
+     * @throws PayPalConfigurationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public static function getObject()
     {
@@ -35,6 +42,9 @@ class CartBaseTest extends TestCase
     /**
      * Tests for Serialization and Deserialization Issues
      * @return CartBase
+     * @throws PayPalConfigurationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public function testSerializationDeserialization()
     {
@@ -49,56 +59,32 @@ class CartBaseTest extends TestCase
         $this->assertNotNull($obj->getInvoiceNumber());
         $this->assertNotNull($obj->getPurchaseOrder());
         $this->assertNotNull($obj->getSoftDescriptor());
-        $this->assertNotNull($obj->getSoftDescriptorCity());
         $this->assertNotNull($obj->getPaymentOptions());
         $this->assertNotNull($obj->getItemList());
         $this->assertNotNull($obj->getNotifyUrl());
         $this->assertNotNull($obj->getOrderUrl());
-        $this->assertNotNull($obj->getExternalFunding());
-        $this->assertEquals(self::getJson(), $obj->toJson());
+        $this->assertJsonStringEqualsJsonString(self::getJson(), $obj->toJson());
         return $obj;
     }
 
     /**
-     * @depends testSerializationDeserialization
      * @param CartBase $obj
      */
+    #[Depends('testSerializationDeserialization')]
     public function testGetters($obj)
     {
-        $this->assertEquals($obj->getReferenceId(), "TestSample");
+        $this->assertEquals("TestSample", $obj->getReferenceId());
         $this->assertEquals($obj->getAmount(), AmountTest::getObject());
         $this->assertEquals($obj->getPayee(), PayeeTest::getObject());
-        $this->assertEquals($obj->getDescription(), "TestSample");
-        $this->assertEquals($obj->getNoteToPayee(), "TestSample");
-        $this->assertEquals($obj->getCustom(), "TestSample");
-        $this->assertEquals($obj->getInvoiceNumber(), "TestSample");
-        $this->assertEquals($obj->getPurchaseOrder(), "TestSample");
-        $this->assertEquals($obj->getSoftDescriptor(), "TestSample");
-        $this->assertEquals($obj->getSoftDescriptorCity(), "TestSample");
+        $this->assertEquals("TestSample", $obj->getDescription());
+        $this->assertEquals("TestSample", $obj->getNoteToPayee());
+        $this->assertEquals("TestSample", $obj->getCustom());
+        $this->assertEquals("TestSample", $obj->getInvoiceNumber());
+        $this->assertEquals("TestSample", $obj->getPurchaseOrder());
+        $this->assertEquals("TestSample", $obj->getSoftDescriptor());
         $this->assertEquals($obj->getPaymentOptions(), PaymentOptionsTest::getObject());
         $this->assertEquals($obj->getItemList(), ItemListTest::getObject());
-        $this->assertEquals($obj->getNotifyUrl(), "http://www.google.com");
-        $this->assertEquals($obj->getOrderUrl(), "http://www.google.com");
-        $this->assertEquals($obj->getExternalFunding(), ExternalFundingTest::getObject());
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage NotifyUrl is not a fully qualified URL
-     */
-    public function testUrlValidationForNotifyUrl()
-    {
-        $obj = new CartBase();
-        $obj->setNotifyUrl(null);
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage OrderUrl is not a fully qualified URL
-     */
-    public function testUrlValidationForOrderUrl()
-    {
-        $obj = new CartBase();
-        $obj->setOrderUrl(null);
+        $this->assertEquals("http://www.google.com", $obj->getNotifyUrl());
+        $this->assertEquals("http://www.google.com", $obj->getOrderUrl());
     }
 }

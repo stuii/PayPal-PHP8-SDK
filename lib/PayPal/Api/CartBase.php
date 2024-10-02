@@ -2,407 +2,174 @@
 
 namespace PayPal\Api;
 
+use InvalidArgumentException;
 use PayPal\Common\PayPalModel;
 use PayPal\Validation\UrlValidator;
 
-/**
- * Class CartBase
- *
- * Base properties of a cart resource
- *
- * @package PayPal\Api
- *
- * @property string reference_id
- * @property \PayPal\Api\Amount amount
- * @property \PayPal\Api\Payee payee
- * @property string description
- * @property string note_to_payee
- * @property string custom
- * @property string invoice_number
- * @property string purchase_order
- * @property string soft_descriptor
- * @property \PayPal\Api\PaymentOptions payment_options
- * @property \PayPal\Api\ItemList item_list
- * @property string notify_url
- * @property string order_url
- */
 class CartBase extends PayPalModel
 {
-    /**
-     * Merchant identifier to the purchase unit. Optional parameter
-     *
-     * @param string $reference_id
-     * 
-     * @return $this
-     */
-    public function setReferenceId($reference_id)
+    private ?string $referenceId = null;
+    private ?Amount $amount = null;
+    private ?Payee $payee = null;
+    private ?string $description = null;
+    private ?string $noteToPayee = null;
+    private ?string $custom = null;
+    private ?string $invoiceNumber = null;
+    private ?string $purchaseOrder = null;
+    private ?string $softDescriptor = null;
+    private ?PaymentOptions $paymentOptions = null;
+    private ?ItemList $itemList = null;
+    private ?string $notifyUrl = null;
+    private ?string $orderUrl = null;
+
+    public function setReferenceId(string $referenceId): self
     {
-        $this->reference_id = $reference_id;
+        $this->referenceId = $referenceId;
         return $this;
     }
 
-    /**
-     * Merchant identifier to the purchase unit. Optional parameter
-     *
-     * @return string
-     */
-    public function getReferenceId()
+    public function getReferenceId(): ?string
     {
-        return $this->reference_id;
+        return $this->referenceId;
     }
 
-    /**
-     * Amount being collected.
-     *
-     * @param \PayPal\Api\Amount $amount
-     * 
-     * @return $this
-     */
-    public function setAmount($amount)
+    public function setAmount(Amount $amount): self
     {
         $this->amount = $amount;
         return $this;
     }
 
-    /**
-     * Amount being collected.
-     *
-     * @return \PayPal\Api\Amount
-     */
-    public function getAmount()
+    public function getAmount(): ?Amount
     {
         return $this->amount;
     }
 
-    /**
-     * Recipient of the funds in this transaction.
-     *
-     * @param \PayPal\Api\Payee $payee
-     * 
-     * @return $this
-     */
-    public function setPayee($payee)
+    public function setPayee(Payee $payee): self
     {
         $this->payee = $payee;
         return $this;
     }
 
-    /**
-     * Recipient of the funds in this transaction.
-     *
-     * @return \PayPal\Api\Payee
-     */
-    public function getPayee()
+    public function getPayee(): ?Payee
     {
         return $this->payee;
     }
 
-    /**
-     * Description of what is being paid for.
-     *
-     * @param string $description
-     * 
-     * @return $this
-     */
-    public function setDescription($description)
+    public function setDescription(string $description): self
     {
         $this->description = $description;
         return $this;
     }
 
-    /**
-     * Description of what is being paid for.
-     *
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * Note to the recipient of the funds in this transaction.
-     *
-     * @param string $note_to_payee
-     * 
-     * @return $this
-     */
-    public function setNoteToPayee($note_to_payee)
+    public function setNoteToPayee(string $noteToPayee): self
     {
-        $this->note_to_payee = $note_to_payee;
+        $this->noteToPayee = $noteToPayee;
         return $this;
     }
 
-    /**
-     * Note to the recipient of the funds in this transaction.
-     *
-     * @return string
-     */
-    public function getNoteToPayee()
+    public function getNoteToPayee(): ?string
     {
-        return $this->note_to_payee;
+        return $this->noteToPayee;
     }
 
-    /**
-     * free-form field for the use of clients
-     *
-     * @param string $custom
-     * 
-     * @return $this
-     */
-    public function setCustom($custom)
+    public function setCustom(string $custom): self
     {
         $this->custom = $custom;
         return $this;
     }
 
-    /**
-     * free-form field for the use of clients
-     *
-     * @return string
-     */
-    public function getCustom()
+    public function getCustom(): ?string
     {
         return $this->custom;
     }
 
-    /**
-     * invoice number to track this payment
-     *
-     * @param string $invoice_number
-     * 
-     * @return $this
-     */
-    public function setInvoiceNumber($invoice_number)
+    public function setInvoiceNumber(string $invoiceNumber): self
     {
-        $this->invoice_number = $invoice_number;
+        $this->invoiceNumber = $invoiceNumber;
         return $this;
     }
 
-    /**
-     * invoice number to track this payment
-     *
-     * @return string
-     */
-    public function getInvoiceNumber()
+    public function getInvoiceNumber(): ?string
     {
-        return $this->invoice_number;
+        return $this->invoiceNumber;
     }
 
-    /**
-     * purchase order is number or id specific to this payment
-     *
-     * @param string $purchase_order
-     * 
-     * @return $this
-     */
-    public function setPurchaseOrder($purchase_order)
+    public function setPurchaseOrder(string $purchaseOrder): self
     {
-        $this->purchase_order = $purchase_order;
+        $this->purchaseOrder = $purchaseOrder;
         return $this;
     }
 
-    /**
-     * purchase order is number or id specific to this payment
-     *
-     * @return string
-     */
-    public function getPurchaseOrder()
+    public function getPurchaseOrder(): ?string
     {
-        return $this->purchase_order;
+        return $this->purchaseOrder;
     }
 
-    /**
-     * Soft descriptor used when charging this funding source. If length exceeds max length, the value will be truncated
-     *
-     * @param string $soft_descriptor
-     * 
-     * @return $this
-     */
-    public function setSoftDescriptor($soft_descriptor)
+    public function setSoftDescriptor(string $softDescriptor): self
     {
-        $this->soft_descriptor = $soft_descriptor;
+        $this->softDescriptor = $softDescriptor;
         return $this;
     }
 
-    /**
-     * Soft descriptor used when charging this funding source. If length exceeds max length, the value will be truncated
-     *
-     * @return string
-     */
-    public function getSoftDescriptor()
+    public function getSoftDescriptor(): ?string
     {
-        return $this->soft_descriptor;
+        return $this->softDescriptor;
     }
 
-    /**
-     * Soft descriptor city used when charging this funding source. If length exceeds max length, the value will be truncated. Only supported when the `payment_method` is set to `credit_card`
-     * @deprecated Not publicly available
-     * @param string $soft_descriptor_city
-     * 
-     * @return $this
-     */
-    public function setSoftDescriptorCity($soft_descriptor_city)
+    public function setPaymentOptions(PaymentOptions $paymentOptions): self
     {
-        $this->soft_descriptor_city = $soft_descriptor_city;
+        $this->paymentOptions = $paymentOptions;
         return $this;
     }
 
-    /**
-     * Soft descriptor city used when charging this funding source. If length exceeds max length, the value will be truncated. Only supported when the `payment_method` is set to `credit_card`
-     * @deprecated Not publicly available
-     * @return string
-     */
-    public function getSoftDescriptorCity()
+    public function getPaymentOptions(): ?PaymentOptions
     {
-        return $this->soft_descriptor_city;
+        return $this->paymentOptions;
     }
 
-    /**
-     * Payment options requested for this purchase unit
-     *
-     * @param \PayPal\Api\PaymentOptions $payment_options
-     * 
-     * @return $this
-     */
-    public function setPaymentOptions($payment_options)
+    public function setItemList(ItemList $itemList): self
     {
-        $this->payment_options = $payment_options;
+        $this->itemList = $itemList;
         return $this;
     }
 
-    /**
-     * Payment options requested for this purchase unit
-     *
-     * @return \PayPal\Api\PaymentOptions
-     */
-    public function getPaymentOptions()
+    public function getItemList(): ?ItemList
     {
-        return $this->payment_options;
+        return $this->itemList;
     }
 
     /**
-     * List of items being paid for.
-     *
-     * @param \PayPal\Api\ItemList $item_list
-     * 
-     * @return $this
+     * @throws InvalidArgumentException
      */
-    public function setItemList($item_list)
+    public function setNotifyUrl(string $notifyUrl): self
     {
-        $this->item_list = $item_list;
+        UrlValidator::validate($notifyUrl, 'NotifyUrl');
+        $this->notifyUrl = $notifyUrl;
         return $this;
     }
 
-    /**
-     * List of items being paid for.
-     *
-     * @return \PayPal\Api\ItemList
-     */
-    public function getItemList()
+    public function getNotifyUrl(): ?string
     {
-        return $this->item_list;
+        return $this->notifyUrl;
     }
 
     /**
-     * URL to send payment notifications
-     *
-     * @param string $notify_url
-     * @throws \InvalidArgumentException
-     * @return $this
+     * @throws InvalidArgumentException
      */
-    public function setNotifyUrl($notify_url)
+    public function setOrderUrl(string $orderUrl): self
     {
-        UrlValidator::validate($notify_url, "NotifyUrl");
-        $this->notify_url = $notify_url;
+        UrlValidator::validate($orderUrl, 'OrderUrl');
+        $this->orderUrl = $orderUrl;
         return $this;
     }
 
-    /**
-     * URL to send payment notifications
-     *
-     * @return string
-     */
-    public function getNotifyUrl()
+    public function getOrderUrl(): ?string
     {
-        return $this->notify_url;
+        return $this->orderUrl;
     }
-
-    /**
-     * Url on merchant site pertaining to this payment.
-     *
-     * @param string $order_url
-     * @throws \InvalidArgumentException
-     * @return $this
-     */
-    public function setOrderUrl($order_url)
-    {
-        UrlValidator::validate($order_url, "OrderUrl");
-        $this->order_url = $order_url;
-        return $this;
-    }
-
-    /**
-     * Url on merchant site pertaining to this payment.
-     *
-     * @return string
-     */
-    public function getOrderUrl()
-    {
-        return $this->order_url;
-    }
-
-    /**
-     * List of external funding being applied to the purchase unit. Each external_funding unit should have a unique reference_id
-     * @deprecated Not publicly available
-     * @param \PayPal\Api\ExternalFunding[] $external_funding
-     *
-     * @return $this
-     */
-    public function setExternalFunding($external_funding)
-    {
-        $this->external_funding = $external_funding;
-        return $this;
-    }
-
-    /**
-     * List of external funding being applied to the purchase unit. Each external_funding unit should have a unique reference_id
-     * @deprecated Not publicly available
-     * @return \PayPal\Api\ExternalFunding[]
-     */
-    public function getExternalFunding()
-    {
-        return $this->external_funding;
-    }
-
-    /**
-     * Append ExternalFunding to the list.
-     * @deprecated Not publicly available
-     * @param \PayPal\Api\ExternalFunding $externalFunding
-     * @return $this
-     */
-    public function addExternalFunding($externalFunding)
-    {
-        if (!$this->getExternalFunding()) {
-            return $this->setExternalFunding(array($externalFunding));
-        } else {
-            return $this->setExternalFunding(
-                array_merge($this->getExternalFunding(), array($externalFunding))
-            );
-        }
-    }
-
-    /**
-     * Remove ExternalFunding from the list.
-     * @deprecated Not publicly available
-     * @param \PayPal\Api\ExternalFunding $externalFunding
-     * @return $this
-     */
-    public function removeExternalFunding($externalFunding)
-    {
-        return $this->setExternalFunding(
-            array_diff($this->getExternalFunding(), array($externalFunding))
-        );
-    }
-
 }

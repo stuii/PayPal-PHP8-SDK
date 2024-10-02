@@ -4,296 +4,168 @@ namespace PayPal\Core;
 
 use PayPal\Exception\PayPalConfigurationException;
 
-/**
- * Class PayPalHttpConfig
- * Http Configuration Class
- *
- * @package PayPal\Core
- */
 class PayPalHttpConfig
 {
-    /**
-     * Some default options for curl
-     * These are typically overridden by PayPalConnectionManager
-     *
-     * @var array
-     */
-    public static $defaultCurlOptions = array(
+    public static array $defaultCurlOptions = [
         CURLOPT_SSLVERSION => 6,
         CURLOPT_CONNECTTIMEOUT => 10,
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_TIMEOUT => 60,    // maximum number of seconds to allow cURL functions to execute
-        CURLOPT_USERAGENT => 'PayPal-PHP-SDK',
-        CURLOPT_HTTPHEADER => array(),
+        CURLOPT_USERAGENT => 'AbaNinja-PayPal-SDK',
+        CURLOPT_HTTPHEADER => [],
         CURLOPT_SSL_VERIFYHOST => 2,
         CURLOPT_SSL_VERIFYPEER => 1,
         CURLOPT_SSL_CIPHER_LIST => 'TLSv1:TLSv1.2'
-        //Allowing TLSv1 cipher list.
-        //Adding it like this for backward compatibility with older versions of curl
-    );
+        // Allowing TLSv1 cipher list.
+        // Adding it like this for backward compatibility with older versions of curl
+    ];
 
-    const HEADER_SEPARATOR = ';';
-    const HTTP_GET = 'GET';
-    const HTTP_POST = 'POST';
+    const string HEADER_SEPARATOR = ';';
+    const string HTTP_GET = 'GET';
+    const string HTTP_POST = 'POST';
 
-    private $headers = array();
+    private array $headers = [];
 
-    private $curlOptions;
+    private array $curlOptions;
 
-    private $url;
+    private ?string $url;
 
-    private $method;
+    private ?string $method;
 
-    /***
-     * Number of times to retry a failed HTTP call
-     */
-    private $retryCount = 0;
+    private int $retryCount = 0;
 
-    /**
-     * Default Constructor
-     *
-     * @param string $url
-     * @param string $method HTTP method (GET, POST etc) defaults to POST
-     * @param array $configs All Configurations
-     */
-    public function __construct($url = null, $method = self::HTTP_POST, $configs = array())
+    public function __construct(?string $url = null, ?string $method = self::HTTP_POST, array $configs = [])
     {
         $this->url = $url;
         $this->method = $method;
         $this->curlOptions = $this->getHttpConstantsFromConfigs($configs, 'http.') + self::$defaultCurlOptions;
         // Update the Cipher List based on OpenSSL or NSS settings
         $curl = curl_version();
-        $sslVersion = isset($curl['ssl_version']) ? $curl['ssl_version'] : '';
-        if($sslVersion && substr_compare($sslVersion, "NSS/", 0, strlen("NSS/")) === 0) {
+        $sslVersion = $curl['ssl_version'] ?? '';
+        if($sslVersion && substr_compare($sslVersion, 'NSS/', 0, strlen('NSS/')) === 0) {
             //Remove the Cipher List for NSS
             $this->removeCurlOption(CURLOPT_SSL_CIPHER_LIST);
         }
     }
 
-    /**
-     * Gets Url
-     *
-     * @return null|string
-     */
-    public function getUrl()
+    public function getUrl(): ?string
     {
         return $this->url;
     }
 
-    /**
-     * Gets Method
-     *
-     * @return string
-     */
-    public function getMethod()
+    public function getMethod(): ?string
     {
         return $this->method;
     }
 
-    /**
-     * Gets all Headers
-     *
-     * @return array
-     */
-    public function getHeaders()
+    public function getHeaders(): array
     {
         return $this->headers;
     }
 
-    /**
-     * Get Header by Name
-     *
-     * @param $name
-     * @return string|null
-     */
-    public function getHeader($name)
+    public function getHeader(string $name): ?string
     {
-        if (array_key_exists($name, $this->headers)) {
-            return $this->headers[$name];
-        }
-        return null;
+        return $this->headers[$name] ?? null;
     }
 
-    /**
-     * Sets Url
-     *
-     * @param $url
-     */
-    public function setUrl($url)
+    public function setUrl(string $url): void
     {
         $this->url = $url;
     }
 
-    /**
-     * Set Headers
-     *
-     * @param array $headers
-     */
-    public function setHeaders(array $headers = array())
+    public function setHeaders(array $headers = []): void
     {
         $this->headers = $headers;
     }
 
-    /**
-     * Adds a Header
-     *
-     * @param      $name
-     * @param      $value
-     * @param bool $overWrite allows you to override header value
-     */
-    public function addHeader($name, $value, $overWrite = true)
+    public function addHeader(string $name, ?string $value, bool $override = true): void
     {
-        if (!array_key_exists($name, $this->headers) || $overWrite) {
+        if (!array_key_exists($name, $this->headers) || $override) {
             $this->headers[$name] = $value;
         } else {
-            $this->headers[$name] = $this->headers[$name] . self::HEADER_SEPARATOR . $value;
+            $this->headers[$name] .= self::HEADER_SEPARATOR . $value;
         }
     }
 
-    /**
-     * Removes a Header
-     *
-     * @param $name
-     */
-    public function removeHeader($name)
+    public function removeHeader(string $name): void
     {
         unset($this->headers[$name]);
     }
 
-    /**
-     * Gets all curl options
-     *
-     * @return array
-     */
-    public function getCurlOptions()
+    public function getCurlOptions(): array
     {
         return $this->curlOptions;
     }
 
-    /**
-     * Add Curl Option
-     *
-     * @param string $name
-     * @param mixed  $value
-     */
-    public function addCurlOption($name, $value)
+    public function addCurlOption(string $name, string|array $value): void
     {
         $this->curlOptions[$name] = $value;
     }
 
-    /**
-     * Removes a curl option from the list
-     *
-     * @param $name
-     */
-    public function removeCurlOption($name)
+    public function removeCurlOption(string $name): void
     {
         unset($this->curlOptions[$name]);
     }
 
-    /**
-     * Set Curl Options. Overrides all curl options
-     *
-     * @param $options
-     */
-    public function setCurlOptions($options)
+    public function setCurlOptions(array $options): void
     {
         $this->curlOptions = $options;
     }
 
-    /**
-     * Set ssl parameters for certificate based client authentication
-     *
-     * @param      $certPath
-     * @param null $passPhrase
-     */
-    public function setSSLCert($certPath, $passPhrase = null)
+    public function setSSLCert(string $certPath, ?string $passPhrase = null): void
     {
         $this->curlOptions[CURLOPT_SSLCERT] = realpath($certPath);
-        if (isset($passPhrase) && trim($passPhrase) != "") {
+        if (isset($passPhrase) && trim($passPhrase) !== '') {
             $this->curlOptions[CURLOPT_SSLCERTPASSWD] = $passPhrase;
         }
     }
-
-    /**
-     * Set connection timeout in seconds
-     *
-     * @param integer $timeout
-     */
-    public function setHttpTimeout($timeout)
+    public function setHttpTimeout(int $timeout): void
     {
         $this->curlOptions[CURLOPT_CONNECTTIMEOUT] = $timeout;
     }
 
     /**
-     * Set HTTP proxy information
-     *
-     * @param string $proxy
      * @throws PayPalConfigurationException
      */
-    public function setHttpProxy($proxy)
+    public function setHttpProxy(string $proxy): void
     {
         $urlParts = parse_url($proxy);
-        if ($urlParts == false || !array_key_exists("host", $urlParts)) {
-            throw new PayPalConfigurationException("Invalid proxy configuration " . $proxy);
+        if ($urlParts === false || !array_key_exists('host', $urlParts)) {
+            throw new PayPalConfigurationException('Invalid proxy configuration ' . $proxy);
         }
-        $this->curlOptions[CURLOPT_PROXY] = $urlParts["host"];
-        if (isset($urlParts["port"])) {
-            $this->curlOptions[CURLOPT_PROXY] .= ":" . $urlParts["port"];
+        $this->curlOptions[CURLOPT_PROXY] = $urlParts['host'];
+        if (isset($urlParts['port'])) {
+            $this->curlOptions[CURLOPT_PROXY] .= ':' . $urlParts['port'];
         }
-        if (isset($urlParts["user"])) {
-            $this->curlOptions[CURLOPT_PROXYUSERPWD] = $urlParts["user"] . ":" . $urlParts["pass"];
+        if (isset($urlParts['user'])) {
+            $this->curlOptions[CURLOPT_PROXYUSERPWD] = $urlParts['user'] . ':' . $urlParts['pass'];
         }
     }
 
-    /**
-     * Set Http Retry Counts
-     *
-     * @param int $retryCount
-     */
-    public function setHttpRetryCount($retryCount)
+    public function setHttpRetryCount(int $retryCount): void
     {
         $this->retryCount = $retryCount;
     }
 
-    /**
-     * Get Http Retry Counts
-     *
-     * @return int
-     */
-    public function getHttpRetryCount()
+    public function getHttpRetryCount(): int
     {
         return $this->retryCount;
     }
 
-    /**
-     * Sets the User-Agent string on the HTTP request
-     *
-     * @param string $userAgentString
-     */
-    public function setUserAgent($userAgentString)
+    public function setUserAgent(string $userAgentString): void
     {
         $this->curlOptions[CURLOPT_USERAGENT] = $userAgentString;
     }
 
-    /**
-     * Retrieves an array of constant key, and value based on Prefix
-     *
-     * @param array $configs
-     * @param       $prefix
-     * @return array
-     */
-    public function getHttpConstantsFromConfigs($configs = array(), $prefix)
+    public function getHttpConstantsFromConfigs(array $configs, string $prefix): array
     {
-        $arr = array();
-        if ($prefix != null && is_array($configs)) {
-            foreach ($configs as $k => $v) {
-                // Check if it startsWith
-                if (substr($k, 0, strlen($prefix)) === $prefix) {
-                    $newKey = ltrim($k, $prefix);
-                    if (defined($newKey)) {
-                        $arr[constant($newKey)] = $v;
-                    }
+        $arr = [];
+        foreach ($configs as $k => $v) {
+            // Check if it startsWith
+            if (str_starts_with($k, $prefix)) {
+                $newKey = ltrim($k, $prefix);
+                if (defined($newKey)) {
+                    $arr[constant($newKey)] = $v;
                 }
             }
         }

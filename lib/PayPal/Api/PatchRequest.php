@@ -4,83 +4,52 @@ namespace PayPal\Api;
 
 use PayPal\Common\PayPalModel;
 
-/**
- * Class PatchRequest
- *
- * A JSON patch request.
- *
- * @package PayPal\Api
- *
- * @property \PayPal\Api\Patch[] patches
- */
 class PatchRequest extends PayPalModel
 {
+    /** @var array<\PayPal\Api\Patch> $patches */
+    private array $patches;
+
     /**
-     * Placeholder for holding array of patch objects
-     *
-     * @param \PayPal\Api\Patch[] $patches
-     * 
-     * @return $this
+     * @param array<Patch> $patches
      */
-    public function setPatches($patches)
+    public function setPatches(array $patches): self
     {
         $this->patches = $patches;
         return $this;
     }
 
     /**
-     * Placeholder for holding array of patch objects
-     *
-     * @return \PayPal\Api\Patch[]
+     * @return array<Patch>
      */
-    public function getPatches()
+    public function getPatches(): array
     {
         return $this->patches;
     }
 
-    /**
-     * Append Patches to the list.
-     *
-     * @param \PayPal\Api\Patch $patch
-     * @return $this
-     */
-    public function addPatch($patch)
+    public function addPatch(Patch $patch): self
     {
         if (!$this->getPatches()) {
-            return $this->setPatches(array($patch));
-        } else {
-            return $this->setPatches(
-                array_merge($this->getPatches(), array($patch))
-            );
+            return $this->setPatches([$patch]);
         }
-    }
 
-    /**
-     * Remove Patches from the list.
-     *
-     * @param \PayPal\Api\Patch $patch
-     * @return $this
-     */
-    public function removePatch($patch)
-    {
         return $this->setPatches(
-            array_diff($this->getPatches(), array($patch))
+            [...$this->getPatches(), $patch]
         );
     }
 
-    /**
-     * As PatchRequest holds the array of Patch object, we would override the json conversion to return
-     * a json representation of array of Patch objects.
-     *
-     * @param int $options
-     * @return mixed|string
-     */
-    public function toJSON($options = 0)
+    public function removePatch(Patch $patch): self
     {
-        $json = array();
+        return $this->setPatches(
+            array_diff($this->getPatches(), [$patch])
+        );
+    }
+
+    public function toJSON(int $options = 0): string
+    {
+        $json = [];
         foreach ($this->getPatches() as $patch) {
             $json[] = $patch->toArray();
         }
-        return str_replace('\\/', '/', json_encode($json, $options));
+        return str_replace('\\/', '/', json_encode($json, JSON_THROW_ON_ERROR | $options));
     }
 }

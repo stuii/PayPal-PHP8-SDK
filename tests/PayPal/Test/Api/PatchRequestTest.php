@@ -2,9 +2,13 @@
 
 namespace PayPal\Test\Api;
 
+use JsonException;
 use PayPal\Common\PayPalModel;
 use PayPal\Api\PatchRequest;
+use PayPal\Exception\PayPalConfigurationException;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 
 /**
  * Class PatchRequest
@@ -19,12 +23,15 @@ class PatchRequestTest extends TestCase
      */
     public static function getJson()
     {
-        return '{"patches":' .PatchTest::getJson() . '}';
+        return '{"patches":[' .PatchTest::getJson() . ']}';
     }
 
     /**
      * Gets Object Instance with Json data filled in
      * @return PatchRequest
+     * @throws PayPalConfigurationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public static function getObject()
     {
@@ -35,6 +42,9 @@ class PatchRequestTest extends TestCase
     /**
      * Tests for Serialization and Deserialization Issues
      * @return PatchRequest
+     * @throws PayPalConfigurationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public function testSerializationDeserialization()
     {
@@ -45,11 +55,11 @@ class PatchRequestTest extends TestCase
     }
 
     /**
-     * @depends testSerializationDeserialization
      * @param PatchRequest $obj
      */
+    #[Depends('testSerializationDeserialization')]
     public function testGetters($obj)
     {
-        $this->assertEquals($obj->getPatches(), PatchTest::getObject());
+        $this->assertEquals($obj->getPatches(), [PatchTest::getObject()]);
     }
 }

@@ -2,228 +2,134 @@
 
 namespace PayPal\Api;
 
+use InvalidArgumentException;
+use JsonException;
 use PayPal\Common\PayPalResourceModel;
-use PayPal\Validation\ArgumentValidator;
-use PayPal\Api\VerifyWebhookSignatureResponse;
+use PayPal\Exception\PayPalConfigurationException;
+use PayPal\Exception\PayPalConnectionException;
 use PayPal\Rest\ApiContext;
+use PayPal\Transport\PayPalRestCall;
 use PayPal\Validation\UrlValidator;
+use ReflectionException;
 
-/**
- * Class VerifyWebhookSignature
- *
- * Verify webhook signature.
- *
- * @package PayPal\Api
- *
- * @property string auth_algo
- * @property string cert_url
- * @property string transmission_id
- * @property string transmission_sig
- * @property string transmission_time
- * @property string webhook_id
- * @property \PayPal\Api\WebhookEvent webhook_event
- */
 class VerifyWebhookSignature extends PayPalResourceModel
 {
-    /**
-     * The algorithm that PayPal uses to generate the signature and that you can use to verify the signature. Extract this value from the `PAYPAL-AUTH-ALGO` response header, which is received with the webhook notification.
-     *
-     * @param string $auth_algo
-     *
-     * @return $this
-     */
-    public function setAuthAlgo($auth_algo)
+    private ?string $authAlgo = null;
+    private ?string $certUrl = null;
+    private ?string $transmissionId = null;
+    private ?string $transmissionSig = null;
+    private ?string $transmissionTime = null;
+    private ?string $webhookId = null;
+    private ?WebhookEvent $webhookEvent = null;
+    private ?string $requestBody = null;
+
+    public function setAuthAlgo(string $authAlgo): self
     {
-        $this->auth_algo = $auth_algo;
+        $this->authAlgo = $authAlgo;
         return $this;
     }
 
-    /**
-     * The algorithm that PayPal uses to generate the signature and that you can use to verify the signature. Extract this value from the `PAYPAL-AUTH-ALGO` response header, which is received with the webhook notification.
-     *
-     * @return string
-     */
-    public function getAuthAlgo()
+    public function getAuthAlgo(): ?string
     {
-        return $this->auth_algo;
+        return $this->authAlgo;
     }
 
     /**
-     * The X.509 public key certificate. Download the certificate from this URL and use it to verify the signature. Extract this value from the `PAYPAL-CERT-URL` response header, which is received with the webhook notification.
-     *
-     * @param string $cert_url
-     * @throws \InvalidArgumentException
-     * @return $this
+     * @throws InvalidArgumentException
      */
-    public function setCertUrl($cert_url)
+    public function setCertUrl(string $certUrl): self
     {
-        UrlValidator::validate($cert_url, "CertUrl");
-        $this->cert_url = $cert_url;
+        UrlValidator::validate($certUrl, 'CertUrl');
+        $this->certUrl = $certUrl;
         return $this;
     }
 
-    /**
-     * The X.509 public key certificate. Download the certificate from this URL and use it to verify the signature. Extract this value from the `PAYPAL-CERT-URL` response header, which is received with the webhook notification.
-     *
-     * @return string
-     */
-    public function getCertUrl()
+    public function getCertUrl(): ?string
     {
-        return $this->cert_url;
+        return $this->certUrl;
     }
 
-    /**
-     * The ID of the HTTP transmission. Contained in the `PAYPAL-TRANSMISSION-ID` header of the notification message.
-     *
-     * @param string $transmission_id
-     *
-     * @return $this
-     */
-    public function setTransmissionId($transmission_id)
+    public function setTransmissionId(string $transmissionId): self
     {
-        $this->transmission_id = $transmission_id;
+        $this->transmissionId = $transmissionId;
         return $this;
     }
 
-    /**
-     * The ID of the HTTP transmission. Contained in the `PAYPAL-TRANSMISSION-ID` header of the notification message.
-     *
-     * @return string
-     */
-    public function getTransmissionId()
+    public function getTransmissionId(): ?string
     {
-        return $this->transmission_id;
+        return $this->transmissionId;
     }
 
-    /**
-     * The PayPal-generated asymmetric signature. Extract this value from the `PAYPAL-TRANSMISSION-SIG` response header, which is received with the webhook notification.
-     *
-     * @param string $transmission_sig
-     *
-     * @return $this
-     */
-    public function setTransmissionSig($transmission_sig)
+    public function setTransmissionSig(string $transmissionSig): self
     {
-        $this->transmission_sig = $transmission_sig;
+        $this->transmissionSig = $transmissionSig;
         return $this;
     }
 
-    /**
-     * The PayPal-generated asymmetric signature. Extract this value from the `PAYPAL-TRANSMISSION-SIG` response header, which is received with the webhook notification.
-     *
-     * @return string
-     */
-    public function getTransmissionSig()
+    public function getTransmissionSig(): ?string
     {
-        return $this->transmission_sig;
+        return $this->transmissionSig;
     }
 
-    /**
-     * The date and time of the HTTP transmission. Contained in the `PAYPAL-TRANSMISSION-TIME` header of the notification message.
-     *
-     * @param string $transmission_time
-     *
-     * @return $this
-     */
-    public function setTransmissionTime($transmission_time)
+    public function setTransmissionTime(string $transmissionTime): self
     {
-        $this->transmission_time = $transmission_time;
+        $this->transmissionTime = $transmissionTime;
         return $this;
     }
 
-    /**
-     * The date and time of the HTTP transmission. Contained in the `PAYPAL-TRANSMISSION-TIME` header of the notification message.
-     *
-     * @return string
-     */
-    public function getTransmissionTime()
+    public function getTransmissionTime(): ?string
     {
-        return $this->transmission_time;
+        return $this->transmissionTime;
     }
 
-    /**
-     * The ID of the webhook as configured in your Developer Portal account.
-     *
-     * @param string $webhook_id
-     *
-     * @return $this
-     */
-    public function setWebhookId($webhook_id)
+    public function setWebhookId(string $webhookId): self
     {
-        $this->webhook_id = $webhook_id;
+        $this->webhookId = $webhookId;
         return $this;
     }
 
-    /**
-     * The ID of the webhook as configured in your Developer Portal account.
-     *
-     * @return string
-     */
-    public function getWebhookId()
+    public function getWebhookId(): ?string
     {
-        return $this->webhook_id;
+        return $this->webhookId;
     }
 
     /**
-     * The webhook notification, which is the content of the HTTP `POST` request body.
-     * @deprecated Please use setRequestBody($request_body) instead.
-     * @param \PayPal\Api\WebhookEvent $webhook_event
-     *
-     * @return $this
+     * @deprecated Please use setRequestBody($requestBody) instead.
      */
-    public function setWebhookEvent($webhook_event)
+    public function setWebhookEvent(WebhookEvent $webhookEvent): self
     {
-        $this->webhook_event = $webhook_event;
+        $this->webhookEvent = $webhookEvent;
         return $this;
     }
 
-    /**
-     * The webhook notification, which is the content of the HTTP `POST` request body.
-     *
-     * @return \PayPal\Api\WebhookEvent
-     */
-    public function getWebhookEvent()
+    public function getWebhookEvent(): ?WebhookEvent
     {
-        return $this->webhook_event;
+        return $this->webhookEvent;
     }
 
-    /**
-     * The content of the HTTP `POST` request body of the webhook notification you received as a string.
-     *
-     * @param string $request_body
-     *
-     * @return $this
-     */
-    public function setRequestBody($request_body)
+    public function setRequestBody(string $requestBody): self
     {
-        $this->request_body = $request_body;
+        $this->requestBody = $requestBody;
         return $this;
     }
 
-    /**
-     * The content of the HTTP `POST` request body of the webhook notification you received as a string.
-     *
-     * @return string
-     */
-    public function getRequestBody()
+    public function getRequestBody(): ?string
     {
-        return $this->request_body;
+        return $this->requestBody;
     }
 
     /**
-     * Verifies a webhook signature.
-     *
-     * @param ApiContext $apiContext is the APIContext for this call. It can be used to pass dynamic configuration and credentials.
-     * @param PayPalRestCall $restCall is the Rest Call Service that is used to make rest calls
-     * @return VerifyWebhookSignatureResponse
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws ReflectionException
+     * @throws JsonException
      */
-    public function post($apiContext = null, $restCall = null)
+    public function post(?ApiContext $apiContext = null, ?PayPalRestCall $restCall = null): VerifyWebhookSignatureResponse
     {
         $payLoad = $this->toJSON();
-
         $json = self::executeCall(
-            "/v1/notifications/verify-webhook-signature",
-            "POST",
+            '/v1/notifications/verify-webhook-signature',
+            'POST',
             $payLoad,
             null,
             $apiContext,
@@ -234,23 +140,21 @@ class VerifyWebhookSignature extends PayPalResourceModel
         return $ret;
     }
 
-    public function toJSON($options = 0)
+    public function toJSON(int $options = 0): string
     {
-        if (!is_null($this->request_body)) {
+        if ($this->requestBody !== null) {
             $valuesToEncode = $this->toArray();
-            unset($valuesToEncode['webhook_event']);
-            unset($valuesToEncode['request_body']);
+            unset($valuesToEncode['webhook_event'], $valuesToEncode['request_body']);
 
-            $payLoad = "{";
+            $payload = '{';
             foreach ($valuesToEncode as $field => $value) {
-                $payLoad .= "\"$field\": \"$value\",";
+                $payload .= '"'. $field . '": "' . $value . '",';
             }
-            $payLoad .= "\"webhook_event\": $this->request_body";
-            $payLoad .= "}";
-            return $payLoad;
-        } else {
-            $payLoad = parent::toJSON($options);
-            return $payLoad;
+            $payload .= '"webhook_event": '. $this->requestBody;
+            $payload .= '}';
+            return $payload;
         }
+
+        return parent::toJSON($options);
     }
 }

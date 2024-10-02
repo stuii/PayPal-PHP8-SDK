@@ -2,8 +2,12 @@
 
 namespace PayPal\Test\Api;
 
+use JsonException;
 use PayPal\Api\FmfDetails;
+use PayPal\Exception\PayPalConfigurationException;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 
 /**
  * Class FmfDetails
@@ -24,6 +28,9 @@ class FmfDetailsTest extends TestCase
     /**
      * Gets Object Instance with Json data filled in
      * @return FmfDetails
+     * @throws PayPalConfigurationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public static function getObject()
     {
@@ -34,6 +41,9 @@ class FmfDetailsTest extends TestCase
     /**
      * Tests for Serialization and Deserialization Issues
      * @return FmfDetails
+     * @throws PayPalConfigurationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public function testSerializationDeserialization()
     {
@@ -43,19 +53,19 @@ class FmfDetailsTest extends TestCase
         $this->assertNotNull($obj->getFilterId());
         $this->assertNotNull($obj->getName());
         $this->assertNotNull($obj->getDescription());
-        $this->assertEquals(self::getJson(), $obj->toJson());
+        $this->assertJsonStringEqualsJsonString(self::getJson(), $obj->toJson());
         return $obj;
     }
 
     /**
-     * @depends testSerializationDeserialization
      * @param FmfDetails $obj
      */
+    #[Depends('testSerializationDeserialization')]
     public function testGetters($obj)
     {
-        $this->assertEquals($obj->getFilterType(), "TestSample");
-        $this->assertEquals($obj->getFilterId(), "TestSample");
-        $this->assertEquals($obj->getName(), "TestSample");
-        $this->assertEquals($obj->getDescription(), "TestSample");
+        $this->assertEquals("TestSample", $obj->getFilterType());
+        $this->assertEquals("TestSample", $obj->getFilterId());
+        $this->assertEquals("TestSample", $obj->getName());
+        $this->assertEquals("TestSample", $obj->getDescription());
     }
 }

@@ -2,8 +2,14 @@
 
 namespace PayPal\Test\Api;
 
+use JsonException;
 use PayPal\Api\Sale;
+use PayPal\Exception\PayPalConfigurationException;
+use PayPal\Exception\PayPalConnectionException;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 
 /**
  * Class Sale
@@ -18,12 +24,15 @@ class SaleTest extends TestCase
      */
     public static function getJson()
     {
-        return '{"id":"TestSample","purchase_unit_reference_id":"TestSample","amount":' . AmountTest::getJson() . ',"payment_mode":"TestSample","state":"TestSample","reason_code":"TestSample","protection_eligibility":"TestSample","protection_eligibility_type":"TestSample","clearing_time":"TestSample","payment_hold_status":"TestSample","payment_hold_reasons":"TestSample","transaction_fee":' . CurrencyTest::getJson() . ',"receivable_amount":' . CurrencyTest::getJson() . ',"exchange_rate":"TestSample","fmf_details":' . FmfDetailsTest::getJson() . ',"receipt_id":"TestSample","parent_payment":"TestSample","processor_response":' . ProcessorResponseTest::getJson() . ',"billing_agreement_id":"TestSample","create_time":"TestSample","update_time":"TestSample","links":' . LinksTest::getJson() . '}';
+        return '{"id":"TestSample","purchase_unit_reference_id":"TestSample","amount":' . AmountTest::getJson() . ',"payment_mode":"TestSample","state":"TestSample","reason_code":"TestSample","protection_eligibility":"TestSample","protection_eligibility_type":"TestSample","clearing_time":"TestSample","payment_hold_status":"TestSample","payment_hold_reasons":["TestSample"],"transaction_fee":' . CurrencyTest::getJson() . ',"receivable_amount":' . CurrencyTest::getJson() . ',"exchange_rate":"TestSample","fmf_details":' . FmfDetailsTest::getJson() . ',"receipt_id":"TestSample","parent_payment":"TestSample","processor_response":' . ProcessorResponseTest::getJson() . ',"billing_agreement_id":"TestSample","create_time":"TestSample","update_time":"TestSample","links":[' . LinksTest::getJson() . ']}';
     }
 
     /**
      * Gets Object Instance with Json data filled in
      * @return Sale
+     * @throws PayPalConfigurationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public static function getObject()
     {
@@ -34,6 +43,9 @@ class SaleTest extends TestCase
     /**
      * Tests for Serialization and Deserialization Issues
      * @return Sale
+     * @throws PayPalConfigurationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public function testSerializationDeserialization()
     {
@@ -61,84 +73,91 @@ class SaleTest extends TestCase
         $this->assertNotNull($obj->getCreateTime());
         $this->assertNotNull($obj->getUpdateTime());
         $this->assertNotNull($obj->getLinks());
-        $this->assertEquals(self::getJson(), $obj->toJson());
+        $this->assertJsonStringEqualsJsonString(self::getJson(), $obj->toJson());
         return $obj;
     }
 
     /**
-     * @depends testSerializationDeserialization
      * @param Sale $obj
      */
+    #[Depends('testSerializationDeserialization')]
     public function testGetters($obj)
     {
-        $this->assertEquals($obj->getId(), "TestSample");
-        $this->assertEquals($obj->getPurchaseUnitReferenceId(), "TestSample");
+        $this->assertEquals("TestSample", $obj->getId());
+        $this->assertEquals("TestSample", $obj->getPurchaseUnitReferenceId());
         $this->assertEquals($obj->getAmount(), AmountTest::getObject());
-        $this->assertEquals($obj->getPaymentMode(), "TestSample");
-        $this->assertEquals($obj->getState(), "TestSample");
-        $this->assertEquals($obj->getReasonCode(), "TestSample");
-        $this->assertEquals($obj->getProtectionEligibility(), "TestSample");
-        $this->assertEquals($obj->getProtectionEligibilityType(), "TestSample");
-        $this->assertEquals($obj->getClearingTime(), "TestSample");
-        $this->assertEquals($obj->getPaymentHoldStatus(), "TestSample");
-        $this->assertEquals($obj->getPaymentHoldReasons(), "TestSample");
+        $this->assertEquals("TestSample", $obj->getPaymentMode());
+        $this->assertEquals("TestSample", $obj->getState());
+        $this->assertEquals("TestSample", $obj->getReasonCode());
+        $this->assertEquals("TestSample", $obj->getProtectionEligibility());
+        $this->assertEquals("TestSample", $obj->getProtectionEligibilityType());
+        $this->assertEquals("TestSample", $obj->getClearingTime());
+        $this->assertEquals("TestSample", $obj->getPaymentHoldStatus());
+        $this->assertEquals(["TestSample"], $obj->getPaymentHoldReasons());
         $this->assertEquals($obj->getTransactionFee(), CurrencyTest::getObject());
         $this->assertEquals($obj->getReceivableAmount(), CurrencyTest::getObject());
-        $this->assertEquals($obj->getExchangeRate(), "TestSample");
+        $this->assertEquals("TestSample", $obj->getExchangeRate());
         $this->assertEquals($obj->getFmfDetails(), FmfDetailsTest::getObject());
-        $this->assertEquals($obj->getReceiptId(), "TestSample");
-        $this->assertEquals($obj->getParentPayment(), "TestSample");
+        $this->assertEquals("TestSample", $obj->getReceiptId());
+        $this->assertEquals("TestSample", $obj->getParentPayment());
         $this->assertEquals($obj->getProcessorResponse(), ProcessorResponseTest::getObject());
-        $this->assertEquals($obj->getBillingAgreementId(), "TestSample");
-        $this->assertEquals($obj->getCreateTime(), "TestSample");
-        $this->assertEquals($obj->getUpdateTime(), "TestSample");
-        $this->assertEquals($obj->getLinks(), LinksTest::getObject());
+        $this->assertEquals("TestSample", $obj->getBillingAgreementId());
+        $this->assertEquals("TestSample", $obj->getCreateTime());
+        $this->assertEquals("TestSample", $obj->getUpdateTime());
+        $this->assertEquals($obj->getLinks(), [LinksTest::getObject()]);
     }
 
     /**
-     * @dataProvider mockProvider
      * @param Sale $obj
+     * @param $mockApiContext
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws JsonException
+     * @throws ReflectionException
      */
+    #[DataProvider('mockProvider')]
     public function testGet($obj, $mockApiContext)
     {
         $mockPPRestCall = $this->getMockBuilder('\PayPal\Transport\PayPalRestCall')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $mockPPRestCall->expects($this->any())
+        $mockPPRestCall
             ->method('execute')
-            ->will($this->returnValue(
-                    SaleTest::getJson()
-            ));
+            ->willReturn(SaleTest::getJson());
 
         $result = $obj->get("saleId", $mockApiContext, $mockPPRestCall);
         $this->assertNotNull($result);
     }
+
     /**
-     * @dataProvider mockProvider
      * @param Sale $obj
+     * @param $mockApiContext
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws JsonException
+     * @throws ReflectionException
      */
+    #[DataProvider('mockProvider')]
     public function testRefund($obj, $mockApiContext)
     {
         $mockPPRestCall = $this->getMockBuilder('\PayPal\Transport\PayPalRestCall')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $mockPPRestCall->expects($this->any())
+        $mockPPRestCall
             ->method('execute')
-            ->will($this->returnValue(
-                RefundTest::getJson()
-            ));
+            ->willReturn(RefundTest::getJson());
         $refund = RefundTest::getObject();
 
         $result = $obj->refund($refund, $mockApiContext, $mockPPRestCall);
         $this->assertNotNull($result);
     }
 
-    public function mockProvider()
+    public static function mockProvider()
     {
         $obj = self::getObject();
-        $mockApiContext = $this->getMockBuilder('ApiContext')
+        $mockApiContext = self::getMockBuilder('ApiContext')
             ->disableOriginalConstructor()
             ->getMock();
         return array(

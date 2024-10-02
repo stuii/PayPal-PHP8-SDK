@@ -2,8 +2,12 @@
 
 namespace PayPal\Test\Api;
 
+use JsonException;
 use PayPal\Api\Payer;
+use PayPal\Exception\PayPalConfigurationException;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 
 /**
  * Class Payer
@@ -18,12 +22,15 @@ class PayerTest extends TestCase
      */
     public static function getJson()
     {
-        return '{"payment_method":"TestSample","status":"TestSample","account_type":"TestSample","account_age":"TestSample","funding_instruments":' .FundingInstrumentTest::getJson() . ',"funding_option_id":"TestSample","funding_option":' .FundingOptionTest::getJson() . ',"external_selected_funding_instrument_type":"TestSample","related_funding_option":' .FundingOptionTest::getJson() . ',"payer_info":' .PayerInfoTest::getJson() . '}';
+        return '{"payment_method":"TestSample","status":"TestSample","funding_instruments":[' .FundingInstrumentTest::getJson() . '],"external_selected_funding_instrument_type":"TestSample","payer_info":' .PayerInfoTest::getJson() . '}';
     }
 
     /**
      * Gets Object Instance with Json data filled in
      * @return Payer
+     * @throws PayPalConfigurationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public static function getObject()
     {
@@ -34,6 +41,9 @@ class PayerTest extends TestCase
     /**
      * Tests for Serialization and Deserialization Issues
      * @return Payer
+     * @throws PayPalConfigurationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public function testSerializationDeserialization()
     {
@@ -41,33 +51,23 @@ class PayerTest extends TestCase
         $this->assertNotNull($obj);
         $this->assertNotNull($obj->getPaymentMethod());
         $this->assertNotNull($obj->getStatus());
-        $this->assertNotNull($obj->getAccountType());
-        $this->assertNotNull($obj->getAccountAge());
         $this->assertNotNull($obj->getFundingInstruments());
-        $this->assertNotNull($obj->getFundingOptionId());
-        $this->assertNotNull($obj->getFundingOption());
         $this->assertNotNull($obj->getExternalSelectedFundingInstrumentType());
-        $this->assertNotNull($obj->getRelatedFundingOption());
         $this->assertNotNull($obj->getPayerInfo());
-        $this->assertEquals(self::getJson(), $obj->toJson());
+        $this->assertJsonStringEqualsJsonString(self::getJson(), $obj->toJson());
         return $obj;
     }
 
     /**
-     * @depends testSerializationDeserialization
      * @param Payer $obj
      */
+    #[Depends('testSerializationDeserialization')]
     public function testGetters($obj)
     {
-        $this->assertEquals($obj->getPaymentMethod(), "TestSample");
-        $this->assertEquals($obj->getStatus(), "TestSample");
-        $this->assertEquals($obj->getAccountType(), "TestSample");
-        $this->assertEquals($obj->getAccountAge(), "TestSample");
+        $this->assertEquals("TestSample", $obj->getPaymentMethod());
+        $this->assertEquals("TestSample", $obj->getStatus());
         $this->assertEquals($obj->getFundingInstruments(), FundingInstrumentTest::getObject());
-        $this->assertEquals($obj->getFundingOptionId(), "TestSample");
-        $this->assertEquals($obj->getFundingOption(), FundingOptionTest::getObject());
-        $this->assertEquals($obj->getExternalSelectedFundingInstrumentType(), "TestSample");
-        $this->assertEquals($obj->getRelatedFundingOption(), FundingOptionTest::getObject());
+        $this->assertEquals("TestSample", $obj->getExternalSelectedFundingInstrumentType());
         $this->assertEquals($obj->getPayerInfo(), PayerInfoTest::getObject());
     }
 }

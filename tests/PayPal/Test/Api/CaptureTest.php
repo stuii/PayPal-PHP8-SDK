@@ -2,9 +2,15 @@
 
 namespace PayPal\Test\Api;
 
+use JsonException;
 use PayPal\Api\Capture;
+use PayPal\Exception\PayPalConfigurationException;
+use PayPal\Exception\PayPalConnectionException;
 use PayPal\Transport\PPRestCall;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 
 /**
  * Class Capture
@@ -19,12 +25,15 @@ class CaptureTest extends TestCase
      */
     public static function getJson()
     {
-        return '{"id":"TestSample","amount":' .AmountTest::getJson() . ',"is_final_capture":true,"state":"TestSample","reason_code":"TestSample","parent_payment":"TestSample","invoice_number":"TestSample","transaction_fee":' .CurrencyTest::getJson() . ',"create_time":"TestSample","update_time":"TestSample","links":' .LinksTest::getJson() . '}';
+        return '{"id":"TestSample","amount":' .AmountTest::getJson() . ',"is_final_capture":true,"state":"TestSample","reason_code":"TestSample","parent_payment":"TestSample","invoice_number":"TestSample","transaction_fee":' .CurrencyTest::getJson() . ',"create_time":"TestSample","update_time":"TestSample","links":[' .LinksTest::getJson() . ']}';
     }
 
     /**
      * Gets Object Instance with Json data filled in
      * @return Capture
+     * @throws PayPalConfigurationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public static function getObject()
     {
@@ -35,6 +44,9 @@ class CaptureTest extends TestCase
     /**
      * Tests for Serialization and Deserialization Issues
      * @return Capture
+     * @throws PayPalConfigurationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public function testSerializationDeserialization()
     {
@@ -51,73 +63,80 @@ class CaptureTest extends TestCase
         $this->assertNotNull($obj->getCreateTime());
         $this->assertNotNull($obj->getUpdateTime());
         $this->assertNotNull($obj->getLinks());
-        $this->assertEquals(self::getJson(), $obj->toJson());
+        $this->assertJsonStringEqualsJsonString(self::getJson(), $obj->toJson());
         return $obj;
     }
 
     /**
-     * @depends testSerializationDeserialization
      * @param Capture $obj
      */
+    #[Depends('testSerializationDeserialization')]
     public function testGetters($obj)
     {
-        $this->assertEquals($obj->getId(), "TestSample");
+        $this->assertEquals("TestSample", $obj->getId());
         $this->assertEquals($obj->getAmount(), AmountTest::getObject());
-        $this->assertEquals($obj->getIsFinalCapture(), true);
-        $this->assertEquals($obj->getState(), "TestSample");
-        $this->assertEquals($obj->getReasonCode(), "TestSample");
-        $this->assertEquals($obj->getParentPayment(), "TestSample");
-        $this->assertEquals($obj->getInvoiceNumber(), "TestSample");
+        $this->assertTrue($obj->getIsFinalCapture());
+        $this->assertEquals("TestSample", $obj->getState());
+        $this->assertEquals("TestSample", $obj->getReasonCode());
+        $this->assertEquals("TestSample", $obj->getParentPayment());
+        $this->assertEquals("TestSample", $obj->getInvoiceNumber());
         $this->assertEquals($obj->getTransactionFee(), CurrencyTest::getObject());
-        $this->assertEquals($obj->getCreateTime(), "TestSample");
-        $this->assertEquals($obj->getUpdateTime(), "TestSample");
-        $this->assertEquals($obj->getLinks(), LinksTest::getObject());
+        $this->assertEquals("TestSample", $obj->getCreateTime());
+        $this->assertEquals("TestSample", $obj->getUpdateTime());
+        $this->assertEquals($obj->getLinks(), [LinksTest::getObject()]);
     }
 
     /**
-     * @dataProvider mockProvider
      * @param Capture $obj
+     * @param $mockApiContext
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws JsonException
+     * @throws ReflectionException
      */
+    #[DataProvider('mockProvider')]
     public function testGet($obj, $mockApiContext)
     {
         $mockPPRestCall = $this->getMockBuilder('\PayPal\Transport\PayPalRestCall')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $mockPPRestCall->expects($this->any())
+        $mockPPRestCall
             ->method('execute')
-            ->will($this->returnValue(
-                    CaptureTest::getJson()
-            ));
+            ->willReturn(CaptureTest::getJson());
 
         $result = $obj->get("captureId", $mockApiContext, $mockPPRestCall);
         $this->assertNotNull($result);
     }
+
     /**
-     * @dataProvider mockProvider
      * @param Capture $obj
+     * @param $mockApiContext
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws JsonException
+     * @throws ReflectionException
      */
+    #[DataProvider('mockProvider')]
     public function testRefund($obj, $mockApiContext)
     {
         $mockPPRestCall = $this->getMockBuilder('\PayPal\Transport\PayPalRestCall')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $mockPPRestCall->expects($this->any())
+        $mockPPRestCall
             ->method('execute')
-            ->will($this->returnValue(
-                RefundTest::getJson()
-            ));
+            ->willReturn(RefundTest::getJson());
         $refund = RefundTest::getObject();
 
         $result = $obj->refund($refund, $mockApiContext, $mockPPRestCall);
         $this->assertNotNull($result);
     }
 
-    public function mockProvider()
+    public static function mockProvider()
     {
         $obj = self::getObject();
-        $mockApiContext = $this->getMockBuilder('ApiContext')
+        $mockApiContext = self::getMockBuilder('ApiContext')
                     ->disableOriginalConstructor()
                     ->getMock();
         return array(

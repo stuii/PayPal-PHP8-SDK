@@ -2,25 +2,15 @@
 
 namespace PayPal\Validation;
 
-/**
- * Class NumericValidator
- *
- * @package PayPal\Validation
- */
+use InvalidArgumentException;
+
 class NumericValidator
 {
 
-    /**
-     * Helper method for validating an argument if it is numeric
-     *
-     * @param mixed     $argument
-     * @param string|null $argumentName
-     * @return bool
-     */
-    public static function validate($argument, $argumentName = null)
+    public static function validate(mixed $argument, ?string $argumentName = null): bool
     {
-        if (trim($argument) != null && !is_numeric($argument)) {
-            throw new \InvalidArgumentException("$argumentName is not a valid numeric value");
+        if (!is_numeric($argument) && trim($argument) !== null) {
+            throw new InvalidArgumentException("$argumentName is not a valid numeric value");
         }
         return true;
     }

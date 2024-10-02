@@ -2,574 +2,221 @@
 
 namespace PayPal\Api;
 
+use JsonException;
 use PayPal\Common\PayPalResourceModel;
 use PayPal\Core\PayPalConstants;
-use PayPal\Validation\ArgumentValidator;
+use PayPal\Exception\PayPalConfigurationException;
+use PayPal\Exception\PayPalConnectionException;
 use PayPal\Rest\ApiContext;
+use PayPal\Transport\PayPalRestCall;
+use PayPal\Validation\ArgumentValidator;
+use ReflectionException;
 
-/**
- * Class Payment
- *
- * Lets you create, process and manage payments.
- *
- * @package PayPal\Api
- *
- * @property string id
- * @property string intent
- * @property \PayPal\Api\Payer payer
- * @property \PayPal\Api\Transaction[] transactions
- * @property string state
- * @property string experience_profile_id
- * @property string note_to_payer
- * @property \PayPal\Api\Payee $payee
- * @property \PayPal\Api\RedirectUrls redirect_urls
- * @property string failure_reason
- * @property string create_time
- * @property string update_time
- * @property \PayPal\Api\Links[] links
- */
 class Payment extends PayPalResourceModel
 {
-    /**
-     * Identifier of the payment resource created.
-     *
-     * @param string $id
-     * 
-     * @return $this
-     */
-    public function setId($id)
+    private ?string $id = null;
+
+    private string $intent;
+
+    private Payer $payer;
+
+    /** @var array<\PayPal\Api\Transaction> $transactions */
+    private array $transactions = [];
+
+    private ?string $state = null;
+
+    private ?string $noteToPayer = null;
+
+    private ?Payee $payee = null;
+
+    private RedirectUrls $redirectUrls;
+
+    private ?string $failureReason = null;
+
+    private ?string $createTime = null;
+
+    private ?string $updateTime = null;
+
+    public function setId(string $id): self
     {
         $this->id = $id;
         return $this;
     }
 
-    /**
-     * Identifier of the payment resource created.
-     *
-     * @return string
-     */
-    public function getId()
+    public function getId(): ?string
     {
         return $this->id;
     }
 
-    /**
-     * Payment intent.
-     * Valid Values: ["sale", "authorize", "order"]
-     *
-     * @param string $intent
-     * 
-     * @return $this
-     */
-    public function setIntent($intent)
+    public function setIntent(string $intent): self
     {
         $this->intent = $intent;
         return $this;
     }
 
-    /**
-     * Payment intent.
-     *
-     * @return string
-     */
-    public function getIntent()
+    public function getIntent(): string
     {
         return $this->intent;
     }
 
-    /**
-     * Source of the funds for this payment represented by a PayPal account or a direct credit card.
-     *
-     * @param \PayPal\Api\Payer $payer
-     * 
-     * @return $this
-     */
-    public function setPayer($payer)
+    public function setPayer(Payer $payer): self
     {
         $this->payer = $payer;
         return $this;
     }
 
-    /**
-     * Source of the funds for this payment represented by a PayPal account or a direct credit card.
-     *
-     * @return \PayPal\Api\Payer
-     */
-    public function getPayer()
+    public function getPayer(): Payer
     {
         return $this->payer;
     }
 
-    /**
-     * Information that the merchant knows about the payer.  This information is not definitive and only serves as a hint to the UI or any pre-processing logic.
-     * @deprecated Not publicly available
-     * @param \PayPal\Api\PotentialPayerInfo $potential_payer_info
-     * 
-     * @return $this
-     */
-    public function setPotentialPayerInfo($potential_payer_info)
-    {
-        $this->potential_payer_info = $potential_payer_info;
-        return $this;
-    }
-
-    /**
-     * Information that the merchant knows about the payer.  This information is not definitive and only serves as a hint to the UI or any pre-processing logic.
-     * @deprecated Not publicly available
-     * @return \PayPal\Api\PotentialPayerInfo
-     */
-    public function getPotentialPayerInfo()
-    {
-        return $this->potential_payer_info;
-    }
-
-    /**
-     * Receiver of funds for this payment.
-     * @param \PayPal\Api\Payee $payee
-     * 
-     * @return $this
-     */
-    public function setPayee($payee)
+    public function setPayee(Payee $payee): self
     {
         $this->payee = $payee;
         return $this;
     }
 
-    /**
-     * Receiver of funds for this payment.
-     * @return \PayPal\Api\Payee
-     */
-    public function getPayee()
+    public function getPayee(): ?Payee
     {
         return $this->payee;
     }
 
     /**
-     * ID of the cart to execute the payment.
-     * @deprecated Not publicly available
-     * @param string $cart
-     * 
-     * @return $this
+     * @param array<Transaction> $transactions
      */
-    public function setCart($cart)
-    {
-        $this->cart = $cart;
-        return $this;
-    }
-
-    /**
-     * ID of the cart to execute the payment.
-     * @deprecated Not publicly available
-     * @return string
-     */
-    public function getCart()
-    {
-        return $this->cart;
-    }
-
-    /**
-     * Transactional details including the amount and item details.
-     *
-     * @param \PayPal\Api\Transaction[] $transactions
-     * 
-     * @return $this
-     */
-    public function setTransactions($transactions)
+    public function setTransactions(array $transactions): self
     {
         $this->transactions = $transactions;
         return $this;
     }
 
     /**
-     * Transactional details including the amount and item details.
-     *
-     * @return \PayPal\Api\Transaction[]
+     * @return array<Transaction>
      */
-    public function getTransactions()
+    public function getTransactions(): array
     {
         return $this->transactions;
     }
 
-    /**
-     * Append Transactions to the list.
-     *
-     * @param \PayPal\Api\Transaction $transaction
-     * @return $this
-     */
-    public function addTransaction($transaction)
+    public function addTransaction(Transaction $transaction): self
     {
         if (!$this->getTransactions()) {
-            return $this->setTransactions(array($transaction));
-        } else {
-            return $this->setTransactions(
-                array_merge($this->getTransactions(), array($transaction))
-            );
+            return $this->setTransactions([$transaction]);
         }
+
+        return $this->setTransactions(
+            [...$this->getTransactions(), $transaction]
+        );
     }
 
-    /**
-     * Remove Transactions from the list.
-     *
-     * @param \PayPal\Api\Transaction $transaction
-     * @return $this
-     */
-    public function removeTransaction($transaction)
+    public function removeTransaction(Transaction $transaction): self
     {
         return $this->setTransactions(
-            array_diff($this->getTransactions(), array($transaction))
+            array_diff($this->getTransactions(), [$transaction])
         );
     }
 
-    /**
-     * Applicable for advanced payments like multi seller payment (MSP) to support partial failures
-     * @deprecated Not publicly available
-     * @param \PayPal\Api\Error[] $failed_transactions
-     * 
-     * @return $this
-     */
-    public function setFailedTransactions($failed_transactions)
-    {
-        $this->failed_transactions = $failed_transactions;
-        return $this;
-    }
-
-    /**
-     * Applicable for advanced payments like multi seller payment (MSP) to support partial failures
-     * @deprecated Not publicly available
-     * @return \PayPal\Api\Error[]
-     */
-    public function getFailedTransactions()
-    {
-        return $this->failed_transactions;
-    }
-
-    /**
-     * Append FailedTransactions to the list.
-     * @deprecated Not publicly available
-     * @param \PayPal\Api\Error $error
-     * @return $this
-     */
-    public function addFailedTransaction($error)
-    {
-        if (!$this->getFailedTransactions()) {
-            return $this->setFailedTransactions(array($error));
-        } else {
-            return $this->setFailedTransactions(
-                array_merge($this->getFailedTransactions(), array($error))
-            );
-        }
-    }
-
-    /**
-     * Remove FailedTransactions from the list.
-     * @deprecated Not publicly available
-     * @param \PayPal\Api\Error $error
-     * @return $this
-     */
-    public function removeFailedTransaction($error)
-    {
-        return $this->setFailedTransactions(
-            array_diff($this->getFailedTransactions(), array($error))
-        );
-    }
-
-    /**
-     * Collection of PayPal generated billing agreement tokens.
-     * @deprecated Not publicly available
-     * @param string[] $billing_agreement_tokens
-     * 
-     * @return $this
-     */
-    public function setBillingAgreementTokens($billing_agreement_tokens)
-    {
-        $this->billing_agreement_tokens = $billing_agreement_tokens;
-        return $this;
-    }
-
-    /**
-     * Collection of PayPal generated billing agreement tokens.
-     * @deprecated Not publicly available
-     * @return string[]
-     */
-    public function getBillingAgreementTokens()
-    {
-        return $this->billing_agreement_tokens;
-    }
-
-    /**
-     * Append BillingAgreementTokens to the list.
-     * @deprecated Not publicly available
-     * @param string $billingAgreementToken
-     * @return $this
-     */
-    public function addBillingAgreementToken($billingAgreementToken)
-    {
-        if (!$this->getBillingAgreementTokens()) {
-            return $this->setBillingAgreementTokens(array($billingAgreementToken));
-        } else {
-            return $this->setBillingAgreementTokens(
-                array_merge($this->getBillingAgreementTokens(), array($billingAgreementToken))
-            );
-        }
-    }
-
-    /**
-     * Remove BillingAgreementTokens from the list.
-     * @deprecated Not publicly available
-     * @param string $billingAgreementToken
-     * @return $this
-     */
-    public function removeBillingAgreementToken($billingAgreementToken)
-    {
-        return $this->setBillingAgreementTokens(
-            array_diff($this->getBillingAgreementTokens(), array($billingAgreementToken))
-        );
-    }
-
-    /**
-     * Credit financing offered to payer on PayPal side. Returned in payment after payer opts-in
-     * @deprecated Not publicly available
-     * @param \PayPal\Api\CreditFinancingOffered $credit_financing_offered
-     * 
-     * @return $this
-     */
-    public function setCreditFinancingOffered($credit_financing_offered)
-    {
-        $this->credit_financing_offered = $credit_financing_offered;
-        return $this;
-    }
-
-    /**
-     * Credit financing offered to payer on PayPal side. Returned in payment after payer opts-in
-     * @deprecated Not publicly available
-     * @return \PayPal\Api\CreditFinancingOffered
-     */
-    public function getCreditFinancingOffered()
-    {
-        return $this->credit_financing_offered;
-    }
-
-    /**
-     * Instructions for the payer to complete this payment.
-     * @deprecated Not publicly available
-     * @param \PayPal\Api\PaymentInstruction $payment_instruction
-     * 
-     * @return $this
-     */
-    public function setPaymentInstruction($payment_instruction)
-    {
-        $this->payment_instruction = $payment_instruction;
-        return $this;
-    }
-
-    /**
-     * Instructions for the payer to complete this payment.
-     * @deprecated Not publicly available
-     * @return \PayPal\Api\PaymentInstruction
-     */
-    public function getPaymentInstruction()
-    {
-        return $this->payment_instruction;
-    }
-
-    /**
-     * The state of the payment, authorization, or order transaction. The value is:<ul><li><code>created</code>. The transaction was successfully created.</li><li><code>approved</code>. The buyer approved the transaction.</li><li><code>failed</code>. The transaction request failed.</li></ul>
-     * Valid Values: ["created", "approved", "failed", "partially_completed", "in_progress"]
-     *
-     * @param string $state
-     * 
-     * @return $this
-     */
-    public function setState($state)
+    public function setState(string $state): self
     {
         $this->state = $state;
         return $this;
     }
 
-    /**
-     * The state of the payment, authorization, or order transaction. The value is:<ul><li><code>created</code>. The transaction was successfully created.</li><li><code>approved</code>. The buyer approved the transaction.</li><li><code>failed</code>. The transaction request failed.</li></ul>
-     *
-     * @return string
-     */
-    public function getState()
+    public function getState(): ?string
     {
         return $this->state;
     }
 
-    /**
-     * PayPal generated identifier for the merchant's payment experience profile. Refer to [this](https://developer.paypal.com/docs/api/#payment-experience) link to create experience profile ID.
-     *
-     * @param string $experience_profile_id
-     * 
-     * @return $this
-     */
-    public function setExperienceProfileId($experience_profile_id)
+    public function setExperienceProfileId(string $experienceProfileId): self
     {
-        $this->experience_profile_id = $experience_profile_id;
+        $this->experienceProfileId = $experienceProfileId;
         return $this;
     }
 
-    /**
-     * PayPal generated identifier for the merchant's payment experience profile. Refer to [this](https://developer.paypal.com/docs/api/#payment-experience) link to create experience profile ID.
-     *
-     * @return string
-     */
-    public function getExperienceProfileId()
+    public function getExperienceProfileId(): ?string
     {
-        return $this->experience_profile_id;
+        return $this->experienceProfileId;
     }
 
-    /**
-     * free-form field for the use of clients to pass in a message to the payer
-     *
-     * @param string $note_to_payer
-     * 
-     * @return $this
-     */
-    public function setNoteToPayer($note_to_payer)
+    public function setNoteToPayer(string $noteToPayer): self
     {
-        $this->note_to_payer = $note_to_payer;
+        $this->noteToPayer = $noteToPayer;
         return $this;
     }
 
-    /**
-     * free-form field for the use of clients to pass in a message to the payer
-     *
-     * @return string
-     */
-    public function getNoteToPayer()
+    public function getNoteToPayer(): ?string
     {
-        return $this->note_to_payer;
+        return $this->noteToPayer;
     }
 
-    /**
-     * Set of redirect URLs you provide only for PayPal-based payments.
-     *
-     * @param \PayPal\Api\RedirectUrls $redirect_urls
-     * 
-     * @return $this
-     */
-    public function setRedirectUrls($redirect_urls)
+    public function setRedirectUrls(RedirectUrls $redirectUrls): self
     {
-        $this->redirect_urls = $redirect_urls;
+        $this->redirectUrls = $redirectUrls;
         return $this;
     }
 
-    /**
-     * Set of redirect URLs you provide only for PayPal-based payments.
-     *
-     * @return \PayPal\Api\RedirectUrls
-     */
-    public function getRedirectUrls()
+    public function getRedirectUrls(): RedirectUrls
     {
-        return $this->redirect_urls;
+        return $this->redirectUrls;
     }
 
-    /**
-     * Failure reason code returned when the payment failed for some valid reasons.
-     * Valid Values: ["UNABLE_TO_COMPLETE_TRANSACTION", "INVALID_PAYMENT_METHOD", "PAYER_CANNOT_PAY", "CANNOT_PAY_THIS_PAYEE", "REDIRECT_REQUIRED", "PAYEE_FILTER_RESTRICTIONS"]
-     *
-     * @param string $failure_reason
-     * 
-     * @return $this
-     */
-    public function setFailureReason($failure_reason)
+    public function setFailureReason(string $failureReason): self
     {
-        $this->failure_reason = $failure_reason;
+        $this->failureReason = $failureReason;
         return $this;
     }
 
-    /**
-     * Failure reason code returned when the payment failed for some valid reasons.
-     *
-     * @return string
-     */
-    public function getFailureReason()
+    public function getFailureReason(): ?string
     {
-        return $this->failure_reason;
+        return $this->failureReason;
     }
 
-    /**
-     * Payment creation time as defined in [RFC 3339 Section 5.6](http://tools.ietf.org/html/rfc3339#section-5.6).
-     *
-     * @param string $create_time
-     * 
-     * @return $this
-     */
-    public function setCreateTime($create_time)
+    public function setCreateTime(string $createTime): self
     {
-        $this->create_time = $create_time;
+        $this->createTime = $createTime;
         return $this;
     }
 
-    /**
-     * Payment creation time as defined in [RFC 3339 Section 5.6](http://tools.ietf.org/html/rfc3339#section-5.6).
-     *
-     * @return string
-     */
-    public function getCreateTime()
+    public function getCreateTime(): ?string
     {
-        return $this->create_time;
+        return $this->createTime;
     }
 
-    /**
-     * Payment update time as defined in [RFC 3339 Section 5.6](http://tools.ietf.org/html/rfc3339#section-5.6).
-     *
-     * @param string $update_time
-     * 
-     * @return $this
-     */
-    public function setUpdateTime($update_time)
+    public function setUpdateTime(string $updateTime): self
     {
-        $this->update_time = $update_time;
+        $this->updateTime = $updateTime;
         return $this;
     }
 
-    /**
-     * Payment update time as defined in [RFC 3339 Section 5.6](http://tools.ietf.org/html/rfc3339#section-5.6).
-     *
-     * @return string
-     */
-    public function getUpdateTime()
+    public function getUpdateTime(): ?string
     {
-        return $this->update_time;
+        return $this->updateTime;
     }
 
-    /**
-     * Get Approval Link
-     *
-     * @return null|string
-     */
-    public function getApprovalLink()
+    public function getApprovalLink(): ?string
     {
         return $this->getLink(PayPalConstants::APPROVAL_URL);
     }
-	
-	/**
-     * Get token from Approval Link
-     *
-     * @return null|string
-     */
-	public function getToken()
-	{
-		$parameter_name = "token";
-		parse_str(parse_url($this->getApprovalLink(), PHP_URL_QUERY), $query);
-		return !isset($query[$parameter_name]) ? null : $query[$parameter_name];
-	}
-	
+
+    public function getToken(): ?string
+    {
+        $parameter_name = 'token';
+        parse_str(parse_url($this->getApprovalLink(), PHP_URL_QUERY), $query);
+        return $query[$parameter_name] ?? null;
+    }
+
     /**
-     * Creates and processes a payment. In the JSON request body, include a `payment` object with the intent, payer, and transactions. For PayPal payments, include redirect URLs in the `payment` object.
-     *
-     * @param ApiContext $apiContext is the APIContext for this call. It can be used to pass dynamic configuration and credentials.
-     * @param PayPalRestCall $restCall is the Rest Call Service that is used to make rest calls
-     * @return Payment
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws ReflectionException
+     * @throws JsonException
      */
-    public function create($apiContext = null, $restCall = null)
+    public function create(ApiContext $apiContext = null, PayPalRestCall $restCall = null): Payment
     {
         $payLoad = $this->toJSON();
         $json = self::executeCall(
-            "/v1/payments/payment",
-            "POST",
+            '/v1/payments/payment',
+            'POST',
             $payLoad,
             null,
             $apiContext,
@@ -580,21 +227,22 @@ class Payment extends PayPalResourceModel
     }
 
     /**
-     * Shows details for a payment, by ID.
-     *
-     * @param string $paymentId
-     * @param ApiContext $apiContext is the APIContext for this call. It can be used to pass dynamic configuration and credentials.
-     * @param PayPalRestCall $restCall is the Rest Call Service that is used to make rest calls
-     * @return Payment
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws ReflectionException
+     * @throws JsonException
      */
-    public static function get($paymentId, $apiContext = null, $restCall = null)
-    {
+    public static function get(
+        string $paymentId,
+        ?ApiContext $apiContext = null,
+        ?PayPalRestCall $restCall = null
+    ): Payment {
         ArgumentValidator::validate($paymentId, 'paymentId');
-        $payLoad = "";
+        $payload = '';
         $json = self::executeCall(
-            "/v1/payments/payment/$paymentId",
-            "GET",
-            $payLoad,
+            '/v1/payments/payment/' . $paymentId,
+            'GET',
+            $payload,
             null,
             $apiContext,
             $restCall
@@ -605,21 +253,21 @@ class Payment extends PayPalResourceModel
     }
 
     /**
-     * Partially updates a payment, by ID. You can update the amount, shipping address, invoice ID, and custom data. You cannot use patch after execute has been called.
-     *
-     * @param PatchRequest $patchRequest
-     * @param ApiContext $apiContext is the APIContext for this call. It can be used to pass dynamic configuration and credentials.
-     * @param PayPalRestCall $restCall is the Rest Call Service that is used to make rest calls
-     * @return boolean
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws JsonException
      */
-    public function update($patchRequest, $apiContext = null, $restCall = null)
-    {
-        ArgumentValidator::validate($this->getId(), "Id");
+    public function update(
+        PatchRequest $patchRequest,
+        ?ApiContext $apiContext = null,
+        ?PayPalRestCall $restCall = null
+    ): bool {
+        ArgumentValidator::validate($this->getId(), 'Id');
         ArgumentValidator::validate($patchRequest, 'patchRequest');
         $payLoad = $patchRequest->toJSON();
         self::executeCall(
-            "/v1/payments/payment/{$this->getId()}",
-            "PATCH",
+            '/v1/payments/payment/' . $this->getId(),
+            'PATCH',
             $payLoad,
             null,
             $apiContext,
@@ -629,21 +277,22 @@ class Payment extends PayPalResourceModel
     }
 
     /**
-     * Executes, or completes, a PayPal payment that the payer has approved. You can optionally update selective payment information when you execute a payment.
-     *
-     * @param PaymentExecution $paymentExecution
-     * @param ApiContext $apiContext is the APIContext for this call. It can be used to pass dynamic configuration and credentials.
-     * @param PayPalRestCall $restCall is the Rest Call Service that is used to make rest calls
-     * @return Payment
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws ReflectionException
+     * @throws JsonException
      */
-    public function execute($paymentExecution, $apiContext = null, $restCall = null)
-    {
-        ArgumentValidator::validate($this->getId(), "Id");
+    public function execute(
+        PaymentExecution $paymentExecution,
+        ?ApiContext $apiContext = null,
+        ?PayPalRestCall $restCall = null
+    ): Payment {
+        ArgumentValidator::validate($this->getId(), 'Id');
         ArgumentValidator::validate($paymentExecution, 'paymentExecution');
         $payLoad = $paymentExecution->toJSON();
         $json = self::executeCall(
-            "/v1/payments/payment/{$this->getId()}/execute",
-            "POST",
+            '/v1/payments/payment/' . $this->getId() . '/execute',
+            'POST',
             $payLoad,
             null,
             $apiContext,
@@ -654,31 +303,32 @@ class Payment extends PayPalResourceModel
     }
 
     /**
-     * List payments that were made to the merchant who issues the request. Payments can be in any state.
-     *
-     * @param array $params
-     * @param ApiContext $apiContext is the APIContext for this call. It can be used to pass dynamic configuration and credentials.
-     * @param PayPalRestCall $restCall is the Rest Call Service that is used to make rest calls
-     * @return PaymentHistory
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws ReflectionException
+     * @throws JsonException
      */
-    public static function all($params, $apiContext = null, $restCall = null)
-    {
+    public static function all(
+        array $params,
+        ?ApiContext $apiContext = null,
+        ?PayPalRestCall $restCall = null
+    ): PaymentHistory {
         ArgumentValidator::validate($params, 'params');
-        $payLoad = "";
-        $allowedParams = array(
-                    'count' => 1,
-                    'start_id' => 1,
-                    'start_index' => 1,
-                    'start_time' => 1,
-                    'end_time' => 1,
-                    'payee_id' => 1,
-                    'sort_by' => 1,
-                    'sort_order' => 1,
-        );
+        $payload = '';
+        $allowedParams = [
+            'count' => 1,
+            'start_id' => 1,
+            'start_index' => 1,
+            'start_time' => 1,
+            'end_time' => 1,
+            'payee_id' => 1,
+            'sort_by' => 1,
+            'sort_order' => 1,
+        ];
         $json = self::executeCall(
-            "/v1/payments/payment?" . http_build_query(array_intersect_key($params, $allowedParams)),
-            "GET",
-            $payLoad,
+            '/v1/payments/payment?' . http_build_query(array_intersect_key($params, $allowedParams)),
+            'GET',
+            $payload,
             null,
             $apiContext,
             $restCall
@@ -687,5 +337,4 @@ class Payment extends PayPalResourceModel
         $ret->fromJson($json);
         return $ret;
     }
-
 }

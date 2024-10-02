@@ -2,66 +2,36 @@
 
 namespace PayPal\Exception;
 
+use Exception;
+
 /**
  * Class PayPalConnectionException
  *
  * @package PayPal\Exception
  */
-class PayPalConnectionException extends \Exception
+class PayPalConnectionException extends Exception
 {
-    /**
-     * The url that was being connected to when the exception occured
-     *
-     * @var string
-     */
-    private $url;
+    private string $url;
 
-    /**
-     * Any response data that was returned by the server
-     *
-     * @var string
-     */
-    private $data;
+    private string $data;
 
-    /**
-     * Default Constructor
-     *
-     * @param string $url
-     * @param string    $message
-     * @param int    $code
-     */
-    public function __construct($url, $message, $code = 0)
+    public function __construct(string $url, ?string $message, int $code = 0)
     {
         parent::__construct($message, $code);
         $this->url = $url;
     }
 
-    /**
-     * Sets Data
-     *
-     * @param $data
-     */
-    public function setData($data)
+    public function setData(string $data): void
     {
         $this->data = $data;
     }
 
-    /**
-     * Gets Data
-     *
-     * @return string
-     */
-    public function getData()
+    public function getData(): string
     {
         return $this->data;
     }
 
-    /**
-     * Gets Url
-     *
-     * @return string
-     */
-    public function getUrl()
+    public function getUrl(): string
     {
         return $this->url;
     }

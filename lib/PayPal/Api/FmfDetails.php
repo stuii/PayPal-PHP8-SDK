@@ -4,112 +4,58 @@ namespace PayPal\Api;
 
 use PayPal\Common\PayPalModel;
 
-/**
- * Class FmfDetails
- *
- * Details of Fraud Management Filter (FMF).
- *
- * @package PayPal\Api
- *
- * @property string filter_type
- * @property string filter_id
- * @property string name
- * @property string description
- */
 class FmfDetails extends PayPalModel
 {
-    /**
-     * Type of filter.
-     * Valid Values: ["ACCEPT", "PENDING", "DENY", "REPORT"]
-     *
-     * @param string $filter_type
-     * 
-     * @return $this
-     */
-    public function setFilterType($filter_type)
+    private string $filterType;
+
+    private string $filterId;
+
+    private string $name;
+
+    private string $description;
+
+
+    public function setFilterType(string $filterType): self
     {
-        $this->filter_type = $filter_type;
+        $this->filterType = $filterType;
         return $this;
     }
 
-    /**
-     * Type of filter.
-     *
-     * @return string
-     */
-    public function getFilterType()
+    public function getFilterType(): string
     {
-        return $this->filter_type;
+        return $this->filterType;
     }
 
-    /**
-     * Filter Identifier.
-     * Valid Values: ["AVS_NO_MATCH", "AVS_PARTIAL_MATCH", "AVS_UNAVAILABLE_OR_UNSUPPORTED", "CARD_SECURITY_CODE_MISMATCH", "MAXIMUM_TRANSACTION_AMOUNT", "UNCONFIRMED_ADDRESS", "COUNTRY_MONITOR", "LARGE_ORDER_NUMBER", "BILLING_OR_SHIPPING_ADDRESS_MISMATCH", "RISKY_ZIP_CODE", "SUSPECTED_FREIGHT_FORWARDER_CHECK", "TOTAL_PURCHASE_PRICE_MINIMUM", "IP_ADDRESS_VELOCITY", "RISKY_EMAIL_ADDRESS_DOMAIN_CHECK", "RISKY_BANK_IDENTIFICATION_NUMBER_CHECK", "RISKY_IP_ADDRESS_RANGE", "PAYPAL_FRAUD_MODEL"]
-     *
-     * @param string $filter_id
-     * 
-     * @return $this
-     */
-    public function setFilterId($filter_id)
+    public function setFilterId(string $filterId): self
     {
-        $this->filter_id = $filter_id;
+        $this->filterId = $filterId;
         return $this;
     }
 
-    /**
-     * Filter Identifier.
-     *
-     * @return string
-     */
-    public function getFilterId()
+    public function getFilterId(): string
     {
-        return $this->filter_id;
+        return $this->filterId;
     }
 
-    /**
-     * Name of the filter
-     *
-     * @param string $name
-     * 
-     * @return $this
-     */
-    public function setName($name)
+    public function setName(string $name): self
     {
         $this->name = $name;
         return $this;
     }
 
-    /**
-     * Name of the filter
-     *
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * Description of the filter.
-     *
-     * @param string $description
-     * 
-     * @return $this
-     */
-    public function setDescription($description)
+    public function setDescription(string $description): self
     {
         $this->description = $description;
         return $this;
     }
 
-    /**
-     * Description of the filter.
-     *
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
-
 }

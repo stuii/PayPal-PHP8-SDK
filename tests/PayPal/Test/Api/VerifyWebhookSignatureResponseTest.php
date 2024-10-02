@@ -2,9 +2,12 @@
 
 namespace PayPal\Test\Api;
 
-use PayPal\Common\PayPalModel;
+use JsonException;
 use PayPal\Api\VerifyWebhookSignatureResponse;
+use PayPal\Exception\PayPalConfigurationException;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 
 /**
  * Class VerifyWebhookSignatureResponse
@@ -25,6 +28,9 @@ class VerifyWebhookSignatureResponseTest extends TestCase
     /**
      * Gets Object Instance with Json data filled in
      * @return VerifyWebhookSignatureResponse
+     * @throws PayPalConfigurationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public static function getObject()
     {
@@ -35,23 +41,26 @@ class VerifyWebhookSignatureResponseTest extends TestCase
     /**
      * Tests for Serialization and Deserialization Issues
      * @return VerifyWebhookSignatureResponse
+     * @throws PayPalConfigurationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public function testSerializationDeserialization()
     {
         $obj = new VerifyWebhookSignatureResponse(self::getJson());
         $this->assertNotNull($obj);
         $this->assertNotNull($obj->getVerificationStatus());
-        $this->assertEquals(self::getJson(), $obj->toJson());
+        $this->assertJsonStringEqualsJsonString(self::getJson(), $obj->toJson());
         return $obj;
     }
 
     /**
-     * @depends testSerializationDeserialization
      * @param VerifyWebhookSignatureResponse $obj
      */
+    #[Depends('testSerializationDeserialization')]
     public function testGetters($obj)
     {
-        $this->assertEquals($obj->getVerificationStatus(), "TestSample");
+        $this->assertEquals("TestSample", $obj->getVerificationStatus());
     }
 
 }

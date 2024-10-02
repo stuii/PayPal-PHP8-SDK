@@ -2,8 +2,12 @@
 
 namespace PayPal\Test\Api;
 
+use JsonException;
 use PayPal\Api\ShippingAddress;
+use PayPal\Exception\PayPalConfigurationException;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 
 /**
  * Class ShippingAddress
@@ -18,12 +22,15 @@ class ShippingAddressTest extends TestCase
      */
     public static function getJson()
     {
-        return '{"id":"TestSample","recipient_name":"TestSample","default_address":true}';
+        return '{"recipient_name":"TestSample"}';
     }
 
     /**
      * Gets Object Instance with Json data filled in
      * @return ShippingAddress
+     * @throws PayPalConfigurationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public static function getObject()
     {
@@ -34,26 +41,25 @@ class ShippingAddressTest extends TestCase
     /**
      * Tests for Serialization and Deserialization Issues
      * @return ShippingAddress
+     * @throws PayPalConfigurationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public function testSerializationDeserialization()
     {
         $obj = new ShippingAddress(self::getJson());
         $this->assertNotNull($obj);
-        $this->assertNotNull($obj->getId());
         $this->assertNotNull($obj->getRecipientName());
-        $this->assertNotNull($obj->getDefaultAddress());
-        $this->assertEquals(self::getJson(), $obj->toJson());
+        $this->assertJsonStringEqualsJsonString(self::getJson(), $obj->toJson());
         return $obj;
     }
 
     /**
-     * @depends testSerializationDeserialization
      * @param ShippingAddress $obj
      */
+    #[Depends('testSerializationDeserialization')]
     public function testGetters($obj)
     {
-        $this->assertEquals($obj->getId(), "TestSample");
-        $this->assertEquals($obj->getRecipientName(), "TestSample");
-        $this->assertEquals($obj->getDefaultAddress(), true);
+        $this->assertEquals("TestSample", $obj->getRecipientName());
     }
 }

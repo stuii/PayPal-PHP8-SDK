@@ -1,26 +1,27 @@
-<?php
+<?php /** @noinspection TypeUnsafeComparisonInspection */
+/** @noinspection PhpConditionAlreadyCheckedInspection */
+
+/** @noinspection PhpOptionalBeforeRequiredParametersInspection */
 
 namespace PayPal\Cache;
 
+use Exception;
+use JsonException;
 use PayPal\Core\PayPalConfigManager;
 use PayPal\Validation\JsonValidator;
+use RuntimeException;
 
 abstract class AuthorizationCache
 {
-    public static $CACHE_PATH = '/../../../var/auth.cache';
+    public static string $CACHE_PATH = '/../../../var/auth.cache';
 
     /**
-     * A pull method which would read the persisted data based on clientId.
-     * If clientId is not provided, an array with all the tokens would be passed.
-     *
-     * @param array|null $config
-     * @param string $clientId
-     * @return mixed|null
+     * @throws JsonException
      */
-    public static function pull($config = null, $clientId = null)
+    public static function pull(?array $config = null, ?string $clientId = null): mixed
     {
         // Return if not enabled
-        if (!self::isEnabled($config)) {
+        if (!self::isEnabled($config ?? [])) {
             return null;
         }
 
@@ -30,12 +31,14 @@ abstract class AuthorizationCache
             // Read from the file
             $cachedToken = file_get_contents($cachePath);
             if ($cachedToken && JsonValidator::validate($cachedToken, true)) {
-                $tokens = json_decode($cachedToken, true);
+                $tokens = json_decode($cachedToken, true, 512, JSON_THROW_ON_ERROR);
                 if ($clientId && is_array($tokens) && array_key_exists($clientId, $tokens)) {
-                    // If client Id is found, just send in that data only
+                    // If client ID is found, just send in that data only
                     return $tokens[$clientId];
-                } elseif ($clientId) {
-                    // If client Id is provided, but no key in persisted data found matching it.
+                }
+
+                if ($clientId) {
+                    // If client ID is provided, but no key in persisted data found matching it.
                     return null;
                 }
             }
@@ -44,55 +47,49 @@ abstract class AuthorizationCache
     }
 
     /**
-     * Persists the data into a cache file provided in $CACHE_PATH
-     *
-     * @param array|null $config
-     * @param      $clientId
-     * @param      $accessToken
-     * @param      $tokenCreateTime
-     * @param      $tokenExpiresIn
-     * @throws \Exception
+     * @throws Exception
      */
-    public static function push($config = null, $clientId, $accessToken, $tokenCreateTime, $tokenExpiresIn)
-    {
+    public static function push(
+        ?array $config = null,
+        ?string $clientId,
+        string $accessToken,
+        float $tokenCreateTime,
+        int $tokenExpiresIn
+    ): void {
         // Return if not enabled
         if (!self::isEnabled($config)) {
             return;
         }
 
         $cachePath = self::cachePath($config);
-        if (!is_dir(dirname($cachePath))) {
-            if (mkdir(dirname($cachePath), 0755, true) == false) {
-                throw new \Exception("Failed to create directory at $cachePath");
-            }
+        if (
+            !is_dir(dirname($cachePath))
+            && !mkdir($concurrentDirectory = dirname($cachePath), 0755, true)
+            && !is_dir($concurrentDirectory)
+        ) {
+            throw new RuntimeException("Failed to create directory at $cachePath");
         }
 
         // Reads all the existing persisted data
         $tokens = self::pull();
-        $tokens = $tokens ? $tokens : array();
+        $tokens = $tokens ?: [];
         if (is_array($tokens)) {
-            $tokens[$clientId] = array(
+            $tokens[$clientId] = [
                 'clientId' => $clientId,
                 'accessTokenEncrypted' => $accessToken,
                 'tokenCreateTime' => $tokenCreateTime,
-                'tokenExpiresIn' => $tokenExpiresIn
-            );
+                'tokenExpiresIn' => $tokenExpiresIn,
+            ];
         }
-        if (!file_put_contents($cachePath, json_encode($tokens))) {
-            throw new \Exception("Failed to write cache");
-        };
+        if (!file_put_contents($cachePath, json_encode($tokens, JSON_THROW_ON_ERROR))) {
+            throw new RuntimeException("Failed to write cache");
+        }
     }
 
-    /**
-     * Determines from the Configuration if caching is currently enabled/disabled
-     *
-     * @param $config
-     * @return bool
-     */
-    public static function isEnabled($config)
+    public static function isEnabled(array $config): bool
     {
         $value = self::getConfigValue('cache.enabled', $config);
-        return empty($value) ? false : ((trim($value) == true || trim($value) == 'true'));
+        return !empty($value) && ($value == true || trim($value) === 'true');
     }
     
     /**
@@ -101,7 +98,7 @@ abstract class AuthorizationCache
      * @param $config
      * @return string
      */
-    public static function cachePath($config)
+    public static function cachePath($config): string
     {
         $cachePath = self::getConfigValue('cache.FileName', $config);
         return empty($cachePath) ? __DIR__ . self::$CACHE_PATH : $cachePath;
@@ -115,7 +112,7 @@ abstract class AuthorizationCache
      * @param $config
      * @return null|string
      */
-    private static function getConfigValue($key, $config)
+    private static function getConfigValue($key, $config): ?string
     {
         $config = ($config && is_array($config)) ? $config : PayPalConfigManager::getInstance()->getConfigHashmap();
         return (array_key_exists($key, $config)) ? trim($config[$key]) : null;

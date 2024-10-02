@@ -4,159 +4,84 @@ namespace PayPal\Api;
 
 use PayPal\Common\PayPalModel;
 
-/**
- * Class ProcessorResponse
- *
- * Collection of payment response related fields returned from a payment request
- *
- * @package PayPal\Api
- *
- * @property string response_code
- * @property string avs_code
- * @property string cvv_code
- * @property string advice_code
- * @property string eci_submitted
- * @property string vpas
- */
 class ProcessorResponse extends PayPalModel
 {
-    /**
-     * Paypal normalized response code, generated from the processor's specific response code
-     *
-     * @param string $response_code
-     *
-     * @return $this
-     */
-    public function setResponseCode($response_code)
+    private string $responseCode;
+
+    private string $avsCode;
+
+    private string $cvvCode;
+
+    private string $adviceCode;
+
+    private string $eciSubmitted;
+
+    private string $vpas;
+
+
+    public function setResponseCode(string $responseCode): self
     {
-        $this->response_code = $response_code;
+        $this->responseCode = $responseCode;
         return $this;
     }
 
-    /**
-     * Paypal normalized response code, generated from the processor's specific response code
-     *
-     * @return string
-     */
-    public function getResponseCode()
+    public function getResponseCode(): string
     {
-        return $this->response_code;
+        return $this->responseCode;
     }
 
-    /**
-     * Address Verification System response code. https://developer.paypal.com/docs/classic/api/AVSResponseCodes/
-     *
-     * @param string $avs_code
-     *
-     * @return $this
-     */
-    public function setAvsCode($avs_code)
+    public function setAvsCode(string $avsCode): self
     {
-        $this->avs_code = $avs_code;
+        $this->avsCode = $avsCode;
         return $this;
     }
 
-    /**
-     * Address Verification System response code. https://developer.paypal.com/docs/classic/api/AVSResponseCodes/
-     *
-     * @return string
-     */
-    public function getAvsCode()
+    public function getAvsCode(): string
     {
-        return $this->avs_code;
+        return $this->avsCode;
     }
 
-    /**
-     * CVV System response code. https://developer.paypal.com/docs/classic/api/AVSResponseCodes/
-     *
-     * @param string $cvv_code
-     *
-     * @return $this
-     */
-    public function setCvvCode($cvv_code)
+    public function setCvvCode(string $cvvCode): self
     {
-        $this->cvv_code = $cvv_code;
+        $this->cvvCode = $cvvCode;
         return $this;
     }
 
-    /**
-     * CVV System response code. https://developer.paypal.com/docs/classic/api/AVSResponseCodes/
-     *
-     * @return string
-     */
-    public function getCvvCode()
+    public function getCvvCode(): string
     {
-        return $this->cvv_code;
+        return $this->cvvCode;
     }
 
-    /**
-     * Provides merchant advice on how to handle declines related to recurring payments
-     * Valid Values: ["01_NEW_ACCOUNT_INFORMATION", "02_TRY_AGAIN_LATER", "02_STOP_SPECIFIC_PAYMENT", "03_DO_NOT_TRY_AGAIN", "03_REVOKE_AUTHORIZATION_FOR_FUTURE_PAYMENT", "21_DO_NOT_TRY_AGAIN_CARD_HOLDER_CANCELLED_RECURRRING_CHARGE", "21_CANCEL_ALL_RECURRING_PAYMENTS"]
-     *
-     * @param string $advice_code
-     *
-     * @return $this
-     */
-    public function setAdviceCode($advice_code)
+    public function setAdviceCode(string $adviceCode): self
     {
-        $this->advice_code = $advice_code;
+        $this->adviceCode = $adviceCode;
         return $this;
     }
 
-    /**
-     * Provides merchant advice on how to handle declines related to recurring payments
-     *
-     * @return string
-     */
-    public function getAdviceCode()
+    public function getAdviceCode(): string
     {
-        return $this->advice_code;
+        return $this->adviceCode;
     }
 
-    /**
-     * Response back from the authorization. Provided by the processor
-     *
-     * @param string $eci_submitted
-     *
-     * @return $this
-     */
-    public function setEciSubmitted($eci_submitted)
+    public function setEciSubmitted(string $eciSubmitted): self
     {
-        $this->eci_submitted = $eci_submitted;
+        $this->eciSubmitted = $eciSubmitted;
         return $this;
     }
 
-    /**
-     * Response back from the authorization. Provided by the processor
-     *
-     * @return string
-     */
-    public function getEciSubmitted()
+    public function getEciSubmitted(): string
     {
-        return $this->eci_submitted;
+        return $this->eciSubmitted;
     }
 
-    /**
-     * Visa Payer Authentication Service status. Will be return from processor
-     *
-     * @param string $vpas
-     *
-     * @return $this
-     */
-    public function setVpas($vpas)
+    public function setVpas(string $vpas): self
     {
         $this->vpas = $vpas;
         return $this;
     }
 
-    /**
-     * Visa Payer Authentication Service status. Will be return from processor
-     *
-     * @return string
-     */
-    public function getVpas()
+    public function getVpas(): string
     {
         return $this->vpas;
     }
-
 }

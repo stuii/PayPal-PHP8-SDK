@@ -2,8 +2,12 @@
 
 namespace PayPal\Test\Api;
 
+use JsonException;
 use PayPal\Api\Transaction;
+use PayPal\Exception\PayPalConfigurationException;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 
 /**
  * Class Transaction
@@ -19,12 +23,15 @@ class TransactionTest extends TestCase
      */
     public static function getJson()
     {
-        return '{}';
+        return '[]';
     }
 
     /**
      * Gets Object Instance with Json data filled in
      * @return Transaction
+     * @throws PayPalConfigurationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public static function getObject()
     {
@@ -35,20 +42,15 @@ class TransactionTest extends TestCase
     /**
      * Tests for Serialization and Deserialization Issues
      * @return Transaction
+     * @throws PayPalConfigurationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public function testSerializationDeserialization()
     {
         $obj = new Transaction(self::getJson());
         $this->assertNotNull($obj);
-        $this->assertEquals(self::getJson(), $obj->toJson());
+        $this->assertJsonStringEqualsJsonString(self::getJson(), $obj->toJson());
         return $obj;
-    }
-
-    /**
-     * @depends testSerializationDeserialization
-     * @param Transaction $obj
-     */
-    public function testGetters($obj)
-    {
     }
 }

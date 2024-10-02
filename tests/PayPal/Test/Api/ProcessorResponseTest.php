@@ -2,8 +2,12 @@
 
 namespace PayPal\Test\Api;
 
+use JsonException;
 use PayPal\Api\ProcessorResponse;
+use PayPal\Exception\PayPalConfigurationException;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 
 /**
  * Class ProcessorResponse
@@ -24,6 +28,9 @@ class ProcessorResponseTest extends TestCase
     /**
      * Gets Object Instance with Json data filled in
      * @return ProcessorResponse
+     * @throws PayPalConfigurationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public static function getObject()
     {
@@ -34,6 +41,9 @@ class ProcessorResponseTest extends TestCase
     /**
      * Tests for Serialization and Deserialization Issues
      * @return ProcessorResponse
+     * @throws PayPalConfigurationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public function testSerializationDeserialization()
     {
@@ -45,21 +55,21 @@ class ProcessorResponseTest extends TestCase
         $this->assertNotNull($obj->getAdviceCode());
         $this->assertNotNull($obj->getEciSubmitted());
         $this->assertNotNull($obj->getVpas());
-        $this->assertEquals(self::getJson(), $obj->toJson());
+        $this->assertJsonStringEqualsJsonString(self::getJson(), $obj->toJson());
         return $obj;
     }
 
     /**
-     * @depends testSerializationDeserialization
      * @param ProcessorResponse $obj
      */
+    #[Depends('testSerializationDeserialization')]
     public function testGetters($obj)
     {
-        $this->assertEquals($obj->getResponseCode(), "TestSample");
-        $this->assertEquals($obj->getAvsCode(), "TestSample");
-        $this->assertEquals($obj->getCvvCode(), "TestSample");
-        $this->assertEquals($obj->getAdviceCode(), "TestSample");
-        $this->assertEquals($obj->getEciSubmitted(), "TestSample");
-        $this->assertEquals($obj->getVpas(), "TestSample");
+        $this->assertEquals("TestSample", $obj->getResponseCode());
+        $this->assertEquals("TestSample", $obj->getAvsCode());
+        $this->assertEquals("TestSample", $obj->getCvvCode());
+        $this->assertEquals("TestSample", $obj->getAdviceCode());
+        $this->assertEquals("TestSample", $obj->getEciSubmitted());
+        $this->assertEquals("TestSample", $obj->getVpas());
     }
 }

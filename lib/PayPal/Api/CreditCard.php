@@ -2,440 +2,198 @@
 
 namespace PayPal\Api;
 
+use JsonException;
 use PayPal\Common\PayPalResourceModel;
+use PayPal\Exception\PayPalConfigurationException;
+use PayPal\Exception\PayPalConnectionException;
 use PayPal\Rest\ApiContext;
 use PayPal\Transport\PayPalRestCall;
 use PayPal\Validation\ArgumentValidator;
+use ReflectionException;
 
-/**
- * Class CreditCard
- *
- * @package    PayPal\Api
- *
- * @property string              number
- * @property string              type
- * @property int                 expire_month
- * @property int                 expire_year
- * @property string              cvv2
- * @property string              first_name
- * @property string              last_name
- * @property \PayPal\Api\Address billing_address
- * @property string              external_customer_id
- * @property string              state
- * @property string              valid_until
- * @property \PayPal\Api\Links[] links
- */
 class CreditCard extends PayPalResourceModel
 {
-    /**
-     * ID of the credit card. This ID is provided in the response when storing credit cards. **Required if using a stored credit card.**
-     *
-     * @deprecated Not publicly available
-     * @param string $id
-     *
-     * @return $this
-     */
-    public function setId($id)
+    private ?string $number = null;
+    private ?string $type = null;
+    private ?int $expireMonth = null;
+    private ?int $expireYear = null;
+    private ?string $cvv2 = null;
+    private ?string $firstName = null;
+    private ?string $lastName = null;
+    private ?Address $billingAddress = null;
+    private ?string $externalCustomerId = null;
+    private ?string $state = null;
+    private ?string $validUntil = null;
+    private ?string $createTime = null;
+    private ?string $updateTime = null;
+    private ?string $id = null;
+
+    public function setId(string $id): self
     {
         $this->id = $id;
         return $this;
     }
 
-    /**
-     * ID of the credit card. This ID is provided in the response when storing credit cards. **Required if using a stored credit card.**
-     *
-     * @deprecated Not publicly available
-     * @return string
-     */
-    public function getId()
+    public function getId(): ?string
     {
         return $this->id;
     }
 
-    /**
-     * Credit card number. Numeric characters only with no spaces or punctuation. The string must conform with modulo and length required by each credit card type. *Redacted in responses.*
-     *
-     * @param string $number
-     *
-     * @return $this
-     */
-    public function setNumber($number)
+    public function setNumber(string $number): self
     {
         $this->number = $number;
         return $this;
     }
 
-    /**
-     * Credit card number. Numeric characters only with no spaces or punctuation. The string must conform with modulo and length required by each credit card type. *Redacted in responses.*
-     *
-     * @return string
-     */
-    public function getNumber()
+    public function getNumber(): ?string
     {
         return $this->number;
     }
 
-    /**
-     * Credit card type. Valid types are: `visa`, `mastercard`, `discover`, `amex`
-     *
-     * @param string $type
-     *
-     * @return $this
-     */
-    public function setType($type)
+    public function setType(string $type): self
     {
         $this->type = $type;
         return $this;
     }
 
-    /**
-     * Credit card type. Valid types are: `visa`, `mastercard`, `discover`, `amex`
-     *
-     * @return string
-     */
-    public function getType()
+    public function getType(): ?string
     {
         return $this->type;
     }
 
-    /**
-     * Expiration month with no leading zero. Acceptable values are 1 through 12.
-     *
-     * @param int $expire_month
-     *
-     * @return $this
-     */
-    public function setExpireMonth($expire_month)
+    public function setExpireMonth(int $expireMonth): self
     {
-        $this->expire_month = $expire_month;
+        $this->expireMonth = $expireMonth;
         return $this;
     }
 
-    /**
-     * Expiration month with no leading zero. Acceptable values are 1 through 12.
-     *
-     * @return int
-     */
-    public function getExpireMonth()
+    public function getExpireMonth(): int
     {
-        return $this->expire_month;
+        return $this->expireMonth;
     }
 
-    /**
-     * 4-digit expiration year.
-     *
-     * @param int $expire_year
-     *
-     * @return $this
-     */
-    public function setExpireYear($expire_year)
+    public function setExpireYear(int $expireYear): self
     {
-        $this->expire_year = $expire_year;
+        $this->expireYear = $expireYear;
         return $this;
     }
 
-    /**
-     * 4-digit expiration year.
-     *
-     * @return int
-     */
-    public function getExpireYear()
+    public function getExpireYear(): int
     {
-        return $this->expire_year;
+        return $this->expireYear;
     }
 
-    /**
-     * 3-4 digit card validation code.
-     *
-     * @param string $cvv2
-     *
-     * @return $this
-     */
-    public function setCvv2($cvv2)
+    public function setCvv2(string $cvv2): self
     {
         $this->cvv2 = $cvv2;
         return $this;
     }
 
-    /**
-     * 3-4 digit card validation code.
-     *
-     * @return string
-     */
-    public function getCvv2()
+    public function getCvv2(): ?string
     {
         return $this->cvv2;
     }
 
-    /**
-     * Cardholder's first name.
-     *
-     * @param string $first_name
-     *
-     * @return $this
-     */
-    public function setFirstName($first_name)
+    public function setFirstName(string $firstName): self
     {
-        $this->first_name = $first_name;
+        $this->firstName = $firstName;
         return $this;
     }
 
-    /**
-     * Cardholder's first name.
-     *
-     * @return string
-     */
-    public function getFirstName()
+    public function getFirstName(): ?string
     {
-        return $this->first_name;
+        return $this->firstName;
     }
 
-    /**
-     * Cardholder's last name.
-     *
-     * @param string $last_name
-     *
-     * @return $this
-     */
-    public function setLastName($last_name)
+    public function setLastName(string $lastName): self
     {
-        $this->last_name = $last_name;
+        $this->lastName = $lastName;
         return $this;
     }
 
-    /**
-     * Cardholder's last name.
-     *
-     * @return string
-     */
-    public function getLastName()
+    public function getLastName(): ?string
     {
-        return $this->last_name;
+        return $this->lastName;
     }
 
-    /**
-     * Billing Address associated with this card.
-     *
-     * @param \PayPal\Api\Address $billing_address
-     *
-     * @return $this
-     */
-    public function setBillingAddress($billing_address)
+    public function setBillingAddress(Address $billingAddress): self
     {
-        $this->billing_address = $billing_address;
+        $this->billingAddress = $billingAddress;
         return $this;
     }
 
-    /**
-     * Billing Address associated with this card.
-     *
-     * @return \PayPal\Api\Address
-     */
-    public function getBillingAddress()
+    public function getBillingAddress(): Address
     {
-        return $this->billing_address;
+        return $this->billingAddress;
     }
 
-    /**
-     * A unique identifier of the customer to whom this bank account belongs. Generated and provided by the facilitator. **This is now used in favor of `payer_id` when creating or using a stored funding instrument in the vault.**
-     *
-     * @param string $external_customer_id
-     *
-     * @return $this
-     */
-    public function setExternalCustomerId($external_customer_id)
+    public function setExternalCustomerId(string $externalCustomerId): self
     {
-        $this->external_customer_id = $external_customer_id;
+        $this->externalCustomerId = $externalCustomerId;
         return $this;
     }
 
-    /**
-     * A unique identifier of the customer to whom this bank account belongs. Generated and provided by the facilitator. **This is now used in favor of `payer_id` when creating or using a stored funding instrument in the vault.**
-     *
-     * @return string
-     */
-    public function getExternalCustomerId()
+    public function getExternalCustomerId(): ?string
     {
-        return $this->external_customer_id;
+        return $this->externalCustomerId;
     }
 
-    /**
-     * A user provided, optional convenvience field that functions as a unique identifier for the merchant on behalf of whom this credit card is being stored for. Note that this has no relation to PayPal merchant id
-     *
-     * @param string $merchant_id
-     *
-     * @return $this
-     */
-    public function setMerchantId($merchant_id)
-    {
-        $this->merchant_id = $merchant_id;
-        return $this;
-    }
-
-    /**
-     * A user provided, optional convenvience field that functions as a unique identifier for the merchant on behalf of whom this credit card is being stored for. Note that this has no relation to PayPal merchant id
-     *
-     * @return string
-     */
-    public function getMerchantId()
-    {
-        return $this->merchant_id;
-    }
-
-    /**
-     * A unique identifier that you can assign and track when storing a credit card or using a stored credit card. This ID can help to avoid unintentional use or misuse of credit cards. This ID can be any value you would like to associate with the saved card, such as a UUID, username, or email address. Required when using a stored credit card if a payer_id was originally provided when storing the credit card in vault.
-     *
-     * @deprecated This is being deprecated in favor of the `external_customer_id` property.
-     * @param string $payer_id
-     *
-     * @return $this
-     */
-    public function setPayerId($payer_id)
-    {
-        $this->payer_id = $payer_id;
-        return $this;
-    }
-
-    /**
-     * A unique identifier that you can assign and track when storing a credit card or using a stored credit card. This ID can help to avoid unintentional use or misuse of credit cards. This ID can be any value you would like to associate with the saved card, such as a UUID, username, or email address. Required when using a stored credit card if a payer_id was originally provided when storing the credit card in vault.
-     *
-     * @deprecated This is being deprecated in favor of the `external_customer_id` property.
-     * @return string
-     */
-    public function getPayerId()
-    {
-        return $this->payer_id;
-    }
-
-    /**
-     * A unique identifier of the bank account resource. Generated and provided by the facilitator so it can be used to restrict the usage of the bank account to the specific merchant.
-     *
-     * @param string $external_card_id
-     *
-     * @return $this
-     */
-    public function setExternalCardId($external_card_id)
-    {
-        $this->external_card_id = $external_card_id;
-        return $this;
-    }
-
-    /**
-     * A unique identifier of the bank account resource. Generated and provided by the facilitator so it can be used to restrict the usage of the bank account to the specific merchant.
-     *
-     * @return string
-     */
-    public function getExternalCardId()
-    {
-        return $this->external_card_id;
-    }
-
-    /**
-     * State of the credit card funding instrument.
-     * Valid Values: ["expired", "ok"]
-     *
-     * @param string $state
-     *
-     * @return $this
-     */
-    public function setState($state)
+    public function setState(string $state): self
     {
         $this->state = $state;
         return $this;
     }
 
-    /**
-     * State of the credit card funding instrument.
-     *
-     * @return string
-     */
-    public function getState()
+    public function getState(): ?string
     {
         return $this->state;
     }
 
-    /**
-     * Funding instrument expiration date.
-     *
-     * @param string $create_time
-     *
-     * @return $this
-     */
-    public function setCreateTime($create_time)
+    public function setCreateTime(string $createTime): self
     {
-        $this->create_time = $create_time;
+        $this->createTime = $createTime;
         return $this;
     }
 
-    /**
-     * Resource creation time  as ISO8601 date-time format (ex: 1994-11-05T13:15:30Z) that indicates creation time.
-     *
-     * @return string
-     */
-    public function getCreateTime()
+    public function getCreateTime(): ?string
     {
-        return $this->create_time;
+        return $this->createTime;
     }
 
-    /**
-     * Resource creation time  as ISO8601 date-time format (ex: 1994-11-05T13:15:30Z) that indicates the updation time.
-     *
-     * @param string $update_time
-     *
-     * @return $this
-     */
-    public function setUpdateTime($update_time)
+    public function setUpdateTime(string $updateTime): self
     {
-        $this->update_time = $update_time;
+        $this->updateTime = $updateTime;
         return $this;
     }
 
-    /**
-     * Resource creation time  as ISO8601 date-time format (ex: 1994-11-05T13:15:30Z) that indicates the updation time.
-     *
-     * @return string
-     */
-    public function getUpdateTime()
+    public function getUpdateTime(): ?string
     {
-        return $this->update_time;
+        return $this->updateTime;
     }
 
-    /**
-     * Date/Time until this resource can be used fund a payment.
-     *
-     * @param string $valid_until
-     *
-     * @return $this
-     */
-    public function setValidUntil($valid_until)
+    public function setValidUntil(string $validUntil): self
     {
-        $this->valid_until = $valid_until;
+        $this->validUntil = $validUntil;
         return $this;
     }
 
-    /**
-     * Funding instrument expiration date.
-     *
-     * @return string
-     */
-    public function getValidUntil()
+    public function getValidUntil(): ?string
     {
-        return $this->valid_until;
+        return $this->validUntil;
     }
 
     /**
-     * Creates a new Credit Card Resource (aka Tokenize).
-     *
-     * @param ApiContext     $apiContext is the APIContext for this call. It can be used to pass dynamic configuration and credentials.
-     * @param PayPalRestCall $restCall   is the Rest Call Service that is used to make rest calls
-     * @return CreditCard
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws ReflectionException
+     * @throws JsonException
      */
-    public function create($apiContext = null, $restCall = null)
+    public function create(?ApiContext $apiContext = null, ?PayPalRestCall $restCall = null): self
     {
         $payLoad = $this->toJSON();
         $json = self::executeCall(
-            "/v1/vault/credit-cards",
-            "POST",
+            '/v1/vault/credit-cards',
+            'POST',
             $payLoad,
             null,
             $apiContext,
@@ -446,20 +204,18 @@ class CreditCard extends PayPalResourceModel
     }
 
     /**
-     * Obtain the Credit Card resource for the given identifier.
-     *
-     * @param string         $creditCardId
-     * @param ApiContext     $apiContext is the APIContext for this call. It can be used to pass dynamic configuration and credentials.
-     * @param PayPalRestCall $restCall   is the Rest Call Service that is used to make rest calls
-     * @return CreditCard
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws ReflectionException
+     * @throws JsonException
      */
-    public static function get($creditCardId, $apiContext = null, $restCall = null)
+    public static function get(string $creditCardId, ?ApiContext $apiContext = null, ?PayPalRestCall $restCall = null): self
     {
         ArgumentValidator::validate($creditCardId, 'creditCardId');
-        $payLoad = "";
+        $payLoad = '';
         $json = self::executeCall(
-            "/v1/vault/credit-cards/$creditCardId",
-            "GET",
+            '/v1/vault/credit-cards/' . $creditCardId,
+            'GET',
             $payLoad,
             null,
             $apiContext,
@@ -471,19 +227,16 @@ class CreditCard extends PayPalResourceModel
     }
 
     /**
-     * Delete the Credit Card resource for the given identifier.
-     *
-     * @param ApiContext     $apiContext is the APIContext for this call. It can be used to pass dynamic configuration and credentials.
-     * @param PayPalRestCall $restCall   is the Rest Call Service that is used to make rest calls
-     * @return bool
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
      */
-    public function delete($apiContext = null, $restCall = null)
+    public function delete($apiContext = null, $restCall = null): bool
     {
-        ArgumentValidator::validate($this->getId(), "Id");
-        $payLoad = "";
+        ArgumentValidator::validate($this->getId(), 'Id');
+        $payLoad = '';
         self::executeCall(
-            "/v1/vault/credit-cards/{$this->getId()}",
-            "DELETE",
+            '/v1/vault/credit-cards/' . $this->getId(),
+            'DELETE',
             $payLoad,
             null,
             $apiContext,
@@ -493,21 +246,19 @@ class CreditCard extends PayPalResourceModel
     }
 
     /**
-     * Update information in a previously saved card. Only the modified fields need to be passed in the request.
-     *
-     * @param PatchRequest   $patchRequest
-     * @param ApiContext     $apiContext is the APIContext for this call. It can be used to pass dynamic configuration and credentials.
-     * @param PayPalRestCall $restCall   is the Rest Call Service that is used to make rest calls
-     * @return CreditCard
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws ReflectionException
+     * @throws JsonException
      */
-    public function update($patchRequest, $apiContext = null, $restCall = null)
+    public function update(PatchRequest $patchRequest, ?ApiContext $apiContext = null, ?PayPalRestCall $restCall = null): self
     {
-        ArgumentValidator::validate($this->getId(), "Id");
+        ArgumentValidator::validate($this->getId(), 'Id');
         ArgumentValidator::validate($patchRequest, 'patch');
         $payload = $patchRequest->toJSON();
         $json = self::executeCall(
-            "/v1/vault/credit-cards/{$this->getId()}",
-            "PATCH",
+            '/v1/vault/credit-cards/' . $this->getId(),
+            'PATCH',
             $payload,
             null,
             $apiContext,
@@ -518,21 +269,22 @@ class CreditCard extends PayPalResourceModel
     }
 
     /**
-     * Retrieves a list of Credit Card resources.
-     *
-     * @param array          $params
-     * @param ApiContext     $apiContext is the APIContext for this call. It can be used to pass dynamic configuration and credentials.
-     * @param PayPalRestCall $restCall   is the Rest Call Service that is used to make rest calls
-     * @return CreditCardList
+     * @throws JsonException
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws ReflectionException
      */
-    public static function all($params, $apiContext = null, $restCall = null)
-    {
-        if (is_null($params)) {
-            $params = array();
+    public static function all(
+        ?array $params,
+        ?ApiContext $apiContext = null,
+        ?PayPalRestCall $restCall = null
+    ): CreditCardList {
+        if ($params === null) {
+            $params = [];
         }
         ArgumentValidator::validate($params, 'params');
-        $payLoad = "";
-        $allowedParams = array(
+        $payLoad = '';
+        $allowedParams = [
             'page_size' => 1,
             'page' => 1,
             'start_time' => 1,
@@ -543,10 +295,10 @@ class CreditCard extends PayPalResourceModel
             'external_card_id' => 1,
             'external_customer_id' => 1,
             'total_required' => 1
-        );
+        ];
         $json = self::executeCall(
-            "/v1/vault/credit-cards" . "?" . http_build_query(array_intersect_key($params, $allowedParams)),
-            "GET",
+            '/v1/vault/credit-cards' . '?' . http_build_query(array_intersect_key($params, $allowedParams)),
+            'GET',
             $payLoad,
             null,
             $apiContext,
@@ -556,5 +308,4 @@ class CreditCard extends PayPalResourceModel
         $ret->fromJson($json);
         return $ret;
     }
-
 }

@@ -23,3 +23,5 @@ tools
 
 # Groc 
 node_modules
+
+.phpunit.result.cache

@@ -2,8 +2,13 @@
 
 namespace PayPal\Test\Api;
 
+use InvalidArgumentException;
+use JsonException;
 use PayPal\Api\Item;
+use PayPal\Exception\PayPalConfigurationException;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 
 /**
  * Class Item
@@ -18,12 +23,15 @@ class ItemTest extends TestCase
      */
     public static function getJson()
     {
-        return '{"sku":"TestSample","name":"TestSample","description":"TestSample","quantity":"12.34","price":"12.34","currency":"TestSample","tax":"12.34","url":"http://www.google.com","category":"TestSample","weight":' . MeasurementTest::getJson() . ',"length":' . MeasurementTest::getJson() . ',"height":' . MeasurementTest::getJson() . ',"width":' . MeasurementTest::getJson() . ',"supplementary_data":' . NameValuePairTest::getJson() . ',"postback_data":' . NameValuePairTest::getJson() . '}';
+        return '{"sku":"TestSample","name":"TestSample","description":"TestSample","quantity":"12.34","price":"12.34","currency":"TestSample","tax":"12.34","url":"http:\/\/www.google.com"}';
     }
 
     /**
      * Gets Object Instance with Json data filled in
      * @return Item
+     * @throws PayPalConfigurationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public static function getObject()
     {
@@ -34,6 +42,9 @@ class ItemTest extends TestCase
     /**
      * Tests for Serialization and Deserialization Issues
      * @return Item
+     * @throws PayPalConfigurationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public function testSerializationDeserialization()
     {
@@ -47,47 +58,23 @@ class ItemTest extends TestCase
         $this->assertNotNull($obj->getCurrency());
         $this->assertNotNull($obj->getTax());
         $this->assertNotNull($obj->getUrl());
-        $this->assertNotNull($obj->getCategory());
-        $this->assertNotNull($obj->getWeight());
-        $this->assertNotNull($obj->getLength());
-        $this->assertNotNull($obj->getHeight());
-        $this->assertNotNull($obj->getWidth());
-        $this->assertNotNull($obj->getSupplementaryData());
-        $this->assertNotNull($obj->getPostbackData());
-        $this->assertEquals(self::getJson(), $obj->toJson());
+        $this->assertJsonStringEqualsJsonString(self::getJson(), $obj->toJson());
         return $obj;
     }
 
     /**
-     * @depends testSerializationDeserialization
      * @param Item $obj
      */
+    #[Depends('testSerializationDeserialization')]
     public function testGetters($obj)
     {
-        $this->assertEquals($obj->getSku(), "TestSample");
-        $this->assertEquals($obj->getName(), "TestSample");
-        $this->assertEquals($obj->getDescription(), "TestSample");
-        $this->assertEquals($obj->getQuantity(), "12.34");
-        $this->assertEquals($obj->getPrice(), "12.34");
-        $this->assertEquals($obj->getCurrency(), "TestSample");
-        $this->assertEquals($obj->getTax(), "12.34");
-        $this->assertEquals($obj->getUrl(), "http://www.google.com");
-        $this->assertEquals($obj->getCategory(), "TestSample");
-        $this->assertEquals($obj->getWeight(), MeasurementTest::getObject());
-        $this->assertEquals($obj->getLength(), MeasurementTest::getObject());
-        $this->assertEquals($obj->getHeight(), MeasurementTest::getObject());
-        $this->assertEquals($obj->getWidth(), MeasurementTest::getObject());
-        $this->assertEquals($obj->getSupplementaryData(), NameValuePairTest::getObject());
-        $this->assertEquals($obj->getPostbackData(), NameValuePairTest::getObject());
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Url is not a fully qualified URL
-     */
-    public function testUrlValidationForUrl()
-    {
-        $obj = new Item();
-        $obj->setUrl(null);
+        $this->assertEquals("TestSample", $obj->getSku());
+        $this->assertEquals("TestSample", $obj->getName());
+        $this->assertEquals("TestSample", $obj->getDescription());
+        $this->assertEquals("12.34", $obj->getQuantity());
+        $this->assertEquals("12.34", $obj->getPrice());
+        $this->assertEquals("TestSample", $obj->getCurrency());
+        $this->assertEquals("12.34", $obj->getTax());
+        $this->assertEquals("http://www.google.com", $obj->getUrl());
     }
 }

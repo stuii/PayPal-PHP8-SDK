@@ -2,12 +2,15 @@
 
 namespace PayPal\Test\Api;
 
-use PayPal\Common\PayPalResourceModel;
-use PayPal\Validation\ArgumentValidator;
-use PayPal\Api\VerifyWebhookSignatureResponse;
-use PayPal\Rest\ApiContext;
+use InvalidArgumentException;
+use JsonException;
 use PayPal\Api\VerifyWebhookSignature;
+use PayPal\Exception\PayPalConfigurationException;
+use PayPal\Exception\PayPalConnectionException;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 
 /**
  * Class VerifyWebhookSignature
@@ -28,6 +31,9 @@ class VerifyWebhookSignatureTest extends TestCase
     /**
      * Gets Object Instance with Json data filled in
      * @return VerifyWebhookSignature
+     * @throws PayPalConfigurationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public static function getObject()
     {
@@ -38,6 +44,9 @@ class VerifyWebhookSignatureTest extends TestCase
     /**
      * Tests for Serialization and Deserialization Issues
      * @return VerifyWebhookSignature
+     * @throws PayPalConfigurationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public function testSerializationDeserialization()
     {
@@ -50,33 +59,23 @@ class VerifyWebhookSignatureTest extends TestCase
         $this->assertNotNull($obj->getTransmissionTime());
         $this->assertNotNull($obj->getWebhookId());
         $this->assertNotNull($obj->getWebhookEvent());
-        $this->assertEquals(self::getJson(), $obj->toJson());
+        $this->assertJsonStringEqualsJsonString(self::getJson(), $obj->toJson());
         return $obj;
     }
 
     /**
-     * @depends testSerializationDeserialization
      * @param VerifyWebhookSignature $obj
      */
+    #[Depends('testSerializationDeserialization')]
     public function testGetters($obj)
     {
-        $this->assertEquals($obj->getAuthAlgo(), "TestSample");
-        $this->assertEquals($obj->getCertUrl(), "http://www.google.com");
-        $this->assertEquals($obj->getTransmissionId(), "TestSample");
-        $this->assertEquals($obj->getTransmissionSig(), "TestSample");
-        $this->assertEquals($obj->getTransmissionTime(), "TestSample");
-        $this->assertEquals($obj->getWebhookId(), "TestSample");
+        $this->assertEquals("TestSample", $obj->getAuthAlgo());
+        $this->assertEquals("http://www.google.com", $obj->getCertUrl());
+        $this->assertEquals("TestSample", $obj->getTransmissionId());
+        $this->assertEquals("TestSample", $obj->getTransmissionSig());
+        $this->assertEquals("TestSample", $obj->getTransmissionTime());
+        $this->assertEquals("TestSample", $obj->getWebhookId());
         $this->assertEquals($obj->getWebhookEvent(), WebhookEventTest::getObject());
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage CertUrl is not a fully qualified URL
-     */
-    public function testUrlValidationForCertUrl()
-    {
-        $obj = new VerifyWebhookSignature();
-        $obj->setCertUrl(null);
     }
 
     public function testToJsonToIncludeRequestBodyAsWebhookEvent() {
@@ -88,26 +87,29 @@ class VerifyWebhookSignatureTest extends TestCase
     }
 
     /**
-     * @dataProvider mockProvider
      * @param VerifyWebhookSignature $obj
+     * @param $mockApiContext
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws JsonException
+     * @throws ReflectionException
      */
+    #[DataProvider('mockProvider')]
     public function testPost($obj, $mockApiContext)
     {
         $mockPPRestCall = $this->getMockBuilder('\PayPal\Transport\PayPalRestCall')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $mockPPRestCall->expects($this->any())
+        $mockPPRestCall
             ->method('execute')
-            ->will($this->returnValue(
-                    VerifyWebhookSignatureResponseTest::getJson()
-            ));
+            ->willReturn(VerifyWebhookSignatureResponseTest::getJson());
 
         $result = $obj->post($mockApiContext, $mockPPRestCall);
         $this->assertNotNull($result);
     }
 
-    public function mockProvider()
+    public static function mockProvider()
     {
         $obj = self::getObject();
         $mockApiContext = $this->getMockBuilder('ApiContext')

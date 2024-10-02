@@ -4,158 +4,78 @@ namespace PayPal\Api;
 
 use PayPal\Common\PayPalModel;
 
-/**
- * Class ExternalFunding
- *
- * A resource representing an external funding object.
- *
- * @package PayPal\Api
- *
- * @property string reference_id
- * @property string code
- * @property string funding_account_id
- * @property string display_text
- * @property \PayPal\Api\Amount amount
- * @property string funding_instruction
- */
 class ExternalFunding extends PayPalModel
 {
-    /**
-     * Unique identifier for the external funding
-     *
-     * @param string $reference_id
-     * 
-     * @return $this
-     */
-    public function setReferenceId($reference_id)
+    private ?string $referenceId = null;
+    private ?string $code = null;
+    private ?string $fundingAccountId = null;
+    private ?string $displayText = null;
+    private ?Amount $amount = null;
+    private ?string $fundingInstruction = null;
+
+    public function setReferenceId(string $referenceId): ExternalFunding
     {
-        $this->reference_id = $reference_id;
+        $this->referenceId = $referenceId;
         return $this;
     }
 
-    /**
-     * Unique identifier for the external funding
-     *
-     * @return string
-     */
-    public function getReferenceId()
+    public function getReferenceId(): ?string
     {
-        return $this->reference_id;
+        return $this->referenceId;
     }
 
-    /**
-     * Generic identifier for the external funding
-     *
-     * @param string $code
-     * 
-     * @return $this
-     */
-    public function setCode($code)
+    public function setCode(string $code): self
     {
         $this->code = $code;
         return $this;
     }
 
-    /**
-     * Generic identifier for the external funding
-     *
-     * @return string
-     */
-    public function getCode()
+    public function getCode(): ?string
     {
         return $this->code;
     }
 
-    /**
-     * Encrypted PayPal Account identifier for the funding account
-     *
-     * @param string $funding_account_id
-     * 
-     * @return $this
-     */
-    public function setFundingAccountId($funding_account_id)
+    public function setFundingAccountId(string $fundingAccountId): self
     {
-        $this->funding_account_id = $funding_account_id;
+        $this->fundingAccountId = $fundingAccountId;
         return $this;
     }
 
-    /**
-     * Encrypted PayPal Account identifier for the funding account
-     *
-     * @return string
-     */
-    public function getFundingAccountId()
+    public function getFundingAccountId(): ?string
     {
-        return $this->funding_account_id;
+        return $this->fundingAccountId;
     }
 
-    /**
-     * Description of the external funding being applied
-     *
-     * @param string $display_text
-     * 
-     * @return $this
-     */
-    public function setDisplayText($display_text)
+    public function setDisplayText(string $displayText): self
     {
-        $this->display_text = $display_text;
+        $this->displayText = $displayText;
         return $this;
     }
 
-    /**
-     * Description of the external funding being applied
-     *
-     * @return string
-     */
-    public function getDisplayText()
+    public function getDisplayText(): ?string
     {
-        return $this->display_text;
+        return $this->displayText;
     }
 
-    /**
-     * Amount being funded by the external funding account
-     *
-     * @param \PayPal\Api\Amount $amount
-     * 
-     * @return $this
-     */
-    public function setAmount($amount)
+    public function setAmount(Amount $amount): self
     {
         $this->amount = $amount;
         return $this;
     }
 
-    /**
-     * Amount being funded by the external funding account
-     *
-     * @return \PayPal\Api\Amount
-     */
-    public function getAmount()
+    public function getAmount(): ?Amount
     {
         return $this->amount;
     }
 
-    /**
-     * Indicates that the Payment should be fully funded by External Funded Incentive
-     * Valid Values: ["FULLY_FUNDED"]
-     *
-     * @param string $funding_instruction
-     *
-     * @return $this
-     */
-    public function setFundingInstruction($funding_instruction)
+    public function setFundingInstruction(string $fundingInstruction): self
     {
-        $this->funding_instruction = $funding_instruction;
+        $this->fundingInstruction = $fundingInstruction;
         return $this;
     }
 
-    /**
-     * Indicates that the Payment should be fully funded by External Funded Incentive
-     *
-     * @return string
-     */
-    public function getFundingInstruction()
+    public function getFundingInstruction(): ?string
     {
-        return $this->funding_instruction;
+        return $this->fundingInstruction;
     }
 }

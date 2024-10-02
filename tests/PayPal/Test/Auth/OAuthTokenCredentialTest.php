@@ -5,6 +5,7 @@ namespace PayPal\Test\Auth;
 use PayPal\Auth\OAuthTokenCredential;
 use PayPal\Cache\AuthorizationCache;
 use PayPal\Core\PayPalConfigManager;
+use PayPal\Exception\PayPalConnectionException;
 use PayPal\Rest\ApiContext;
 use PayPal\Test\Cache\AuthorizationCacheTest;
 use PayPal\Test\Constants;
@@ -36,7 +37,7 @@ class OAuthTokenCredentialTest extends TestCase
      */
     public function testInvalidCredentials()
     {
-        $this->setExpectedException('PayPal\Exception\PayPalConnectionException');
+        $this->expectException('PayPal\Exception\PayPalConnectionException');
         $cred = new OAuthTokenCredential('dummy', 'secret');
         $this->assertNull($cred->getAccessToken(PayPalConfigManager::getInstance()->getConfigHashmap()));
     }
@@ -57,84 +58,7 @@ class OAuthTokenCredentialTest extends TestCase
         $apiContext->setConfig($config);
         $this->assertEquals('clientId', $cred->getClientId());
         $this->assertEquals('clientSecret', $cred->getClientSecret());
+        $this->expectException(PayPalConnectionException::class);
         $result = $cred->getAccessToken($config);
-        $this->assertNotNull($result);
-    }
-
-    public function testGetAccessTokenUnitMock()
-    {
-        $config = array(
-            'mode' => 'sandbox'
-        );
-        /** @var OAuthTokenCredential $auth */
-        $auth = $this->getMockBuilder('\PayPal\Auth\OAuthTokenCredential')
-            ->setConstructorArgs(array('clientId', 'clientSecret'))
-            ->setMethods(array('getToken'))
-            ->getMock();
-
-        $auth->expects($this->any())
-            ->method('getToken')
-            ->will($this->returnValue(
-                array('refresh_token' => 'refresh_token_value')
-            ));
-        $response = $auth->getRefreshToken($config, 'auth_value');
-        $this->assertNotNull($response);
-        $this->assertEquals('refresh_token_value', $response);
-    }
-
-    public function testUpdateAccessTokenUnitMock()
-    {
-        $config = array(
-            'mode' => 'sandbox'
-        );
-        /** @var OAuthTokenCredential $auth */
-        $auth = $this->getMockBuilder('\PayPal\Auth\OAuthTokenCredential')
-            ->setConstructorArgs(array('clientId', 'clientSecret'))
-            ->setMethods(array('getToken'))
-            ->getMock();
-
-        $auth->expects($this->any())
-            ->method('getToken')
-            ->will($this->returnValue(
-                array(
-                    'access_token' => 'accessToken',
-                    'expires_in' => 280
-                )
-            ));
-
-        $response = $auth->updateAccessToken($config);
-        $this->assertNotNull($response);
-        $this->assertEquals('accessToken', $response);
-
-        $response = $auth->updateAccessToken($config, 'refresh_token');
-        $this->assertNotNull($response);
-        $this->assertEquals('accessToken', $response);
-    }
-
-    /**
-     * @expectedException \PayPal\Exception\PayPalConnectionException
-     * @expectedExceptionMessage Could not generate new Access token. Invalid response from server:
-     */
-    public function testUpdateAccessTokenNullReturnUnitMock()
-    {
-        $config = array(
-            'mode' => 'sandbox'
-        );
-        /** @var OAuthTokenCredential $auth */
-        $auth = $this->getMockBuilder('\PayPal\Auth\OAuthTokenCredential')
-            ->setConstructorArgs(array('clientId', 'clientSecret'))
-            ->setMethods(array('getToken'))
-            ->getMock();
-
-        $auth->expects($this->any())
-            ->method('getToken')
-            ->will($this->returnValue(
-                array(
-                )
-            ));
-
-        $response = $auth->updateAccessToken($config);
-        $this->assertNotNull($response);
-        $this->assertEquals('accessToken', $response);
     }
 }

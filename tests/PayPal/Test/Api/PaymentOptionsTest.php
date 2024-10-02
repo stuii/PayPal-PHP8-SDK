@@ -2,8 +2,12 @@
 
 namespace PayPal\Test\Api;
 
+use JsonException;
 use PayPal\Api\PaymentOptions;
+use PayPal\Exception\PayPalConfigurationException;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 
 /**
  * Class PaymentOptions
@@ -18,12 +22,15 @@ class PaymentOptionsTest extends TestCase
      */
     public static function getJson()
     {
-        return '{"allowed_payment_method":"TestSample","recurring_flag":true,"skip_fmf":true}';
+        return '{"allowed_payment_method":"TestSample"}';
     }
 
     /**
      * Gets Object Instance with Json data filled in
      * @return PaymentOptions
+     * @throws PayPalConfigurationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public static function getObject()
     {
@@ -34,26 +41,25 @@ class PaymentOptionsTest extends TestCase
     /**
      * Tests for Serialization and Deserialization Issues
      * @return PaymentOptions
+     * @throws PayPalConfigurationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public function testSerializationDeserialization()
     {
         $obj = new PaymentOptions(self::getJson());
         $this->assertNotNull($obj);
         $this->assertNotNull($obj->getAllowedPaymentMethod());
-        $this->assertNotNull($obj->getRecurringFlag());
-        $this->assertNotNull($obj->getSkipFmf());
-        $this->assertEquals(self::getJson(), $obj->toJson());
+        $this->assertJsonStringEqualsJsonString(self::getJson(), $obj->toJson());
         return $obj;
     }
 
     /**
-     * @depends testSerializationDeserialization
      * @param PaymentOptions $obj
      */
+    #[Depends('testSerializationDeserialization')]
     public function testGetters($obj)
     {
-        $this->assertEquals($obj->getAllowedPaymentMethod(), "TestSample");
-        $this->assertEquals($obj->getRecurringFlag(), true);
-        $this->assertEquals($obj->getSkipFmf(), true);
+        $this->assertEquals("TestSample", $obj->getAllowedPaymentMethod());
     }
 }

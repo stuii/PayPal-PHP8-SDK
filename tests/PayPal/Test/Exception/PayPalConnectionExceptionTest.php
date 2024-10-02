@@ -1,4 +1,7 @@
 <?php
+
+namespace PayPal\Test\Exception;
+
 use PayPal\Exception\PayPalConnectionException;
 use PHPUnit\Framework\TestCase;
 
@@ -17,7 +20,7 @@ class PayPalConnectionExceptionTest extends TestCase
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->object = new PayPalConnectionException('http://testURL', 'test message');
         $this->object->setData('response payload for connection');
@@ -27,12 +30,11 @@ class PayPalConnectionExceptionTest extends TestCase
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
     }
 
     /**
-     * @test
      */
     public function testGetUrl()
     {
@@ -40,7 +42,6 @@ class PayPalConnectionExceptionTest extends TestCase
     }
 
     /**
-     * @test
      */
     public function testGetData()
     {

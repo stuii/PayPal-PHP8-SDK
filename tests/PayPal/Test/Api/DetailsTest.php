@@ -2,8 +2,12 @@
 
 namespace PayPal\Test\Api;
 
+use JsonException;
 use PayPal\Api\Details;
+use PayPal\Exception\PayPalConfigurationException;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 
 /**
  * Class Details
@@ -26,6 +30,9 @@ class DetailsTest extends TestCase
      * Gets Object Instance with Json data filled in
      *
      * @return Details
+     * @throws PayPalConfigurationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public static function getObject()
     {
@@ -37,6 +44,9 @@ class DetailsTest extends TestCase
      * Tests for Serialization and Deserialization Issues
      *
      * @return Details
+     * @throws PayPalConfigurationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public function testSerializationDeserialization()
     {
@@ -50,23 +60,23 @@ class DetailsTest extends TestCase
         $this->assertNotNull($obj->getInsurance());
         $this->assertNotNull($obj->getGiftWrap());
         $this->assertNotNull($obj->getFee());
-        $this->assertEquals(self::getJson(), $obj->toJson());
+        $this->assertJsonStringEqualsJsonString(self::getJson(), $obj->toJson());
         return $obj;
     }
 
     /**
-     * @depends testSerializationDeserialization
      * @param Details $obj
      */
+    #[Depends('testSerializationDeserialization')]
     public function testGetters($obj)
     {
-        $this->assertEquals($obj->getSubtotal(), "12.34");
-        $this->assertEquals($obj->getShipping(), "12.34");
-        $this->assertEquals($obj->getTax(), "12.34");
-        $this->assertEquals($obj->getHandlingFee(), "12.34");
-        $this->assertEquals($obj->getShippingDiscount(), "12.34");
-        $this->assertEquals($obj->getInsurance(), "12.34");
-        $this->assertEquals($obj->getGiftWrap(), "12.34");
-        $this->assertEquals($obj->getFee(), "12.34");
+        $this->assertEquals("12.34", $obj->getSubtotal());
+        $this->assertEquals("12.34", $obj->getShipping());
+        $this->assertEquals("12.34", $obj->getTax());
+        $this->assertEquals("12.34", $obj->getHandlingFee());
+        $this->assertEquals("12.34", $obj->getShippingDiscount());
+        $this->assertEquals("12.34", $obj->getInsurance());
+        $this->assertEquals("12.34", $obj->getGiftWrap());
+        $this->assertEquals("12.34", $obj->getFee());
     }
 }

@@ -2,8 +2,12 @@
 
 namespace PayPal\Test\Api;
 
+use JsonException;
 use PayPal\Api\CreditCard;
+use PayPal\Exception\PayPalConfigurationException;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 
 /**
  * Class CreditCard
@@ -19,12 +23,15 @@ class CreditCardTest extends TestCase
      */
     public static function getJson()
     {
-        return '{"id":"TestSample","number":"TestSample","type":"TestSample","expire_month":123,"expire_year":123,"cvv2":"TestSample","first_name":"TestSample","last_name":"TestSample","billing_address":' . AddressTest::getJson() . ',"external_customer_id":"TestSample","state":"TestSample","valid_until":"TestSample","links":' . LinksTest::getJson() . '}';
+        return '{"id":"TestSample","number":"TestSample","type":"TestSample","expire_month":123,"expire_year":123,"cvv2":"TestSample","first_name":"TestSample","last_name":"TestSample","billing_address":' . AddressTest::getJson() . ',"external_customer_id":"TestSample","state":"TestSample","valid_until":"TestSample","links":[' . LinksTest::getJson() . ']}';
     }
 
     /**
      * Gets Object Instance with Json data filled in
      * @return CreditCard
+     * @throws PayPalConfigurationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public static function getObject()
     {
@@ -36,6 +43,9 @@ class CreditCardTest extends TestCase
      * Tests for Serialization and Deserialization Issues
      *
      * @return CreditCard
+     * @throws PayPalConfigurationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public function testSerializationDeserialization()
     {
@@ -54,28 +64,28 @@ class CreditCardTest extends TestCase
         $this->assertNotNull($obj->getState());
         $this->assertNotNull($obj->getValidUntil());
         $this->assertNotNull($obj->getLinks());
-        $this->assertEquals(self::getJson(), $obj->toJson());
+        $this->assertJsonStringEqualsJsonString(self::getJson(), $obj->toJson());
         return $obj;
     }
 
     /**
-     * @depends testSerializationDeserialization
      * @param CreditCard $obj
      */
+    #[Depends('testSerializationDeserialization')]
     public function testGetters($obj)
     {
-        $this->assertEquals($obj->getId(), "TestSample");
-        $this->assertEquals($obj->getNumber(), "TestSample");
-        $this->assertEquals($obj->getType(), "TestSample");
-        $this->assertEquals($obj->getExpireMonth(), 123);
-        $this->assertEquals($obj->getExpireYear(), 123);
-        $this->assertEquals($obj->getCvv2(), "TestSample");
-        $this->assertEquals($obj->getFirstName(), "TestSample");
-        $this->assertEquals($obj->getLastName(), "TestSample");
+        $this->assertEquals("TestSample", $obj->getId());
+        $this->assertEquals("TestSample", $obj->getNumber());
+        $this->assertEquals("TestSample", $obj->getType());
+        $this->assertEquals(123, $obj->getExpireMonth());
+        $this->assertEquals(123, $obj->getExpireYear());
+        $this->assertEquals("TestSample", $obj->getCvv2());
+        $this->assertEquals("TestSample", $obj->getFirstName());
+        $this->assertEquals("TestSample", $obj->getLastName());
         $this->assertEquals($obj->getBillingAddress(), AddressTest::getObject());
-        $this->assertEquals($obj->getExternalCustomerId(), "TestSample");
-        $this->assertEquals($obj->getState(), "TestSample");
-        $this->assertEquals($obj->getValidUntil(), "TestSample");
-        $this->assertEquals($obj->getLinks(), LinksTest::getObject());
+        $this->assertEquals("TestSample", $obj->getExternalCustomerId());
+        $this->assertEquals("TestSample", $obj->getState());
+        $this->assertEquals("TestSample", $obj->getValidUntil());
+        $this->assertEquals($obj->getLinks(), [LinksTest::getObject()]);
     }
 }

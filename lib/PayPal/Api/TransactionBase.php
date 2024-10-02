@@ -2,39 +2,28 @@
 
 namespace PayPal\Api;
 
-/**
- * Class TransactionBase
- *
- * A transaction defines the contract of a payment - what is the payment for and who is fulfilling it.
- *
- * @package PayPal\Api
- *
- * @property \PayPal\Api\RelatedResources related_resources
- */
-class TransactionBase extends CartBase 
+class TransactionBase extends CartBase
 {
     /**
-     * List of financial transactions (Sale, Authorization, Capture, Refund) related to the payment.
-     * 
-     *
-     * @param \PayPal\Api\RelatedResources[] $related_resources
-     * 
-     * @return $this
+     * @var array<\PayPal\Api\RelatedResources> $relatedResources
      */
-    public function setRelatedResources($related_resources)
+    private array $relatedResources = [];
+
+    /**
+     * @param array<RelatedResources> $relatedResources
+     */
+    public function setRelatedResources(array $relatedResources): self
     {
-        $this->related_resources = $related_resources;
+        $this->relatedResources = $relatedResources;
         return $this;
     }
 
     /**
-     * List of financial transactions (Sale, Authorization, Capture, Refund) related to the payment.
-     *
-     * @return \PayPal\Api\RelatedResources[]
+     * @return array<RelatedResources>
      */
-    public function getRelatedResources()
+    public function getRelatedResources(): array
     {
-        return $this->related_resources;
+        return $this->relatedResources;
     }
 
 }

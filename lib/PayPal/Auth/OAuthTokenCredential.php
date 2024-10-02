@@ -1,7 +1,9 @@
-<?php
+<?php /** @noinspection PhpMissingParentConstructorInspection */
 
 namespace PayPal\Auth;
 
+use Exception;
+use JsonException;
 use PayPal\Cache\AuthorizationCache;
 use PayPal\Common\PayPalResourceModel;
 use PayPal\Core\PayPalHttpConfig;
@@ -9,7 +11,11 @@ use PayPal\Core\PayPalHttpConnection;
 use PayPal\Core\PayPalLoggingManager;
 use PayPal\Exception\PayPalConfigurationException;
 use PayPal\Exception\PayPalConnectionException;
-use PayPal\Handler\IPayPalHandler;
+use PayPal\Exception\PayPalInvalidCredentialException;
+use PayPal\Exception\PayPalMissingCredentialException;
+use PayPal\Handler\OAuthHandler;
+use PayPal\Handler\PayPalHandlerInterface;
+use PayPal\Handler\RestHandler;
 use PayPal\Rest\ApiContext;
 use PayPal\Security\Cipher;
 
@@ -19,74 +25,26 @@ use PayPal\Security\Cipher;
 class OAuthTokenCredential extends PayPalResourceModel
 {
 
-    public static $CACHE_PATH = '/../../../var/auth.cache';
+    public const string AUTH_HANDLER = OAuthHandler::class;
 
-    /**
-     * @var string Default Auth Handler
-     */
-    public static $AUTH_HANDLER = 'PayPal\Handler\OauthHandler';
+    public static int $expiryBufferTime = 120;
 
-    /**
-     * Private Variable
-     *
-     * @var int $expiryBufferTime
-     */
-    public static $expiryBufferTime = 120;
+    private string $clientId;
 
-    /**
-     * Client ID as obtained from the developer portal
-     *
-     * @var string $clientId
-     */
-    private $clientId;
+    private string $clientSecret;
 
-    /**
-     * Client secret as obtained from the developer portal
-     *
-     * @var string $clientSecret
-     */
-    private $clientSecret;
+    private ?string $targetSubject = null;
 
-    /**
-     * Target subject
-     */
-    private $targetSubject;
+    private ?string $accessToken = null;
 
-    /**
-     * Generated Access Token
-     *
-     * @var string $accessToken
-     */
-    private $accessToken;
+    private ?int $tokenExpiresIn = null;
 
-    /**
-     * Seconds for with access token is valid
-     *
-     * @var $tokenExpiresIn
-     */
-    private $tokenExpiresIn;
+    private float $tokenCreateTime;
 
-    /**
-     * Last time (in milliseconds) when access token was generated
-     *
-     * @var $tokenCreateTime
-     */
-    private $tokenCreateTime;
+    private Cipher $cipher;
 
-    /**
-     * Instance of cipher used to encrypt/decrypt data while storing in cache.
-     *
-     * @var Cipher
-     */
-    private $cipher;
-
-    /**
-     * Construct
-     *
-     * @param string $clientId     client id obtained from the developer portal
-     * @param string $clientSecret client secret obtained from the developer portal
-     */
-    public function __construct($clientId, $clientSecret, $targetSubject = null)
+    /** @noinspection MagicMethodsValidityInspection */
+    public function __construct(string $clientId, string $clientSecret, ?string $targetSubject = null)
     {
         $this->clientId = $clientId;
         $this->clientSecret = $clientSecret;
@@ -94,34 +52,20 @@ class OAuthTokenCredential extends PayPalResourceModel
         $this->targetSubject = $targetSubject;
     }
 
-    /**
-     * Get Client ID
-     *
-     * @return string
-     */
-    public function getClientId()
+    public function getClientId(): string
     {
         return $this->clientId;
     }
 
-    /**
-     * Get Client Secret
-     *
-     * @return string
-     */
-    public function getClientSecret()
+    public function getClientSecret(): string
     {
         return $this->clientSecret;
     }
 
     /**
-     * Get AccessToken
-     *
-     * @param $config
-     *
-     * @return null|string
+     * @throws Exception
      */
-    public function getAccessToken($config)
+    public function getAccessToken($config): ?string
     {
         // Check if we already have accessToken in Cache
         if ($this->accessToken && (time() - $this->tokenCreateTime) < ($this->tokenExpiresIn - self::$expiryBufferTime)) {
@@ -153,7 +97,7 @@ class OAuthTokenCredential extends PayPalResourceModel
         // for API call delays and any delay between the time the token is
         // retrieved and subsequently used
         if (
-            $this->accessToken != null &&
+            $this->accessToken !== null &&
             (time() - $this->tokenCreateTime) > ($this->tokenExpiresIn - self::$expiryBufferTime)
         ) {
             $this->accessToken = null;
@@ -161,9 +105,9 @@ class OAuthTokenCredential extends PayPalResourceModel
 
 
         // If accessToken is Null, obtain a new token
-        if ($this->accessToken == null) {
+        if ($this->accessToken === null) {
             // Get a new one by making calls to API
-            $this->updateAccessToken($config);
+            $this->refreshAccessToken($config);
             AuthorizationCache::push($config, $this->clientId, $this->encrypt($this->accessToken), $this->tokenCreateTime, $this->tokenExpiresIn);
         }
 
@@ -172,23 +116,22 @@ class OAuthTokenCredential extends PayPalResourceModel
 
 
     /**
-     * Get a Refresh Token from Authorization Code
-     *
-     * @param $config
-     * @param $authorizationCode
-     * @param array $params optional arrays to override defaults
-     * @return string|null
+     * @throws JsonException
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws PayPalInvalidCredentialException
+     * @throws PayPalMissingCredentialException
      */
-    public function getRefreshToken($config, $authorizationCode = null, $params = array())
+    public function getRefreshToken(array $config, ?string $authorizationCode = null, array $params = []): ?string
     {
-        static $allowedParams = array(
+        static $allowedParams = [
             'grant_type' => 'authorization_code',
             'code' => 1,
             'redirect_uri' => 'urn:ietf:wg:oauth:2.0:oob',
-            'response_type' => 'token'
-        );
+            'response_type' => 'token',
+        ];
 
-        $params = is_array($params) ? $params : array();
+        $params = is_array($params) ? $params : [];
         if ($authorizationCode) {
             //Override the authorizationCode if value is explicitly set
             $params['code'] = $authorizationCode;
@@ -197,7 +140,7 @@ class OAuthTokenCredential extends PayPalResourceModel
 
         $response = $this->getToken($config, $this->clientId, $this->clientSecret, $payload);
 
-        if ($response != null && isset($response["refresh_token"])) {
+        if ($response !== [] && isset($response['refresh_token'])) {
             return $response['refresh_token'];
         }
 
@@ -205,30 +148,31 @@ class OAuthTokenCredential extends PayPalResourceModel
     }
 
     /**
-     * Updates Access Token based on given input
-     *
-     * @param array $config
-     * @param string|null $refreshToken
-     * @return string
+     * @throws JsonException
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws PayPalInvalidCredentialException
+     * @throws PayPalMissingCredentialException
      */
-    public function updateAccessToken($config, $refreshToken = null)
+    public function refreshAccessToken(array $config, ?string $refreshToken = null): ?string
     {
         $this->generateAccessToken($config, $refreshToken);
         return $this->accessToken;
     }
 
     /**
-     * Retrieves the token based on the input configuration
-     *
      * @param array $config
      * @param string $clientId
      * @param string $clientSecret
      * @param string $payload
-     * @return mixed
+     * @return array
+     * @throws JsonException
      * @throws PayPalConfigurationException
-     * @throws \PayPal\Exception\PayPalConnectionException
+     * @throws PayPalConnectionException
+     * @throws PayPalInvalidCredentialException
+     * @throws PayPalMissingCredentialException
      */
-    protected function getToken($config, $clientId, $clientSecret, $payload)
+    protected function getToken(array $config, string $clientId, string $clientSecret, string $payload): array
     {
         $httpConfig = new PayPalHttpConfig(null, 'POST', $config);
 
@@ -237,80 +181,70 @@ class OAuthTokenCredential extends PayPalResourceModel
             $httpConfig->setHttpProxy($config['http.Proxy']);
         }
 
-        $handlers = array(self::$AUTH_HANDLER);
+        $handlers = [self::AUTH_HANDLER];
 
-        /** @var IPayPalHandler $handler */
+        /** @var PayPalHandlerInterface $handler */
         foreach ($handlers as $handler) {
             if (!is_object($handler)) {
-                $fullHandler = "\\" . (string)$handler;
-                $handler = new $fullHandler(new ApiContext($this));
+                $handler = new $handler(new ApiContext($this));
             }
-            $handler->handle($httpConfig, $payload, array('clientId' => $clientId, 'clientSecret' => $clientSecret));
+            $handler->handle(
+                $httpConfig,
+                $payload,
+                [
+                    'clientId' => $clientId,
+                    'clientSecret' => $clientSecret,
+                ]
+            );
         }
 
         $connection = new PayPalHttpConnection($httpConfig, $config);
         $res = $connection->execute($payload);
-        $response = json_decode($res, true);
 
-        return $response;
+        return json_decode($res, true, JSON_THROW_ON_ERROR, JSON_THROW_ON_ERROR);
     }
 
 
     /**
-     * Generates a new access token
-     *
-     * @param array $config
-     * @param null|string $refreshToken
-     * @return null
+     * @throws JsonException
+     * @throws PayPalConfigurationException
      * @throws PayPalConnectionException
+     * @throws PayPalInvalidCredentialException
+     * @throws PayPalMissingCredentialException
      */
-    private function generateAccessToken($config, $refreshToken = null)
+    private function generateAccessToken(array $config, ?string $refreshToken = null): void
     {
-        $params = array('grant_type' => 'client_credentials');
-        if ($refreshToken != null) {
+        $params = ['grant_type' => 'client_credentials'];
+        if ($refreshToken !== null) {
             // If the refresh token is provided, it would get access token using refresh token
             // Used for Future Payments
             $params['grant_type'] = 'refresh_token';
             $params['refresh_token'] = $refreshToken;
         }
-        if ($this->targetSubject != null) {
+        if ($this->targetSubject !== null) {
             $params['target_subject'] = $this->targetSubject;
         }
         $payload = http_build_query($params);
         $response = $this->getToken($config, $this->clientId, $this->clientSecret, $payload);
 
-        if ($response == null || !isset($response["access_token"]) || !isset($response["expires_in"])) {
+        if ($response === [] || !isset($response['access_token'], $response['expires_in'])) {
             $this->accessToken = null;
             $this->tokenExpiresIn = null;
-            PayPalLoggingManager::getInstance(__CLASS__)->warning("Could not generate new Access token. Invalid response from server: ");
-            throw new PayPalConnectionException(null, "Could not generate new Access token. Invalid response from server: ");
-        } else {
-            $this->accessToken = $response["access_token"];
-            $this->tokenExpiresIn = $response["expires_in"];
+            PayPalLoggingManager::getInstance()->warning('Could not generate new Access token. Invalid response from server: ');
+            throw new PayPalConnectionException(null, 'Could not generate new Access token. Invalid response from server: ');
         }
+        $this->accessToken = $response['access_token'];
+        $this->tokenExpiresIn = $response['expires_in'];
         $this->tokenCreateTime = time();
 
-        return $this->accessToken;
     }
 
-    /**
-     * Helper method to encrypt data using clientSecret as key
-     *
-     * @param $data
-     * @return string
-     */
-    public function encrypt($data)
+    public function encrypt(string $data): string
     {
         return $this->cipher->encrypt($data);
     }
 
-    /**
-     * Helper method to decrypt data using clientSecret as key
-     *
-     * @param $data
-     * @return string
-     */
-    public function decrypt($data)
+    public function decrypt(string $data): string
     {
         return $this->cipher->decrypt($data);
     }

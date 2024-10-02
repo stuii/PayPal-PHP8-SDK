@@ -4,117 +4,69 @@ namespace PayPal\Api;
 
 use PayPal\Common\PayPalResourceModel;
 
-/**
- * Class CreditCardList
- *
- * A list of Credit Card Resources
- *
- * @package PayPal\Api
- *
- * @property \PayPal\Api\CreditCard[] items
- * @property \PayPal\Api\Links[] links
- * @property int total_items
- * @property int total_pages
- */
 class CreditCardList extends PayPalResourceModel
 {
+    /** @var array<\PayPal\Api\CreditCard> $items */
+    private array $items = [];
+
+    private int $totalItems = 0;
+
+    private int $totalPages = 0;
+
     /**
-     * A list of credit card resources
-     *
-     * @param \PayPal\Api\CreditCard[] $items
-     * 
-     * @return $this
+     * @param array<CreditCard> $items
      */
-    public function setItems($items)
+    public function setItems(array $items): self
     {
         $this->items = $items;
         return $this;
     }
 
     /**
-     * A list of credit card resources
-     *
-     * @return \PayPal\Api\CreditCard[]
+     * @return array<CreditCard> $items
      */
-    public function getItems()
+    public function getItems(): array
     {
         return $this->items;
     }
 
-    /**
-     * Append Items to the list.
-     *
-     * @param \PayPal\Api\CreditCard $creditCard
-     * @return $this
-     */
-    public function addItem($creditCard)
+    public function addItem(CreditCard $creditCard): self
     {
         if (!$this->getItems()) {
-            return $this->setItems(array($creditCard));
-        } else {
-            return $this->setItems(
-                array_merge($this->getItems(), array($creditCard))
-            );
+            return $this->setItems([$creditCard]);
         }
-    }
 
-    /**
-     * Remove Items from the list.
-     *
-     * @param \PayPal\Api\CreditCard $creditCard
-     * @return $this
-     */
-    public function removeItem($creditCard)
-    {
         return $this->setItems(
-            array_diff($this->getItems(), array($creditCard))
+            [...$this->getItems(), $creditCard]
         );
     }
 
-    /**
-     * Total number of items present in the given list. Note that the number of items might be larger than the records in the current page.
-     *
-     * @param int $total_items
-     * 
-     * @return $this
-     */
-    public function setTotalItems($total_items)
+    public function removeItem(CreditCard $creditCard): self
     {
-        $this->total_items = $total_items;
+        return $this->setItems(
+            array_diff($this->getItems(), [$creditCard])
+        );
+    }
+
+    public function setTotalItems(int $totalItems): self
+    {
+        $this->totalItems = $totalItems;
         return $this;
     }
 
-    /**
-     * Total number of items present in the given list. Note that the number of items might be larger than the records in the current page.
-     *
-     * @return int
-     */
-    public function getTotalItems()
+    public function getTotalItems(): int
     {
-        return $this->total_items;
+        return $this->totalItems;
     }
 
-    /**
-     * Total number of pages that exist, for the total number of items, with the given page size.
-     *
-     * @param int $total_pages
-     * 
-     * @return $this
-     */
-    public function setTotalPages($total_pages)
+    public function setTotalPages(int $totalPages): self
     {
-        $this->total_pages = $total_pages;
+        $this->totalPages = $totalPages;
         return $this;
     }
 
-    /**
-     * Total number of pages that exist, for the total number of items, with the given page size.
-     *
-     * @return int
-     */
-    public function getTotalPages()
+    public function getTotalPages(): int
     {
-        return $this->total_pages;
+        return $this->totalPages;
     }
-
 }

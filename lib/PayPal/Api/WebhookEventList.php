@@ -4,145 +4,92 @@ namespace PayPal\Api;
 
 use PayPal\Common\PayPalModel;
 
-/**
- * Class WebhookEventList
- *
- * List of webhooks events.
- *
- * @package PayPal\Api
- *
- * @property \PayPal\Api\WebhookEvent[] events
- * @property int count
- * @property \PayPal\Api\Links[] links
- */
 class WebhookEventList extends PayPalModel
 {
+    /** @var array<\PayPal\Api\WebhookEvent> $events  */
+    private array $events;
+
+    private int $count;
+
+
     /**
-     * A list of webhooks events.
-     *
-     * @param \PayPal\Api\WebhookEvent[] $events
-     * 
-     * @return $this
+     * @param array<WebhookEvent> $events
      */
-    public function setEvents($events)
+    public function setEvents(array $events): self
     {
         $this->events = $events;
         return $this;
     }
 
     /**
-     * A list of webhooks events.
-     *
-     * @return \PayPal\Api\WebhookEvent[]
+     * @return array<WebhookEvent>
      */
-    public function getEvents()
+    public function getEvents(): array
     {
         return $this->events;
     }
 
-    /**
-     * Append Events to the list.
-     *
-     * @param \PayPal\Api\WebhookEvent $webhookEvent
-     * @return $this
-     */
-    public function addEvent($webhookEvent)
+    public function addEvent(WebhookEvent $webhookEvent): self
     {
         if (!$this->getEvents()) {
-            return $this->setEvents(array($webhookEvent));
-        } else {
-            return $this->setEvents(
-                array_merge($this->getEvents(), array($webhookEvent))
-            );
+            return $this->setEvents([$webhookEvent]);
         }
-    }
 
-    /**
-     * Remove Events from the list.
-     *
-     * @param \PayPal\Api\WebhookEvent $webhookEvent
-     * @return $this
-     */
-    public function removeEvent($webhookEvent)
-    {
         return $this->setEvents(
-            array_diff($this->getEvents(), array($webhookEvent))
+            [...$this->getEvents(), $webhookEvent]
         );
     }
 
-    /**
-     * The number of items in each range of results. Note that the response might have fewer items than the requested `page_size` value.
-     *
-     * @param int $count
-     * 
-     * @return $this
-     */
-    public function setCount($count)
+    public function removeEvent(WebhookEvent $webhookEvent): self
+    {
+        return $this->setEvents(
+            array_diff($this->getEvents(), [$webhookEvent])
+        );
+    }
+
+    public function setCount(int $count): self
     {
         $this->count = $count;
         return $this;
     }
 
-    /**
-     * The number of items in each range of results. Note that the response might have fewer items than the requested `page_size` value.
-     *
-     * @return int
-     */
-    public function getCount()
+    public function getCount(): int
     {
         return $this->count;
     }
 
     /**
-     * Sets Links
-     *
-     * @param \PayPal\Api\Links[] $links
-     * 
-     * @return $this
+     * @param array<Links> $links
      */
-    public function setLinks($links)
+    public function setLinks(array $links): self
     {
         $this->links = $links;
         return $this;
     }
 
     /**
-     * Gets Links
-     *
-     * @return \PayPal\Api\Links[]
+     * @return array<Links>
      */
-    public function getLinks()
+    public function getLinks(): array
     {
         return $this->links;
     }
 
-    /**
-     * Append Links to the list.
-     *
-     * @param \PayPal\Api\Links $links
-     * @return $this
-     */
-    public function addLink($links)
+    public function addLink(Links $links): self
     {
         if (!$this->getLinks()) {
-            return $this->setLinks(array($links));
-        } else {
-            return $this->setLinks(
-                array_merge($this->getLinks(), array($links))
-            );
+            return $this->setLinks([$links]);
         }
+
+        return $this->setLinks(
+            [...$this->getLinks(), $links]
+        );
     }
 
-    /**
-     * Remove Links from the list.
-     *
-     * @param \PayPal\Api\Links $links
-     * @return $this
-     */
-    public function removeLink($links)
+    public function removeLink(Links $links): self
     {
         return $this->setLinks(
-            array_diff($this->getLinks(), array($links))
+            array_diff($this->getLinks(), [$links])
         );
     }
 

@@ -1,8 +1,12 @@
 <?php
 namespace PayPal\Test\Api;
 
+use JsonException;
 use PayPal\Api\Address;
+use PayPal\Exception\PayPalConfigurationException;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 
 /**
  * Class Address
@@ -23,6 +27,9 @@ class AddressTest extends TestCase
     /**
      * Gets Object Instance with Json data filled in
      * @return Address
+     * @throws PayPalConfigurationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public static function getObject()
     {
@@ -32,6 +39,9 @@ class AddressTest extends TestCase
     /**
      * Tests for Serialization and Deserialization Issues
      * @return Address
+     * @throws PayPalConfigurationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public function testSerializationDeserialization()
     {
@@ -47,25 +57,25 @@ class AddressTest extends TestCase
         $this->assertNotNull($obj->getNormalizationStatus());
         $this->assertNotNull($obj->getStatus());
         $this->assertNotNull($obj->getType());
-        $this->assertEquals(self::getJson(), $obj->toJson());
+        $this->assertJsonStringEqualsJsonString(self::getJson(), $obj->toJson());
         return $obj;
     }
 
     /**
-     * @depends testSerializationDeserialization
      * @param Address $obj
      */
+    #[Depends('testSerializationDeserialization')]
     public function testGetters($obj)
     {
-        $this->assertEquals($obj->getLine1(), "TestSample");
-        $this->assertEquals($obj->getLine2(), "TestSample");
-        $this->assertEquals($obj->getCity(), "TestSample");
-        $this->assertEquals($obj->getCountryCode(), "TestSample");
-        $this->assertEquals($obj->getPostalCode(), "TestSample");
-        $this->assertEquals($obj->getState(), "TestSample");
-        $this->assertEquals($obj->getPhone(), "TestSample");
-        $this->assertEquals($obj->getNormalizationStatus(), "TestSample");
-        $this->assertEquals($obj->getStatus(), "TestSample");
-        $this->assertEquals($obj->getType(), "TestSample");
+        $this->assertEquals("TestSample", $obj->getLine1());
+        $this->assertEquals("TestSample", $obj->getLine2());
+        $this->assertEquals("TestSample", $obj->getCity());
+        $this->assertEquals("TestSample", $obj->getCountryCode());
+        $this->assertEquals("TestSample", $obj->getPostalCode());
+        $this->assertEquals("TestSample", $obj->getState());
+        $this->assertEquals("TestSample", $obj->getPhone());
+        $this->assertEquals("TestSample", $obj->getNormalizationStatus());
+        $this->assertEquals("TestSample", $obj->getStatus());
+        $this->assertEquals("TestSample", $obj->getType());
     }
 }

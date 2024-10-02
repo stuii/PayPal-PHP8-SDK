@@ -2,30 +2,20 @@
 
 namespace PayPal\Validation;
 
-/**
- * Class ArgumentValidator
- *
- * @package PayPal\Validation
- */
+use InvalidArgumentException;
+
 class ArgumentValidator
 {
-
-    /**
-     * Helper method for validating an argument that will be used by this API in any requests.
-     *
-     * @param $argument     mixed The object to be validated
-     * @param $argumentName string|null The name of the argument.
-     *                      This will be placed in the exception message for easy reference
-     * @return bool
-     */
-    public static function validate($argument, $argumentName = null)
+    public static function validate(mixed $argument, ?string $argumentName = null): bool
     {
         if ($argument === null) {
             // Error if Object Null
-            throw new \InvalidArgumentException("$argumentName cannot be null");
-        } elseif (gettype($argument) == 'string' && trim($argument) == '') {
+            throw new InvalidArgumentException("$argumentName cannot be null");
+        }
+
+        if (is_string($argument) && trim($argument) === '') {
             // Error if String Empty
-            throw new \InvalidArgumentException("$argumentName string cannot be empty");
+            throw new InvalidArgumentException("$argumentName string cannot be empty");
         }
         return true;
     }

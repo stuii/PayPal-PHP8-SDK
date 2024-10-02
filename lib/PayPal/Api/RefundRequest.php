@@ -4,159 +4,78 @@ namespace PayPal\Api;
 
 use PayPal\Common\PayPalModel;
 
-/**
- * Class RefundRequest
- *
- * A refund transaction.
- *
- * @package PayPal\Api
- *
- * @property \PayPal\Api\Amount amount
- * @property string description
- * @property string refund_source
- * @property string reason
- * @property string invoice_number
- * @property bool refund_advice
- */
 class RefundRequest extends PayPalModel
 {
-    /**
-     * Details including both refunded amount (to payer) and refunded fee (to payee).
-     *
-     * @param \PayPal\Api\Amount $amount
-     * 
-     * @return $this
-     */
-    public function setAmount($amount)
+    private ?Amount $amount = null;
+    private ?string $description = null;
+    private ?string $refundSource = null;
+    private ?string $reason = null;
+    private ?string $invoiceNumber = null;
+    private bool $refundAdvice = false;
+
+    public function setAmount(Amount $amount): self
     {
         $this->amount = $amount;
         return $this;
     }
 
-    /**
-     * Details including both refunded amount (to payer) and refunded fee (to payee).
-     *
-     * @return \PayPal\Api\Amount
-     */
-    public function getAmount()
+    public function getAmount(): ?Amount
     {
         return $this->amount;
     }
 
-    /**
-     * Description of what is being refunded for. Character length and limitations: 255 single-byte alphanumeric characters.
-     *
-     * @param string $description
-     * 
-     * @return $this
-     */
-    public function setDescription($description)
+    public function setDescription(string $description): self
     {
         $this->description = $description;
         return $this;
     }
 
-    /**
-     * Description of what is being refunded for. Character length and limitations: 255 single-byte alphanumeric characters.
-     *
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * Type of PayPal funding source (balance or eCheck) that can be used for auto refund.
-     * Valid Values: ["INSTANT_FUNDING_SOURCE", "ECHECK", "UNRESTRICTED"]
-     *
-     * @param string $refund_source
-     * 
-     * @return $this
-     */
-    public function setRefundSource($refund_source)
+    public function setRefundSource(string $refundSource): self
     {
-        $this->refund_source = $refund_source;
+        $this->refundSource = $refundSource;
         return $this;
     }
 
-    /**
-     * Type of PayPal funding source (balance or eCheck) that can be used for auto refund.
-     *
-     * @return string
-     */
-    public function getRefundSource()
+    public function getRefundSource(): ?string
     {
-        return $this->refund_source;
+        return $this->refundSource;
     }
 
-    /**
-     * Reason description for the Sale transaction being refunded.
-     *
-     * @param string $reason
-     * 
-     * @return $this
-     */
-    public function setReason($reason)
+    public function setReason(string $reason): self
     {
         $this->reason = $reason;
         return $this;
     }
 
-    /**
-     * Reason description for the Sale transaction being refunded.
-     *
-     * @return string
-     */
-    public function getReason()
+    public function getReason(): ?string
     {
         return $this->reason;
     }
 
-    /**
-     * The invoice number that is used to track this payment. Character length and limitations: 127 single-byte alphanumeric characters.
-     *
-     * @param string $invoice_number
-     * 
-     * @return $this
-     */
-    public function setInvoiceNumber($invoice_number)
+    public function setInvoiceNumber(string $invoiceNumber): self
     {
-        $this->invoice_number = $invoice_number;
+        $this->invoiceNumber = $invoiceNumber;
         return $this;
     }
 
-    /**
-     * The invoice number that is used to track this payment. Character length and limitations: 127 single-byte alphanumeric characters.
-     *
-     * @return string
-     */
-    public function getInvoiceNumber()
+    public function getInvoiceNumber(): ?string
     {
-        return $this->invoice_number;
+        return $this->invoiceNumber;
     }
 
-    /**
-     * Flag to indicate that the buyer was already given store credit for a given transaction.
-     *
-     * @param bool $refund_advice
-     * 
-     * @return $this
-     */
-    public function setRefundAdvice($refund_advice)
+    public function setRefundAdvice(bool $refundAdvice): self
     {
-        $this->refund_advice = $refund_advice;
+        $this->refundAdvice = $refundAdvice;
         return $this;
     }
 
-    /**
-     * Flag to indicate that the buyer was already given store credit for a given transaction.
-     *
-     * @return bool
-     */
-    public function getRefundAdvice()
+    public function getRefundAdvice(): bool
     {
-        return $this->refund_advice;
+        return $this->refundAdvice;
     }
-
 }

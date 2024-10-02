@@ -2,8 +2,12 @@
 
 namespace PayPal\Test\Api;
 
+use JsonException;
 use PayPal\Api\Billing;
+use PayPal\Exception\PayPalConfigurationException;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 
 /**
  * Class Billing
@@ -24,6 +28,9 @@ class BillingTest extends TestCase
     /**
      * Gets Object Instance with Json data filled in
      * @return Billing
+     * @throws PayPalConfigurationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public static function getObject()
     {
@@ -34,22 +41,25 @@ class BillingTest extends TestCase
     /**
      * Tests for Serialization and Deserialization Issues
      * @return Billing
+     * @throws PayPalConfigurationException
+     * @throws JsonException
+     * @throws ReflectionException
      */
     public function testSerializationDeserialization()
     {
         $obj = new Billing(self::getJson());
         $this->assertNotNull($obj);
         $this->assertNotNull($obj->getBillingAgreementId());
-        $this->assertEquals(self::getJson(), $obj->toJson());
+        $this->assertJsonStringEqualsJsonString(self::getJson(), $obj->toJson());
         return $obj;
     }
 
     /**
-     * @depends testSerializationDeserialization
      * @param Billing $obj
      */
+    #[Depends('testSerializationDeserialization')]
     public function testGetters($obj)
     {
-        $this->assertEquals($obj->getBillingAgreementId(), "TestSample");
+        $this->assertEquals("TestSample", $obj->getBillingAgreementId());
     }
 }

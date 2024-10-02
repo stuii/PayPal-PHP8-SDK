@@ -3,6 +3,7 @@
 namespace PayPal\Test\Api;
 
 use PayPal\Api\HyperSchema;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -18,7 +19,7 @@ class HyperSchemaTest extends TestCase
      */
     public static function getJson()
     {
-        return '{"fragmentResolution":"TestSample","readonly":true,"contentEncoding":"TestSample","pathStart":"TestSample","mediaType":"TestSample"}';
+        return '{"fragment_resolution":"TestSample","readonly":true,"content_encoding":"TestSample","path_start":"TestSample","media_type":"TestSample"}';
     }
 
     /**
@@ -39,27 +40,25 @@ class HyperSchemaTest extends TestCase
     {
         $obj = new HyperSchema(self::getJson());
         $this->assertNotNull($obj);
-        $this->assertNotNull($obj->getLinks());
         $this->assertNotNull($obj->getFragmentResolution());
         $this->assertNotNull($obj->getReadonly());
         $this->assertNotNull($obj->getContentEncoding());
         $this->assertNotNull($obj->getPathStart());
         $this->assertNotNull($obj->getMediaType());
-        $this->assertEquals(self::getJson(), $obj->toJson());
+        $this->assertJsonStringEqualsJsonString(self::getJson(), $obj->toJson());
         return $obj;
     }
 
     /**
-     * @depends testSerializationDeserialization
      * @param HyperSchema $obj
      */
+    #[Depends('testSerializationDeserialization')]
     public function testGetters($obj)
     {
-        $this->assertEquals($obj->getLinks(), LinksTest::getObject());
-        $this->assertEquals($obj->getFragmentResolution(), "TestSample");
-        $this->assertEquals($obj->getReadonly(), true);
-        $this->assertEquals($obj->getContentEncoding(), "TestSample");
-        $this->assertEquals($obj->getPathStart(), "TestSample");
-        $this->assertEquals($obj->getMediaType(), "TestSample");
+        $this->assertEquals("TestSample", $obj->getFragmentResolution());
+        $this->assertEquals(true, $obj->getReadonly());
+        $this->assertEquals("TestSample", $obj->getContentEncoding());
+        $this->assertEquals("TestSample", $obj->getPathStart());
+        $this->assertEquals("TestSample", $obj->getMediaType());
     }
 }

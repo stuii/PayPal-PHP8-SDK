@@ -2,279 +2,161 @@
 
 namespace PayPal\Api;
 
+use JsonException;
 use PayPal\Common\PayPalResourceModel;
+use PayPal\Exception\PayPalConfigurationException;
+use PayPal\Exception\PayPalConnectionException;
+use PayPal\Rest\ApiContext;
 use PayPal\Transport\PayPalRestCall;
 use PayPal\Validation\ArgumentValidator;
-use PayPal\Rest\ApiContext;
+use ReflectionException;
 
-/**
- * Class Capture
- *
- * A capture transaction.
- *
- * @package PayPal\Api
- *
- * @property string id
- * @property \PayPal\Api\Amount amount
- * @property bool is_final_capture
- * @property string state
- * @property string reason_code
- * @property string parent_payment
- * @property string invoice_number
- * @property \PayPal\Api\Currency transaction_fee
- * @property string create_time
- * @property string update_time
- * @property \PayPal\Api\Links[] links
- */
 class Capture extends PayPalResourceModel
 {
-    /**
-     * The ID of the capture transaction.
-     *
-     * @param string $id
-     * 
-     * @return $this
-     */
-    public function setId($id)
+    private string $id;
+
+    private Amount $amount;
+
+    private bool $isFinalCapture;
+
+    private string $state;
+
+    private string $reasonCode;
+
+    private string $parentPayment;
+
+    private string $invoiceNumber;
+
+    private Currency $transactionFee;
+
+    private string $createTime;
+
+    private string $updateTime;
+
+
+    public function setId(string $id): self
     {
         $this->id = $id;
         return $this;
     }
 
-    /**
-     * The ID of the capture transaction.
-     *
-     * @return string
-     */
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
 
-    /**
-     * The amount to capture. If the amount matches the orginally authorized amount, the state of the authorization changes to `captured`. If not, the state of the authorization changes to `partially_captured`.
-     *
-     * @param \PayPal\Api\Amount $amount
-     * 
-     * @return $this
-     */
-    public function setAmount($amount)
+    public function setAmount(Amount $amount): self
     {
         $this->amount = $amount;
         return $this;
     }
 
-    /**
-     * The amount to capture. If the amount matches the orginally authorized amount, the state of the authorization changes to `captured`. If not, the state of the authorization changes to `partially_captured`.
-     *
-     * @return \PayPal\Api\Amount
-     */
-    public function getAmount()
+    public function getAmount(): Amount
     {
         return $this->amount;
     }
 
-    /**
-     * Indicates whether to release all remaining funds that the authorization holds in the funding instrument. Default is `false`.
-     *
-     * @param bool $is_final_capture
-     * 
-     * @return $this
-     */
-    public function setIsFinalCapture($is_final_capture)
+    public function setIsFinalCapture(bool $isFinalCapture): self
     {
-        $this->is_final_capture = $is_final_capture;
+        $this->isFinalCapture = $isFinalCapture;
         return $this;
     }
 
-    /**
-     * Indicates whether to release all remaining funds that the authorization holds in the funding instrument. Default is `false`.
-     *
-     * @return bool
-     */
-    public function getIsFinalCapture()
+    public function getIsFinalCapture(): bool
     {
-        return $this->is_final_capture;
+        return $this->isFinalCapture;
     }
 
-    /**
-     * The state of the capture.
-     * Valid Values: ["pending", "completed", "refunded", "partially_refunded"]
-     *
-     * @param string $state
-     * 
-     * @return $this
-     */
-    public function setState($state)
+    public function setState(string $state): self
     {
         $this->state = $state;
         return $this;
     }
 
-    /**
-     * The state of the capture.
-     *
-     * @return string
-     */
-    public function getState()
+    public function getState(): string
     {
         return $this->state;
     }
 
-    /**
-     * The reason code that describes why the transaction state is pending or reversed.
-     * Valid Values: ["CHARGEBACK", "GUARANTEE", "BUYER_COMPLAINT", "REFUND", "UNCONFIRMED_SHIPPING_ADDRESS", "ECHECK", "INTERNATIONAL_WITHDRAWAL", "RECEIVING_PREFERENCE_MANDATES_MANUAL_ACTION", "PAYMENT_REVIEW", "REGULATORY_REVIEW", "UNILATERAL", "VERIFICATION_REQUIRED", "TRANSACTION_APPROVED_AWAITING_FUNDING"]
-     *
-     * @param string $reason_code
-     * 
-     * @return $this
-     */
-    public function setReasonCode($reason_code)
+    public function setReasonCode(string $reasonCode): self
     {
-        $this->reason_code = $reason_code;
+        $this->reasonCode = $reasonCode;
         return $this;
     }
 
-    /**
-     * The reason code that describes why the transaction state is pending or reversed.
-     *
-     * @return string
-     */
-    public function getReasonCode()
+    public function getReasonCode(): string
     {
-        return $this->reason_code;
+        return $this->reasonCode;
     }
 
-    /**
-     * The ID of the payment on which this transaction is based.
-     *
-     * @param string $parent_payment
-     * 
-     * @return $this
-     */
-    public function setParentPayment($parent_payment)
+    public function setParentPayment(string $parentPayment): self
     {
-        $this->parent_payment = $parent_payment;
+        $this->parentPayment = $parentPayment;
         return $this;
     }
 
-    /**
-     * The ID of the payment on which this transaction is based.
-     *
-     * @return string
-     */
-    public function getParentPayment()
+    public function getParentPayment(): string
     {
-        return $this->parent_payment;
+        return $this->parentPayment;
     }
 
-    /**
-     * The invoice number to track this payment.
-     *
-     * @param string $invoice_number
-     * 
-     * @return $this
-     */
-    public function setInvoiceNumber($invoice_number)
+    public function setInvoiceNumber(string $invoiceNumber): self
     {
-        $this->invoice_number = $invoice_number;
+        $this->invoiceNumber = $invoiceNumber;
         return $this;
     }
 
-    /**
-     * The invoice number to track this payment.
-     *
-     * @return string
-     */
-    public function getInvoiceNumber()
+    public function getInvoiceNumber(): string
     {
-        return $this->invoice_number;
+        return $this->invoiceNumber;
     }
 
-    /**
-     * The transaction fee for this payment.
-     *
-     * @param \PayPal\Api\Currency $transaction_fee
-     * 
-     * @return $this
-     */
-    public function setTransactionFee($transaction_fee)
+    public function setTransactionFee(Currency $transactionFee): self
     {
-        $this->transaction_fee = $transaction_fee;
+        $this->transactionFee = $transactionFee;
         return $this;
     }
 
-    /**
-     * The transaction fee for this payment.
-     *
-     * @return \PayPal\Api\Currency
-     */
-    public function getTransactionFee()
+    public function getTransactionFee(): Currency
     {
-        return $this->transaction_fee;
+        return $this->transactionFee;
     }
 
-    /**
-     * The date and time of capture, as defined in [RFC 3339 Section 5.6](http://tools.ietf.org/html/rfc3339#section-5.6).
-     *
-     * @param string $create_time
-     * 
-     * @return $this
-     */
-    public function setCreateTime($create_time)
+    public function setCreateTime(string $createTime): self
     {
-        $this->create_time = $create_time;
+        $this->createTime = $createTime;
         return $this;
     }
 
-    /**
-     * The date and time of capture, as defined in [RFC 3339 Section 5.6](http://tools.ietf.org/html/rfc3339#section-5.6).
-     *
-     * @return string
-     */
-    public function getCreateTime()
+    public function getCreateTime(): string
     {
-        return $this->create_time;
+        return $this->createTime;
     }
 
-    /**
-     * The date and time when the resource was last updated.
-     *
-     * @param string $update_time
-     * 
-     * @return $this
-     */
-    public function setUpdateTime($update_time)
+    public function setUpdateTime(string $updateTime): self
     {
-        $this->update_time = $update_time;
+        $this->updateTime = $updateTime;
         return $this;
     }
 
-    /**
-     * The date and time when the resource was last updated.
-     *
-     * @return string
-     */
-    public function getUpdateTime()
+    public function getUpdateTime(): string
     {
-        return $this->update_time;
+        return $this->updateTime;
     }
 
     /**
-     * Shows details for a captured payment, by ID.
-     *
-     * @param string $captureId
-     * @param ApiContext $apiContext is the APIContext for this call. It can be used to pass dynamic configuration and credentials.
-     * @param PayPalRestCall $restCall is the Rest Call Service that is used to make rest calls
-     * @return Capture
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws ReflectionException
+     * @throws JsonException
      */
-    public static function get($captureId, $apiContext = null, $restCall = null)
+    public static function get(string $captureId, ?ApiContext $apiContext = null, ?PayPalRestCall $restCall = null): self
     {
         ArgumentValidator::validate($captureId, 'captureId');
-        $payLoad = "";
+        $payLoad = '';
         $json = self::executeCall(
-            "/v1/payments/capture/$captureId",
-            "GET",
+            '/v1/payments/capture/' . $captureId,
+            'GET',
             $payLoad,
             null,
             $apiContext,
@@ -286,22 +168,19 @@ class Capture extends PayPalResourceModel
     }
 
     /**
-     * Refund a captured payment by passing the capture_id in the request URI. In addition, include an amount object in the body of the request JSON.
-     *
-     * @deprecated Please use #refundCapturedPayment instead.
-     * @param Refund         $refund
-     * @param ApiContext     $apiContext is the APIContext for this call. It can be used to pass dynamic configuration and credentials.
-     * @param PayPalRestCall $restCall   is the Rest Call Service that is used to make rest calls
-     * @return Refund
+     * @throws JsonException
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws ReflectionException
      */
-    public function refund($refund, $apiContext = null, $restCall = null)
+    public function refund(Refund $refund, ?ApiContext $apiContext = null, ?PayPalRestCall $restCall = null): Refund
     {
-        ArgumentValidator::validate($this->getId(), "Id");
+        ArgumentValidator::validate($this->getId(), 'Id');
         ArgumentValidator::validate($refund, 'refund');
         $payLoad = $refund->toJSON();
         $json = self::executeCall(
-            "/v1/payments/capture/{$this->getId()}/refund",
-            "POST",
+            '/v1/payments/capture/' . $this->getId() . '/refund',
+            'POST',
             $payLoad,
             null,
             $apiContext,
@@ -313,21 +192,19 @@ class Capture extends PayPalResourceModel
     }
 
     /**
-     * Refunds a captured payment, by ID. Include an `amount` object in the JSON request body.
-     *
-     * @param RefundRequest $refundRequest
-     * @param ApiContext $apiContext is the APIContext for this call. It can be used to pass dynamic configuration and credentials.
-     * @param PayPalRestCall $restCall is the Rest Call Service that is used to make rest calls
-     * @return DetailedRefund
+     * @throws JsonException
+     * @throws PayPalConfigurationException
+     * @throws PayPalConnectionException
+     * @throws ReflectionException
      */
-    public function refundCapturedPayment($refundRequest, $apiContext = null, $restCall = null)
+    public function refundCapturedPayment(RefundRequest $refundRequest, ?ApiContext $apiContext = null, ?PayPalRestCall $restCall = null): DetailedRefund
     {
-        ArgumentValidator::validate($this->getId(), "Id");
+        ArgumentValidator::validate($this->getId(), 'Id');
         ArgumentValidator::validate($refundRequest, 'refundRequest');
         $payLoad = $refundRequest->toJSON();
         $json = self::executeCall(
-            "/v1/payments/capture/{$this->getId()}/refund",
-            "POST",
+            '/v1/payments/capture/' . $this->getId() . '/refund',
+            'POST',
             $payLoad,
             null,
             $apiContext,
@@ -337,5 +214,4 @@ class Capture extends PayPalResourceModel
         $ret->fromJson($json);
         return $ret;
     }
-
 }
