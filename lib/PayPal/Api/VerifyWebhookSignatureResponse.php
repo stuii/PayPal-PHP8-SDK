@@ -6,7 +6,7 @@ use PayPal\Common\PayPalModel;
 
 class VerifyWebhookSignatureResponse extends PayPalModel
 {
-    private string $verificationStatus;
+    private ?string $verificationStatus = null;
 
     public function setVerificationStatus(string $verificationStatus): self
     {
@@ -14,7 +14,7 @@ class VerifyWebhookSignatureResponse extends PayPalModel
         return $this;
     }
 
-    public function getVerificationStatus(): string
+    public function getVerificationStatus(): ?string
     {
         return $this->verificationStatus;
     }

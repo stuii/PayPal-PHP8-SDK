@@ -6,10 +6,10 @@ use PayPal\Common\PayPalModel;
 
 class PaymentExecution extends PayPalModel
 {
-    private string $payerId;
+    private ?string $payerId = null;
 
     /** @var array<\PayPal\Api\Transaction> $transactions */
-    private array $transactions;
+    private array $transactions = [];
 
 
     public function setPayerId(string $payerId): self
@@ -18,7 +18,7 @@ class PaymentExecution extends PayPalModel
         return $this;
     }
 
-    public function getPayerId(): string
+    public function getPayerId(): ?string
     {
         return $this->payerId;
     }

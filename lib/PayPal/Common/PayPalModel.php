@@ -103,7 +103,7 @@ class PayPalModel
 
     public static function convertToCamelCase(string $key): string
     {
-        $uc = str_replace(' ', '', ucwords(str_replace(array('_', '-'), ' ', $key)));;
+        $uc = str_replace(' ', '', ucwords(str_replace(array('_', '-'), ' ', $key)));
         return strtolower($uc[0]) .
             substr($uc, 1);
     }
@@ -260,12 +260,14 @@ class PayPalModel
 
     private function assignValue($key, $value): void
     {
-        $setter = 'set'. self::convertToCamelCase($key);
+        $setter = self::convertToCamelCase('set_'.$key);
         // If we find the setter, use that, otherwise use magic method.
-        if (method_exists($this, $setter)) {
-            $this->$setter($value);
-        } else {
-            $this->__set($key, $value);
+        if (ReflectionUtil::propertyExists(get_class($this), $key)) {
+            if (method_exists($this, $setter)) {
+                $this->$setter($value);
+            } else {
+                $this->__set($key, $value);
+            }
         }
     }
 

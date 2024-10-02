@@ -13,11 +13,11 @@ use ReflectionException;
 
 class WebhookEventType extends PayPalResourceModel
 {
-    private string $name;
+    private ?string $name = null;
 
-    private string $description;
+    private ?string $description = null;
 
-    private string $status;
+    private ?string $status = null;
 
     public function setName(string $name): self
     {
@@ -25,7 +25,7 @@ class WebhookEventType extends PayPalResourceModel
         return $this;
     }
 
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -36,7 +36,7 @@ class WebhookEventType extends PayPalResourceModel
         return $this;
     }
 
-    public function getDescription(): string
+    public function getDescription(): ?string
     {
         return $this->description;
     }
@@ -47,7 +47,7 @@ class WebhookEventType extends PayPalResourceModel
         return $this;
     }
 
-    public function getStatus(): string
+    public function getStatus(): ?string
     {
         return $this->status;
     }

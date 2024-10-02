@@ -15,12 +15,12 @@ use ReflectionException;
 
 class Webhook extends PayPalResourceModel
 {
-    private string $id;
+    private ?string $id = null;
 
-    private string $url;
+    private ?string $url = null;
 
     /** @var array<\PayPal\Api\WebhookEventType> $eventTypes */
-    private array $eventTypes;
+    private array $eventTypes = [];
 
     public function setId(string $id): self
     {
@@ -28,7 +28,7 @@ class Webhook extends PayPalResourceModel
         return $this;
     }
 
-    public function getId(): string
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -43,7 +43,7 @@ class Webhook extends PayPalResourceModel
         return $this;
     }
 
-    public function getUrl(): string
+    public function getUrl(): ?string
     {
         return $this->url;
     }

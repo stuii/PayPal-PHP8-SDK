@@ -127,7 +127,6 @@ class VerifyWebhookSignature extends PayPalResourceModel
     public function post(?ApiContext $apiContext = null, ?PayPalRestCall $restCall = null): VerifyWebhookSignatureResponse
     {
         $payLoad = $this->toJSON();
-
         $json = self::executeCall(
             '/v1/notifications/verify-webhook-signature',
             'POST',
