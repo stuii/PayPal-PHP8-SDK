@@ -2,15 +2,21 @@
 
 namespace PayPal\Api;
 
-use PayPal\Common\PayPalModel;
+use JsonException;
+use PayPal\Common\PayPalResourceModel;
+use PayPal\Exception\PayPalConfigurationException;
+use PayPal\Exception\PayPalConnectionException;
+use PayPal\Rest\ApiContext;
+use PayPal\Transport\PayPalRestCall;
+use ReflectionException;
 
-class WebhookList extends PayPalModel
+class WebhookList extends PayPalResourceModel
 {
-    /** @var array<Webhook> $webhooks  */
+    /** @var array<\PayPal\Api\Webhook> $webhooks  */
     private array $webhooks;
 
     /**
-     * @param array<Webhook> $webhooks
+     * @param array<\PayPal\Api\Webhook> $webhooks
      */
     public function setWebhooks(array $webhooks): self
     {
@@ -19,7 +25,7 @@ class WebhookList extends PayPalModel
     }
 
     /**
-     * @return array<Webhook>
+     * @return array<\PayPal\Api\Webhook>
      */
     public function getWebhooks(): array
     {
@@ -42,5 +48,25 @@ class WebhookList extends PayPalModel
         return $this->setWebhooks(
             array_diff($this->getWebhooks(), [$webhook])
         );
+    }
+
+    /**
+     * @throws ReflectionException
+     * @throws PayPalConfigurationException
+     * @throws JsonException
+     * @throws PayPalConnectionException
+     */
+    public function getAllWebhooks(?ApiContext $apiContext = null, ?PayPalRestCall $restCall = null): self
+    {
+        $json = self::executeCall(
+            '/v1/notifications/webhooks',
+            'GET',
+            '',
+            null,
+            $apiContext,
+            $restCall
+        );
+        $this->fromJson($json);
+        return $this;
     }
 }

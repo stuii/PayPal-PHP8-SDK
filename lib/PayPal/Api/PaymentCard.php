@@ -229,7 +229,7 @@ class PaymentCard extends PayPalModel
     }
 
     /**
-     * @param array<Links> $links
+     * @param array<\PayPal\Api\Links> $links
      */
     public function setLinks(array $links): self
     {
@@ -238,7 +238,7 @@ class PaymentCard extends PayPalModel
     }
 
     /**
-     * @return array<Links>
+     * @return array<\PayPal\Api\Links>
      */
     public function getLinks(): array
     {

@@ -15,11 +15,11 @@ use ReflectionException;
 
 class PayPalResourceModel extends PayPalModel
 {
-    /** @var array<Links> $links  */
+    /** @var array<\PayPal\Api\Links> $links  */
     public array $links = [];
 
     /**
-     * @param array<Links> $links
+     * @param array<\PayPal\Api\Links> $links
      * @throws PayPalConfigurationException
      * @throws ReflectionException
      */
@@ -38,7 +38,7 @@ class PayPalResourceModel extends PayPalModel
     }
 
     /**
-     * @return array<Links>
+     * @return array<\PayPal\Api\Links>
      */
     public function getLinks(): array
     {

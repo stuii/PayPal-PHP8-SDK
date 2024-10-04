@@ -19,7 +19,7 @@ class Webhook extends PayPalResourceModel
 
     private ?string $url = null;
 
-    /** @var array<WebhookEventType> $eventTypes */
+    /** @var array<\PayPal\Api\WebhookEventType> $eventTypes */
     private array $eventTypes = [];
 
     public function setId(string $id): self
@@ -49,7 +49,7 @@ class Webhook extends PayPalResourceModel
     }
 
     /**
-     * @param array<WebhookEventType> $eventTypes
+     * @param array<\PayPal\Api\WebhookEventType> $eventTypes
      */
     public function setEventTypes(array $eventTypes): self
     {
@@ -58,7 +58,7 @@ class Webhook extends PayPalResourceModel
     }
 
     /**
-     * @return array<WebhookEventType>
+     * @return array<\PayPal\Api\WebhookEventType>
      */
     public function getEventTypes(): array
     {

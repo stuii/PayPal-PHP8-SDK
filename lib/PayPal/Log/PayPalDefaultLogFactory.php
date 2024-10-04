@@ -6,7 +6,7 @@ use Psr\Log\AbstractLogger;
 
 class PayPalDefaultLogFactory implements PayPalLogFactory
 {
-    public function getLogger(string $className): AbstractLogger
+    public function getLogger(string $className): PayPalLogger
     {
         return new PayPalLogger($className);
     }
