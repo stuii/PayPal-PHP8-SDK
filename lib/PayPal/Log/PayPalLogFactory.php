@@ -6,5 +6,5 @@ use Psr\Log\LoggerInterface;
 
 interface PayPalLogFactory
 {
-    public function getLogger(string $className): LoggerInterface;
+    public function getLogger(string $className): PayPalLogger;
 }

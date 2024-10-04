@@ -11,14 +11,17 @@ use PayPal\Exception\PayPalMissingCredentialException;
 use PayPal\Handler\RestHandler;
 use PayPal\Rest\ApiContext;
 use PayPal\Transport\PayPalRestCall;
+use ReflectionException;
 
 class PayPalResourceModel extends PayPalModel
 {
-    /** @var array<\PayPal\Api\Links> $links  */
+    /** @var array<Links> $links  */
     public array $links = [];
 
     /**
      * @param array<Links> $links
+     * @throws PayPalConfigurationException
+     * @throws ReflectionException
      */
     public function setLinks(array $links): self
     {
@@ -27,7 +30,7 @@ class PayPalResourceModel extends PayPalModel
             if ($link instanceof Links) {
                 $definiteLinks[] = $link;
             } else {
-                $definiteLinks[] = (new Links())->fromArray($link);
+                $definiteLinks[] = (new Links())->fromArray((array)$link);
             }
         }
         $this->links = $definiteLinks;
@@ -52,6 +55,10 @@ class PayPalResourceModel extends PayPalModel
         return null;
     }
 
+    /**
+     * @throws PayPalConfigurationException
+     * @throws ReflectionException
+     */
     public function addLink(Links $links): self
     {
         if (!$this->getLinks()) {
@@ -62,6 +69,10 @@ class PayPalResourceModel extends PayPalModel
         );
     }
 
+    /**
+     * @throws PayPalConfigurationException
+     * @throws ReflectionException
+     */
     public function removeLink(Links $links): self
     {
         return $this->setLinks(
@@ -96,7 +107,6 @@ class PayPalResourceModel extends PayPalModel
      * @throws JsonException
      * @throws PayPalConfigurationException
      * @throws PayPalInvalidCredentialException
-     * @throws PayPalMissingCredentialException
      */
     public function updateAccessToken(?string $refreshToken, ?ApiContext $apiContext): void
     {

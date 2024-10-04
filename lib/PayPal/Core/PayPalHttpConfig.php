@@ -20,9 +20,9 @@ class PayPalHttpConfig
         // Adding it like this for backward compatibility with older versions of curl
     ];
 
-    const string HEADER_SEPARATOR = ';';
-    const string HTTP_GET = 'GET';
-    const string HTTP_POST = 'POST';
+    public const HEADER_SEPARATOR = ';';
+    public const HTTP_GET = 'GET';
+    public const HTTP_POST = 'POST';
 
     private array $headers = [];
 

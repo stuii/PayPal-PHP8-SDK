@@ -5,7 +5,7 @@ namespace PayPal\Api;
 class TransactionBase extends CartBase
 {
     /**
-     * @var array<\PayPal\Api\RelatedResources> $relatedResources
+     * @var array<RelatedResources> $relatedResources
      */
     private array $relatedResources = [];
 

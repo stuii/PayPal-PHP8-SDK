@@ -1,8 +1,7 @@
-<?php /** @noinspection PhpPropertyOnlyWrittenInspection */
+<?php
 
 namespace PayPal\Log;
 
-use PayPal\Core\PayPalConfigManager;
 use Psr\Log\AbstractLogger;
 use Psr\Log\LogLevel;
 use Stringable;

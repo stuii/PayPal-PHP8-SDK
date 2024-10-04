@@ -6,6 +6,7 @@ use JsonException;
 use PayPal\Auth\OAuthTokenCredential;
 use PayPal\Exception\PayPalConfigurationException;
 use PayPal\Validation\JsonValidator;
+use ReflectionClass;
 use ReflectionException;
 use stdClass;
 
@@ -92,6 +93,9 @@ class PayPalModel
         return $this->getVal($key);
     }
 
+    /**
+     * @throws ReflectionException
+     */
     public function __set(string $key, $value)
     {
         if (!is_array($value) && $value === null) {
@@ -258,6 +262,9 @@ class PayPalModel
         return $this;
     }
 
+    /**
+     * @throws ReflectionException
+     */
     private function assignValue($key, $value): void
     {
         $setter = self::convertToCamelCase('set_'.$key);
@@ -294,7 +301,7 @@ class PayPalModel
 
     public function toArray(): array
     {
-        $reflect = new \ReflectionClass($this);
+        $reflect = new ReflectionClass($this);
         $props = $reflect->getProperties(5);
         while ($reflect = $reflect->getParentClass()) {
             $props = [...$props, ...$reflect->getProperties(5)];

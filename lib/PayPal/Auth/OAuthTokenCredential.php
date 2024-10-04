@@ -25,7 +25,7 @@ use PayPal\Security\Cipher;
 class OAuthTokenCredential extends PayPalResourceModel
 {
 
-    public const string AUTH_HANDLER = OAuthHandler::class;
+    public const AUTH_HANDLER = OAuthHandler::class;
 
     public static int $expiryBufferTime = 120;
 
@@ -119,8 +119,6 @@ class OAuthTokenCredential extends PayPalResourceModel
      * @throws JsonException
      * @throws PayPalConfigurationException
      * @throws PayPalConnectionException
-     * @throws PayPalInvalidCredentialException
-     * @throws PayPalMissingCredentialException
      */
     public function getRefreshToken(array $config, ?string $authorizationCode = null, array $params = []): ?string
     {
@@ -151,8 +149,6 @@ class OAuthTokenCredential extends PayPalResourceModel
      * @throws JsonException
      * @throws PayPalConfigurationException
      * @throws PayPalConnectionException
-     * @throws PayPalInvalidCredentialException
-     * @throws PayPalMissingCredentialException
      */
     public function refreshAccessToken(array $config, ?string $refreshToken = null): ?string
     {
@@ -169,8 +165,6 @@ class OAuthTokenCredential extends PayPalResourceModel
      * @throws JsonException
      * @throws PayPalConfigurationException
      * @throws PayPalConnectionException
-     * @throws PayPalInvalidCredentialException
-     * @throws PayPalMissingCredentialException
      */
     protected function getToken(array $config, string $clientId, string $clientSecret, string $payload): array
     {
@@ -209,8 +203,6 @@ class OAuthTokenCredential extends PayPalResourceModel
      * @throws JsonException
      * @throws PayPalConfigurationException
      * @throws PayPalConnectionException
-     * @throws PayPalInvalidCredentialException
-     * @throws PayPalMissingCredentialException
      */
     private function generateAccessToken(array $config, ?string $refreshToken = null): void
     {

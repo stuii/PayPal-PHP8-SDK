@@ -56,7 +56,7 @@ class HyperSchema extends PayPalModel
         return $this->pathStart;
     }
 
-    public function setMediaType(string $mediaType)
+    public function setMediaType(string $mediaType): HyperSchema
     {
         $this->mediaType = $mediaType;
         return $this;

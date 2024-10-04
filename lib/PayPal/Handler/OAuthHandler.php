@@ -15,7 +15,7 @@ use PayPal\Rest\ApiContext;
  */
 class OAuthHandler implements PayPalHandlerInterface
 {
-    public function __construct(private ApiContext $apiContext)
+    public function __construct(private readonly ApiContext $apiContext)
     {
     }
 
@@ -52,23 +52,16 @@ class OAuthHandler implements PayPalHandlerInterface
         } elseif (isset($config['service.EndPoint'])) {
             $baseEndpoint = $config['service.EndPoint'];
         } elseif (isset($config['mode'])) {
-            switch (strtoupper($config['mode'])) {
-                case 'SANDBOX':
-                    $baseEndpoint = PayPalConstants::REST_SANDBOX_ENDPOINT;
-                    break;
-                case 'LIVE':
-                    $baseEndpoint = PayPalConstants::REST_LIVE_ENDPOINT;
-                    break;
-                default:
-                    throw new PayPalConfigurationException('The mode config parameter must be set to either sandbox/live');
-            }
+            $baseEndpoint = match (strtoupper($config['mode'])) {
+                'SANDBOX' => PayPalConstants::REST_SANDBOX_ENDPOINT,
+                'LIVE' => PayPalConstants::REST_LIVE_ENDPOINT,
+                default => throw new PayPalConfigurationException('The mode config parameter must be set to either sandbox/live'),
+            };
         } else {
             // Defaulting to Sandbox
             $baseEndpoint = PayPalConstants::REST_SANDBOX_ENDPOINT;
         }
 
-        $baseEndpoint = rtrim(trim($baseEndpoint), '/') . '/v1/oauth2/token';
-
-        return $baseEndpoint;
+        return rtrim(trim($baseEndpoint), '/') . '/v1/oauth2/token';
     }
 }

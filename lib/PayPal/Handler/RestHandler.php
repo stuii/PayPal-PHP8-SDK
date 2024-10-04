@@ -16,9 +16,9 @@ use Paypal\Rest\ApiContext;
 /**
  * Class RestHandler
  */
-readonly class RestHandler implements PayPalHandlerInterface
+class RestHandler implements PayPalHandlerInterface
 {
-    public function __construct(private ApiContext $apiContext)
+    public function __construct(private readonly ApiContext $apiContext)
     {
     }
 

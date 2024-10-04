@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
  */
 class AuthorizationCacheTest extends TestCase
 {
-    const string CACHE_FILE = 'tests/var/test.cache';
+    const CACHE_FILE = 'tests/var/test.cache';
 
     /**
      * Sets up the fixture, for example, opens a network connection.

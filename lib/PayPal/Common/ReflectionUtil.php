@@ -20,7 +20,6 @@ class ReflectionUtil
     private static array $propertiesType = [];
 
     /**
-     * @throws PayPalConfigurationException
      * @throws ReflectionException
      */
     public static function getPropertyClass(string $class, string $propertyName): ?string
@@ -36,12 +35,16 @@ class ReflectionUtil
         if ($reflection?->hasType() === true) {
             if ($reflection?->getType()?->getName() === 'array') {
                 $found = preg_match('/\/\*\*(.*)array<(.*)>(.*)\*\//m', $reflection->getDocComment(), $matches);
-                return $found === 0 ? $reflection?->getType()?->getName() : $matches[2];
+                return $found === 0 ? $reflection->getType()?->getName() : $matches[2];
             }
             return $reflection?->getType()?->getName();
         }
         return null;
     }
+
+    /**
+     * @throws ReflectionException
+     */
     public static function propertyExists(string $class, string $propertyName): ?string
     {
         $propertyName = PayPalModel::convertToCamelCase($propertyName);
@@ -51,6 +54,9 @@ class ReflectionUtil
         return $reflection !== null;
     }
 
+    /**
+     * @throws ReflectionException
+     */
     public static function getRealReflectionProperty(string $class, string $propertyName): ?ReflectionProperty
     {
         $depth = 1;
@@ -73,7 +79,6 @@ class ReflectionUtil
     }
 
     /**
-     * @throws PayPalConfigurationException
      * @throws ReflectionException
      */
     public static function isPropertyClassArray(string $class, string $propertyName): ?bool

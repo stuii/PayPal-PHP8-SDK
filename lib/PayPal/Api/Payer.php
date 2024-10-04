@@ -10,7 +10,7 @@ class Payer extends PayPalModel
 
     private ?string $status = null;
 
-    /** @var array<\PayPal\Api\FundingInstrument> */
+    /** @var array<FundingInstrument> */
     private array $fundingInstruments = [];
 
     private PayerInfo $payerInfo;

@@ -6,7 +6,7 @@ namespace PayPal\Security;
 
 class Cipher
 {
-    const int IV_SIZE = 16;
+    public const IV_SIZE = 16;
 
     public function __construct(private readonly string $secretKey)
     {

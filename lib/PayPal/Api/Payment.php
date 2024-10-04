@@ -20,7 +20,7 @@ class Payment extends PayPalResourceModel
 
     private Payer $payer;
 
-    /** @var array<\PayPal\Api\Transaction> $transactions */
+    /** @var array<Transaction> $transactions */
     private array $transactions = [];
 
     private ?string $state = null;

@@ -6,7 +6,7 @@ use PayPal\Common\PayPalModel;
 
 class PaymentHistory extends PayPalModel
 {
-    /** @var array<\PayPal\Api\Payment> $payments */
+    /** @var array<Payment> $payments */
     private array $payments;
     private int $count;
     private string $nextId;
