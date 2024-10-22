@@ -8,7 +8,7 @@ class PaymentExecution extends PayPalModel
 {
     private ?string $payerId = null;
 
-    /** @var array<Transaction> $transactions */
+    /** @var array<\PayPal\Api\Transaction> $transactions */
     private array $transactions = [];
 
 
@@ -24,7 +24,7 @@ class PaymentExecution extends PayPalModel
     }
 
     /**
-     * @param array<Transaction> $transactions
+     * @param array<\PayPal\Api\Transaction> $transactions
      */
     public function setTransactions(array $transactions): self
     {
@@ -33,7 +33,7 @@ class PaymentExecution extends PayPalModel
     }
 
     /**
-     * @return array<Transaction>
+     * @return array<\PayPal\Api\Transaction>
      */
     public function getTransactions(): array
     {

@@ -20,7 +20,7 @@ class Payment extends PayPalResourceModel
 
     private Payer $payer;
 
-    /** @var array<Transaction> $transactions */
+    /** @var array<\PayPal\Api\Transaction> $transactions */
     private array $transactions = [];
 
     private ?string $state = null;
@@ -82,7 +82,7 @@ class Payment extends PayPalResourceModel
     }
 
     /**
-     * @param array<Transaction> $transactions
+     * @param array<\PayPal\Api\Transaction> $transactions
      */
     public function setTransactions(array $transactions): self
     {
@@ -91,7 +91,7 @@ class Payment extends PayPalResourceModel
     }
 
     /**
-     * @return array<Transaction>
+     * @return array<\PayPal\Api\Transaction>
      */
     public function getTransactions(): array
     {

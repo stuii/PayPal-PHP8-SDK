@@ -5,12 +5,12 @@ namespace PayPal\Api;
 class TransactionBase extends CartBase
 {
     /**
-     * @var array<RelatedResources> $relatedResources
+     * @var array<\PayPal\Api\RelatedResources> $relatedResources
      */
     private array $relatedResources = [];
 
     /**
-     * @param array<RelatedResources> $relatedResources
+     * @param array<\PayPal\Api\RelatedResources> $relatedResources
      */
     public function setRelatedResources(array $relatedResources): self
     {
@@ -19,7 +19,7 @@ class TransactionBase extends CartBase
     }
 
     /**
-     * @return array<RelatedResources>
+     * @return array<\PayPal\Api\RelatedResources>
      */
     public function getRelatedResources(): array
     {

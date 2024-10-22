@@ -10,7 +10,7 @@ class Payer extends PayPalModel
 
     private ?string $status = null;
 
-    /** @var array<FundingInstrument> */
+    /** @var array<\PayPal\Api\FundingInstrument> */
     private array $fundingInstruments = [];
 
     private PayerInfo $payerInfo;
@@ -38,7 +38,7 @@ class Payer extends PayPalModel
     }
 
     /**
-     * @param array<FundingInstrument> $fundingInstruments
+     * @param array<\PayPal\Api\FundingInstrument> $fundingInstruments
      */
     public function setFundingInstruments(array $fundingInstruments): self
     {
@@ -47,7 +47,7 @@ class Payer extends PayPalModel
     }
 
     /**
-     * @return array<FundingInstrument>
+     * @return array<\PayPal\Api\FundingInstrument>
      */
     public function getFundingInstruments(): array
     {

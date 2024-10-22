@@ -8,7 +8,7 @@ class DetailedRefund extends Refund
 
     private ?Currency $refundToPayer = null;
 
-    /** @var array<ExternalFunding> $refundToExternalFunding */
+    /** @var array<\PayPal\Api\ExternalFunding> $refundToExternalFunding */
     private array $refundToExternalFunding = [];
 
     private ?Currency $refundFromTransactionFee = null;

@@ -6,7 +6,7 @@ use PayPal\Common\PayPalResourceModel;
 
 class CreditCardList extends PayPalResourceModel
 {
-    /** @var array<CreditCard> $items */
+    /** @var array<\PayPal\Api\CreditCard> $items */
     private array $items = [];
 
     private int $totalItems = 0;
@@ -14,7 +14,7 @@ class CreditCardList extends PayPalResourceModel
     private int $totalPages = 0;
 
     /**
-     * @param array<CreditCard> $items
+     * @param array<\PayPal\Api\CreditCard> $items
      */
     public function setItems(array $items): self
     {
@@ -23,7 +23,7 @@ class CreditCardList extends PayPalResourceModel
     }
 
     /**
-     * @return array<CreditCard> $items
+     * @return array<\PayPal\Api\CreditCard> $items
      */
     public function getItems(): array
     {

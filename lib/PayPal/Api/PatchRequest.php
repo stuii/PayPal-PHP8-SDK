@@ -6,11 +6,11 @@ use PayPal\Common\PayPalModel;
 
 class PatchRequest extends PayPalModel
 {
-    /** @var array<Patch> $patches */
+    /** @var array<\PayPal\Api\Patch> $patches */
     private array $patches;
 
     /**
-     * @param array<Patch> $patches
+     * @param array<\PayPal\Api\Patch> $patches
      */
     public function setPatches(array $patches): self
     {
@@ -19,7 +19,7 @@ class PatchRequest extends PayPalModel
     }
 
     /**
-     * @return array<Patch>
+     * @return array<\PayPal\Api\Patch>
      */
     public function getPatches(): array
     {

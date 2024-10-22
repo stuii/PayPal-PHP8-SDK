@@ -6,12 +6,12 @@ use PayPal\Common\PayPalModel;
 
 class PaymentHistory extends PayPalModel
 {
-    /** @var array<Payment> $payments */
+    /** @var array<\PayPal\Api\Payment> $payments */
     private array $payments;
     private int $count;
     private string $nextId;
     /**
-     * @param array<Payment> $payments
+     * @param array<\PayPal\Api\Payment> $payments
      */
     public function setPayments(array $payments): self
     {
@@ -20,7 +20,7 @@ class PaymentHistory extends PayPalModel
     }
 
     /**
-     * @return array<Payment>
+     * @return array<\PayPal\Api\Payment>
      */
     public function getPayments(): array
     {

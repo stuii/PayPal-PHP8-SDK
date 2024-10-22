@@ -6,11 +6,11 @@ use PayPal\Common\PayPalModel;
 
 class WebhookEventTypeList extends PayPalModel
 {
-    /** @var array<WebhookEventType> $eventTypes */
+    /** @var array<\PayPal\Api\WebhookEventType> $eventTypes */
     private array $eventTypes;
 
     /**
-     * @param array<WebhookEventType> $eventTypes
+     * @param array<\PayPal\Api\WebhookEventType> $eventTypes
      */
     public function setEventTypes(array $eventTypes): self
     {
@@ -19,7 +19,7 @@ class WebhookEventTypeList extends PayPalModel
     }
 
     /**
-     * @return array<WebhookEventType>
+     * @return array<\PayPal\Api\WebhookEventType>
      */
     public function getEventTypes(): array
     {

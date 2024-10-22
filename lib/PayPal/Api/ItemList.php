@@ -6,7 +6,7 @@ use PayPal\Common\PayPalModel;
 
 class ItemList extends PayPalModel
 {
-    /** @var array<Item> $items */
+    /** @var array<\PayPal\Api\Item> $items */
     private array $items = [];
 
     private ?ShippingAddress $shippingAddress = null;
@@ -16,7 +16,7 @@ class ItemList extends PayPalModel
     private ?string $shippingPhoneNumber = null;
 
     /**
-     * @param array<Item> $items
+     * @param array<\PayPal\Api\Item> $items
      */
     public function setItems(array $items): self
     {
@@ -25,7 +25,7 @@ class ItemList extends PayPalModel
     }
 
     /**
-     * @return array<Item>
+     * @return array<\PayPal\Api\Item>
      */
     public function getItems(): array
     {
