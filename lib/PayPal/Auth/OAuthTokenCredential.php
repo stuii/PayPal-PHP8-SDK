@@ -180,7 +180,9 @@ class OAuthTokenCredential extends PayPalResourceModel
         /** @var PayPalHandlerInterface $handler */
         foreach ($handlers as $handler) {
             if (!is_object($handler)) {
-                $handler = new $handler(new ApiContext($this));
+                $apiContext = new ApiContext($this);
+                $apiContext->setConfig($config);
+                $handler = new $handler($apiContext);
             }
             $handler->handle(
                 $httpConfig,
